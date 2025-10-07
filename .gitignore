@@ -1,1 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+
+# Environment variables
+.env
+
+# IDE
 .obsidian/
+.vscode/
+.DS_Store
+
+# Data (too large for git)
+data/
+!data/.gitkeep
+
+# Results
+results/
+!results/.gitkeep
