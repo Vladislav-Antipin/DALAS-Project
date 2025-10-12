@@ -2,6 +2,8 @@
 
 >  **Goal**: predict whether a drug can be repurposed for a new disease 
 
+  “If we do a new clinical trial, which molecule should we prioritise and test first ?”
+  
 - Scope:
 	- disease domain - e.g. autoimmune diseases (psoriasis, IBD, rheumatoid arthritis...)
 	- subset of ~100-500 approved drugs (restrain by disease domain and/or mechanism of action)
@@ -44,8 +46,10 @@
 	- if possible, split train-test by time stamp of indication approval (to approach real-life repurposing)
 - Interactive dashboard
 	 - input a drug → list of candidate diseases + visualizations 
+	 - 
 
+    
+  
 
-
-
+  
 
