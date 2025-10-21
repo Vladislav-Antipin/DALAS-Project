@@ -61,7 +61,7 @@ def get_autoimmune_indications(mesh_ids, force=False):
     drug_indication = new_client.drug_indication
     autoimmune_ind = drug_indication.filter(mesh_id__in=mesh_ids)
     indications_df = pd.DataFrame(autoimmune_ind)
-    chembl_ids = pd.unique(indications_df["molecule_chembl_id"])
+    chembl_ids = pd.unique(indications_df["molecule_chembl_id"]).tolist()
 
     save_pickle((indications_df, chembl_ids), "indications.pkl")
     return indications_df, chembl_ids
@@ -73,7 +73,7 @@ def get_autoimmune_drugs(chembl_ids, force=False):
     
     print("Loading drug information")
     molecule = new_client.molecule
-    autoimmune_drugs = molecule.filter(molecule_chembl_id__in = chembl_ids.tolist(), max_phase__gte = 3)
+    autoimmune_drugs = molecule.filter(molecule_chembl_id__in = chembl_ids, max_phase__gte = 3)
     drugs_df = pd.DataFrame(autoimmune_drugs)
     save_pickle(drugs_df, "drugs.pkl")
     return drugs_df
