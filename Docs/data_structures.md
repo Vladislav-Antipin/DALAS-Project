@@ -17,10 +17,10 @@ following data frames can be
 ## Singleton Features
 
 Drugs 
-- ChEMBL IDs - we already have complete list 
-- chemical features from ChEMBL 
+- [ ] ChEMBL IDs - we already have complete list 
+- [ ] chemical features from ChEMBL 
 	- molecular weight, molecular fingerprints, pKa ...
-- embeddings 
+- [ ] embeddings 
 	- from SapBERT, PubMedBERT, BioBERT
 	- of: 
 		- textual description 
@@ -28,14 +28,14 @@ Drugs
 		- name 
 
 Diseases
-- MeSH IDs  - we already have complete list 
-- embeddings 
+- [ ] MeSH IDs  - we already have complete list 
+- [ ] embeddings 
 	- from SapBERT, PubMedBERT, BioBERT
 	- of: 
 		- textual description 
 			- scrape / get from MeSH
 		- name 
-- #todo other parameters?
+- #todo [ ] other parameters?
 	- PubMed? MeSH API?
 
 ## Connection to Targets
@@ -47,8 +47,8 @@ Note: I'll call "targets": molecules that are targeted by disease, and molecules
 Drugs-Targets matches
 - from ChEMBL
 - consider only protein targets?
-- find their UniProt ID
-- activation or inhibition (if more options, reduce it to binary - positive or negative action)
+- [ ] find their UniProt ID
+- [ ] activation or inhibition (if more options, reduce it to binary - positive or negative action)
 Disease-Targets matches
 - TODO: find out where to take it from
 - get UniProt ID
@@ -77,9 +77,9 @@ for each Drug-Disease pair
 				- **double check** because normally it should have appeared in `indications_df`
 		- else if some studies TERMINATED and all p-values non-significant:
 	- keep track of max, median and mean p-values, status and reasons for termination (if it's the case)
-- timestamp of earliest successful study termination 
+- [ ] timestamp of earliest successful study termination 
 	- from Clinical Trials
-- with *connection to targets* data, engineer features:
+- [ ] with *connection to targets* data, engineer features:
 	- e.g. nb of shared targets
-- with *singleton features*, engineer features:
+- [ ] with *singleton features*, engineer features:
 	- cosine proximity of embeddings (name-name, description-description)
