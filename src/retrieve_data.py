@@ -4,23 +4,20 @@ from chembl_webresource_client.new_client import new_client
 import pandas as pd
 import warnings
 import pickle
-import os
 
-DATA_DIR = "data"
-MESH_URL = "https://www.ncbi.nlm.nih.gov/mesh?Db=mesh&Cmd=DetailsSearch&Term=%22Autoimmune+Diseases%22%5BMeSH+Terms%5D"
-
-def ensure_data_dir():
-    if not os.path.exists(DATA_DIR):
-        os.makedirs(DATA_DIR)
+from .config import RAW_DATA_DIR, MESH_URL
 
 def save_pickle(obj, filename):
-    with open(os.path.join(DATA_DIR, filename), "wb") as f:
+    """Save object as pickle in raw data directory."""
+    filepath = RAW_DATA_DIR / filename
+    with open(filepath, "wb") as f:
         pickle.dump(obj, f)
 
 def load_pickle(filename):
-    path = os.path.join(DATA_DIR, filename)
-    if os.path.exists(path):
-        with open(path, "rb") as f:
+    """Load pickle from raw data directory."""
+    filepath = RAW_DATA_DIR / filename
+    if filepath.exists():
+        with open(filepath, "rb") as f:
             return pickle.load(f)
     return None
 
@@ -79,8 +76,6 @@ def get_autoimmune_drugs(chembl_ids, force=False):
     return drugs_df
 
 def main(step="all", force=False):
-    ensure_data_dir()
-    
     mesh_ids = None
     chembl_ids = None
 
