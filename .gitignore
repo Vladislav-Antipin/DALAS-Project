@@ -13,7 +13,7 @@ __pycache__/
 .DS_Store
 
 # Data (too large for git)
-data/
+# data
 !data/.gitkeep
 
 # Results
