@@ -17,6 +17,7 @@ data/drugbank/
 data/drugbank.zip
 data/raw/
 data/processed/
+
 !data/.gitkeep
 
 # Results
