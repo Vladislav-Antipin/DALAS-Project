@@ -19,5 +19,5 @@ dependencies = [
     "bioservices>=1.12.1",
     "sentence-transformers>=5.1.2",
     "missingno>=0.5.2",
-    "torch-geometric>=2.7.0",
+    "torch-geometric>=2.7.0"
 ]
