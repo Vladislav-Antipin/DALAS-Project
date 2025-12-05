@@ -13,6 +13,9 @@ __pycache__/
 .DS_Store
 
 # Data (too large for git)
+data/01-result/
+data/02-result/ 
+data/03-result/
 data/drugbank/
 data/drugbank.zip
 data/raw/
