@@ -1,7 +1,7 @@
 """Utility functions for loading processed data."""
 
 import pandas as pd
-from typing import Dict
+from typing import Dict, List
 
 from .data_processors import load_processed_data
 from .data_fetchers import load_raw_data
@@ -38,6 +38,7 @@ def load_all_raw() -> Dict[str, pd.DataFrame]:
         "targets": load_raw_data("targets_df.pkl"),
         "diseases": load_raw_data("diseases_df.pkl"),
         "trials": load_raw_data("trials_df.pkl"),
+        "reactome_map": load_raw_data("reactome_map.pkl"),
     }
 
 
@@ -64,3 +65,9 @@ def load_indications() -> pd.DataFrame:
 def load_embeddings() -> pd.DataFrame:
     """Load embeddings dataframe."""
     return load_processed_data("embeddings_df.pkl")
+
+
+def load_reactome_map() -> Dict[str, List[str]]:
+    """Load Reactome pathway mapping (UniProt ID -> [Reactome pathway IDs])."""
+    result = load_raw_data("reactome_map.pkl")
+    return result if result else {}

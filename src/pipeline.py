@@ -10,6 +10,7 @@ from .data_fetchers import (
     fetch_mechanisms_and_targets,
     fetch_disease_info,
     fetch_clinical_trials,
+    fetch_reactome_pathways,
     load_raw_data,
 )
 from .data_processors import (
@@ -17,6 +18,7 @@ from .data_processors import (
     process_diseases_data,
     process_trials_data,
     process_indications_data,
+    add_pathway_annotations,
     save_processed_data,
     load_processed_data,
 )
@@ -103,25 +105,34 @@ def run_data_processing(raw_data: dict = None, force: bool = False):
         }
     
     # 1. Process drugs
-    print("\n[1/4] Processing drugs...")
+    print("\n[1/5] Processing drugs...")
     final_drugs_df = process_drugs_data(
         raw_data["drugs_df"],
         raw_data["mechanism_df"]
     )
-    save_processed_data(final_drugs_df, "final_drugs_df.pkl")
     
     # 2. Process diseases
-    print("\n[2/4] Processing diseases...")
+    print("\n[2/5] Processing diseases...")
     final_diseases_df = process_diseases_data(raw_data["diseases_df"])
+    
+    # 3. Fetch and add Reactome pathway annotations
+    print("\n[3/5] Adding Reactome pathway annotations...")
+    reactome_map = fetch_reactome_pathways(final_drugs_df, final_diseases_df, force=force)
+    final_drugs_df, final_diseases_df = add_pathway_annotations(
+        final_drugs_df, final_diseases_df, reactome_map
+    )
+    
+    # Save drugs and diseases after pathway annotations
+    save_processed_data(final_drugs_df, "final_drugs_df.pkl")
     save_processed_data(final_diseases_df, "final_diseases_df.pkl")
     
-    # 3. Process trials
-    print("\n[3/4] Processing trials...")
+    # 4. Process trials
+    print("\n[4/5] Processing trials...")
     final_trials_df = process_trials_data(raw_data["trials_df"])
     save_processed_data(final_trials_df, "final_trials_df.pkl")
     
-    # 4. Process indications
-    print("\n[4/4] Processing indications...")
+    # 5. Process indications
+    print("\n[5/5] Processing indications...")
     final_indications_df = process_indications_data(
         raw_data["indications_df"],
         final_trials_df
@@ -202,11 +213,12 @@ def run_full_pipeline(force_fetch: bool = False, force_process: bool = False):
     print("    - targets_df.pkl")
     print("    - diseases_df.pkl")
     print("    - trials_df.pkl")
+    print("    - reactome_map.pkl")
     print("\n  Processed data (data/processed/):")
-    print("    - final_drugs_df.pkl")
-    print("    - final_diseases_df.pkl")
-    print("    - final_trials_df.pkl")
-    print("    - final_indications_df.pkl")
+    print("    - final_drugs_df.pkl (with drug_pathways)")
+    print("    - final_diseases_df.pkl (with disease_pathways)")
+    print("    - final_trials_df.pkl (with success classification)")
+    print("    - final_indications_df.pkl (with nct_evidence)")
     print("    - embeddings_df.pkl")
     print("\n")
 

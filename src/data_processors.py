@@ -1,10 +1,9 @@
 """Functions for processing and cleaning raw data."""
 
 import pickle
-from typing import Any
+from typing import Any, Dict, List
 
 import pandas as pd
-import numpy as np
 
 from .config import PROCESSED_DATA_DIR
 
@@ -39,11 +38,12 @@ def process_drugs_data(drugs_df: pd.DataFrame, mechanism_df: pd.DataFrame) -> pd
     """
     print("Processing drug data...")
     
-    # Filter: available and not withdrawn
+    # Filter: available and not withdrawn (matching notebook logic with NA handling)
+    # (availability_type > 0) | isna() AND (~withdrawn_flag | isna())
     final_drugs_df = (
         drugs_df[
-            (drugs_df['availability_type'] > 0)
-            & ~drugs_df['withdrawn_flag']
+            ((drugs_df['availability_type'] > 0) | drugs_df['availability_type'].isna())
+            & (~drugs_df['withdrawn_flag'] | drugs_df['withdrawn_flag'].isna())
         ]
         .drop(columns=[
             'atc_classifications', 'availability_type',
@@ -113,15 +113,18 @@ def process_diseases_data(diseases_df: pd.DataFrame) -> pd.DataFrame:
     Process and clean disease data.
     
     Args:
-        diseases_df: Raw diseases DataFrame
+        diseases_df: Raw diseases DataFrame (with 'id', 'name', 'disease_targets', etc.)
         
     Returns:
-        Processed diseases DataFrame
+        Processed diseases DataFrame with 'disease_id' column
     """
     print("Processing disease data...")
     
-    # TODO: Add more processing as needed
     final_diseases_df = diseases_df.copy()
+    
+    # Rename 'id' to 'disease_id' for consistency (matches notebook)
+    if 'id' in final_diseases_df.columns:
+        final_diseases_df.rename(columns={"id": "disease_id"}, inplace=True)
     
     print(f"Processed {len(final_diseases_df)} diseases")
     return final_diseases_df
@@ -129,97 +132,88 @@ def process_diseases_data(diseases_df: pd.DataFrame) -> pd.DataFrame:
 
 def process_trials_data(trials_df: pd.DataFrame) -> pd.DataFrame:
     """
-    Process and clean clinical trials data, including success classification.
+    Process and clean clinical trials data.
+    
+    Extracts objective structural features from nested ClinicalTrials.gov data.
+    Does NOT attempt to classify trial success/failure based on p-values,
+    as this is methodologically problematic for drug repurposing analysis.
     
     Args:
-        trials_df: Raw trials DataFrame
+        trials_df: Raw trials DataFrame from ClinicalTrials.gov API
         
     Returns:
-        Processed trials DataFrame with success metrics
+        Processed trials DataFrame with flattened structural features
     """
     print("Processing clinical trials data...")
     
-    # Drop annotation and document sections
-    final_trials_df = trials_df.drop(columns=["annotationSection", "documentSection"])
+    # Drop annotation and document sections (not useful for analysis)
+    cols_to_drop = [c for c in ["annotationSection", "documentSection"] if c in trials_df.columns]
+    final_trials_df = trials_df.drop(columns=cols_to_drop)
     
-    # Initialize new columns
+    # Initialize new columns for extracted features
     final_trials_df["nct_id"] = None
     final_trials_df["status"] = None
     final_trials_df["phase"] = None
-    final_trials_df["success"] = None
-    final_trials_df["median_p_value"] = None
-    final_trials_df["p_value_list"] = None
+    final_trials_df["start_date"] = None
+    final_trials_df["end_date"] = None
+    final_trials_df["why_stopped"] = None
+    final_trials_df["enrollment"] = None
     
     # Extract key information from nested structures
     for i, study in final_trials_df.iterrows():
         protocol = study["protocolSection"]
         
-        # Basic info
+        # Basic identification
         final_trials_df.loc[i, "nct_id"] = protocol["identificationModule"]["nctId"]
-        final_trials_df.loc[i, "status"] = protocol["statusModule"]["overallStatus"]
+        
+        # Status information
+        status_module = protocol["statusModule"]
+        final_trials_df.loc[i, "status"] = status_module["overallStatus"]
+        final_trials_df.loc[i, "why_stopped"] = status_module.get("whyStopped")
         
         # Dates
-        start_date_struct = protocol["statusModule"].get("startDateStruct", {})
+        start_date_struct = status_module.get("startDateStruct", {})
         final_trials_df.loc[i, "start_date"] = start_date_struct.get("date")
         
-        completion_date_struct = protocol["statusModule"].get("completionDateStruct", {})
+        completion_date_struct = status_module.get("completionDateStruct", {})
         final_trials_df.loc[i, "end_date"] = completion_date_struct.get("date")
         
-        final_trials_df.loc[i, "why_stopped"] = protocol["statusModule"].get("whyStopped")
+        # Design information
+        design_module = protocol.get("designModule", {})
         
-        # Phase
-        phases = protocol["designModule"].get("phases", [])
-        phases = [int(phase[-1]) for phase in phases if phase != "NA"]
-        if phases:
-            final_trials_df.loc[i, "phase"] = np.max(phases)
+        # Phase (extract max phase number)
+        phases = design_module.get("phases", [])
+        phase_nums = []
+        for phase in phases:
+            if phase != "NA" and phase:
+                # Handle formats like "PHASE3", "PHASE2", "EARLY_PHASE1"
+                digits = ''.join(c for c in phase if c.isdigit())
+                if digits:
+                    phase_nums.append(int(digits))
+        if phase_nums:
+            final_trials_df.loc[i, "phase"] = max(phase_nums)
         
-        # P-values from results
-        if study["hasResults"]:
-            measures = study["resultsSection"]["outcomeMeasuresModule"]["outcomeMeasures"]
-            p_values = [
-                measure["analyses"][0]["pValue"]
-                for measure in measures
-                if "analyses" in measure
-                if "pValue" in measure["analyses"][0]
-            ]
-            # Extract numeric values from p-value strings
-            p_values = [
-                float(''.join([ch for ch in p if ch.isdigit() or ch == "."]))
-                for p in p_values
-            ]
-            if len(p_values) > 0:
-                final_trials_df.at[i, "p_value_list"] = p_values
+        # Enrollment (sample size)
+        enrollment_info = design_module.get("enrollmentInfo", {})
+        final_trials_df.loc[i, "enrollment"] = enrollment_info.get("count")
     
-    # Drop nested structures
-    final_trials_df = final_trials_df.drop(columns=["derivedSection", "protocolSection"])
+    # Drop nested structures (raw data preserved in trials_df if needed)
+    cols_to_drop = [c for c in ["derivedSection", "protocolSection", "resultsSection"] 
+                    if c in final_trials_df.columns]
+    final_trials_df = final_trials_df.drop(columns=cols_to_drop)
     
-    # Reorder columns
+    # Reorder columns - objective features first
     first_columns = [
-        'nct_id', 'success', "median_p_value", 'phase', 'status',
-        'hasResults', 'why_stopped'
+        'nct_id', 'phase', 'status', 'enrollment',
+        'hasResults', 'start_date', 'end_date', 'why_stopped'
     ]
-    final_trials_df = final_trials_df[
-        first_columns + [c for c in final_trials_df.columns if c not in first_columns]
-    ]
-    
-    # Classify success based on p-values
-    for i, study in final_trials_df.iterrows():
-        if study["p_value_list"]:
-            p_vals = np.array(study["p_value_list"])
-            medp = np.median(p_vals)
-            prop05 = (p_vals < 0.05).sum() / len(p_vals)
-            conflicting = (np.min(p_vals) < 0.05) and ((p_vals > 0.2).sum() / len(p_vals) > 0.5)
-            
-            final_trials_df.loc[i, "median_p_value"] = medp
-            
-            if medp <= 0.05 or (medp <= 0.1 and prop05 >= 0.5):
-                final_trials_df.loc[i, "success"] = "success"
-            elif 0.05 < medp <= 0.20 or (0.10 < medp <= 0.50 and 0.1 <= prop05 < 0.5) or conflicting:
-                final_trials_df.loc[i, "success"] = "unknown"
-            elif medp > 0.2 and prop05 < 0.1:
-                final_trials_df.loc[i, "success"] = "fail"
+    existing_first = [c for c in first_columns if c in final_trials_df.columns]
+    other_cols = [c for c in final_trials_df.columns if c not in first_columns]
+    final_trials_df = final_trials_df[existing_first + other_cols]
     
     print(f"Processed {len(final_trials_df)} trials")
+    print(f"  Status breakdown: {final_trials_df['status'].value_counts().to_dict()}")
+    
     return final_trials_df
 
 
@@ -228,21 +222,24 @@ def process_indications_data(
     trials_df: pd.DataFrame
 ) -> pd.DataFrame:
     """
-    Process and clean drug-disease indications data with trial evidence.
+    Process and clean drug-disease indications data.
+    
+    Extracts NCT IDs from indication references and links to trial metadata.
+    Does NOT classify trial success/failure - provides objective trial counts instead.
     
     Args:
         indications_df: Raw indications DataFrame
-        trials_df: Processed trials DataFrame
+        trials_df: Processed trials DataFrame (with nct_id, phase, status, etc.)
         
     Returns:
-        Processed indications DataFrame
+        Processed indications DataFrame with trial linkage
     """
     print("Processing indications data...")
     
     # Drop unnecessary columns
-    final_indications_df = indications_df.drop(columns=[
-        "drugind_id", "mesh_heading", "parent_molecule_chembl_id"
-    ])
+    cols_to_drop = [c for c in ["drugind_id", "mesh_heading", "parent_molecule_chembl_id"] 
+                    if c in indications_df.columns]
+    final_indications_df = indications_df.drop(columns=cols_to_drop)
     
     # Extract NCT IDs from indication references
     final_indications_df["nct_ids"] = None
@@ -251,21 +248,27 @@ def process_indications_data(
             if ref["ref_type"] == "ClinicalTrials":
                 final_indications_df.at[i, "nct_ids"] = ref["ref_id"].split(",")
     
-    # Add trial evidence
-    final_indications_df["nct_evidence"] = None
+    # Add objective trial summary (counts, not classifications)
+    final_indications_df["n_trials"] = 0
+    final_indications_df["max_trial_phase"] = None
+    final_indications_df["has_completed_trial"] = False
     
     for i, indication in final_indications_df.iterrows():
         if indication["nct_ids"]:
-            success_list = []
-            for nct_id in indication["nct_ids"]:
-                success = trials_df.loc[trials_df["nct_id"] == nct_id, "success"].values
-                phase = trials_df.loc[trials_df["nct_id"] == nct_id, "phase"].values
-                
-                if len(success) > 0 and success[0] is not None:
-                    phase_str = str(int(phase[0])) if len(phase) > 0 and not pd.isna(phase[0]) else ""
-                    success_list.append(success[0] + phase_str)
+            # Get trial info for this indication's NCT IDs
+            matched_trials = trials_df[trials_df["nct_id"].isin(indication["nct_ids"])]
             
-            final_indications_df.at[i, "nct_evidence"] = success_list
+            if len(matched_trials) > 0:
+                final_indications_df.loc[i, "n_trials"] = len(matched_trials)
+                
+                # Max phase reached
+                phases = matched_trials["phase"].dropna()
+                if len(phases) > 0:
+                    final_indications_df.loc[i, "max_trial_phase"] = int(phases.max())
+                
+                # Has any completed trial
+                final_indications_df.loc[i, "has_completed_trial"] = \
+                    (matched_trials["status"] == "COMPLETED").any()
     
     # Rename for consistency
     final_indications_df.rename(columns={"molecule_chembl_id": "drug_id"}, inplace=True)
@@ -273,11 +276,66 @@ def process_indications_data(
     # Reorder columns
     first_columns = [
         'drug_id', 'efo_term', 'efo_id', 'mesh_id',
-        'max_phase_for_ind', 'nct_evidence'
+        'max_phase_for_ind', 'n_trials', 'max_trial_phase', 'has_completed_trial'
     ]
-    final_indications_df = final_indications_df[
-        first_columns + [c for c in final_indications_df.columns if c not in first_columns]
-    ]
+    existing_first = [c for c in first_columns if c in final_indications_df.columns]
+    other_cols = [c for c in final_indications_df.columns if c not in first_columns]
+    final_indications_df = final_indications_df[existing_first + other_cols]
     
     print(f"Processed {len(final_indications_df)} indications")
+    print(f"  Indications with trials: {(final_indications_df['n_trials'] > 0).sum()}")
+    
     return final_indications_df
+
+
+def add_pathway_annotations(
+    drugs_df: pd.DataFrame,
+    diseases_df: pd.DataFrame,
+    reactome_map: Dict[str, List[str]]
+) -> tuple:
+    """
+    Add Reactome pathway annotations to drugs and diseases.
+    
+    Maps each drug's targets and each disease's targets to their
+    corresponding Reactome pathways using the provided mapping.
+    
+    Args:
+        drugs_df: Processed drugs DataFrame with 'targets' column
+        diseases_df: Processed diseases DataFrame with 'disease_targets' column
+        reactome_map: Dictionary mapping UniProt IDs to Reactome pathway IDs
+        
+    Returns:
+        Tuple of (updated_drugs_df, updated_diseases_df) with pathway columns added
+    """
+    print("Adding pathway annotations...")
+    
+    # Add drug_pathways column
+    drugs_df = drugs_df.copy()
+    drugs_df["drug_pathways"] = drugs_df["targets"].apply(
+        lambda targets: [
+            react 
+            for up_list in targets.values() 
+            for up in up_list 
+            if up in reactome_map 
+            for react in reactome_map[up]
+        ] if targets else []
+    )
+    
+    # Add disease_pathways column
+    diseases_df = diseases_df.copy()
+    diseases_df["disease_pathways"] = diseases_df["disease_targets"].apply(
+        lambda targets: [
+            react 
+            for up in targets 
+            if up in reactome_map 
+            for react in reactome_map[up]
+        ] if targets else []
+    )
+    
+    drug_with_pathways = (drugs_df["drug_pathways"].apply(len) > 0).sum()
+    disease_with_pathways = (diseases_df["disease_pathways"].apply(len) > 0).sum()
+    
+    print(f"  Drugs with pathways: {drug_with_pathways}/{len(drugs_df)}")
+    print(f"  Diseases with pathways: {disease_with_pathways}/{len(diseases_df)}")
+    
+    return drugs_df, diseases_df

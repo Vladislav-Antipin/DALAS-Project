@@ -4,17 +4,19 @@ import time
 import pickle
 import json
 import warnings
-from typing import List, Any
+from typing import List, Any, Dict
+from urllib.parse import quote
 
 import pandas as pd
+import numpy as np
 import requests
-from bs4 import BeautifulSoup
+from lxml import etree
 from chembl_webresource_client.new_client import new_client
 from bioservices import UniProt
 
 from .config import (
-    MESH_URL, OT_URL, NCT_URL, RAW_DATA_DIR,
-    NB_TOP_TARGETS, NB_EVIDENCES
+    MESH_SPARQL_URL, OT_URL, NCT_URL, RAW_DATA_DIR,
+    NB_TOP_TARGETS
 )
 
 
@@ -37,13 +39,16 @@ def load_raw_data(filename: str) -> Any:
 
 def fetch_mesh_ids(force: bool = False) -> List[str]:
     """
-    Extract all MeSH IDs for autoimmune diseases.
+    Extract all MeSH IDs for immune system diseases using SPARQL query.
+    
+    This uses the MeSH RDF SPARQL endpoint to query for all diseases
+    under "Immune System Diseases" in the MeSH hierarchy.
     
     Args:
         force: If True, refetch even if cached data exists
         
     Returns:
-        List of MeSH IDs
+        List of MeSH IDs (e.g., ['D001327', 'D001528', ...])
     """
     filename = "mesh_ids.pkl"
     
@@ -53,29 +58,45 @@ def fetch_mesh_ids(force: bool = False) -> List[str]:
             print(f"Loaded cached MeSH IDs: {len(cached)} IDs")
             return cached
     
-    print("Fetching MeSH IDs from NCBI...")
-    response = requests.get(MESH_URL)
+    print("Fetching MeSH IDs via SPARQL query...")
     
-    if response.status_code != 200:
-        raise ConnectionError(f"Failed to retrieve MeSH data: {response.status_code}")
+    # SPARQL query to get all diseases under "Immune System Diseases"
+    mesh_query = """
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
+    PREFIX mesh: <http://id.nlm.nih.gov/mesh/>
+    PREFIX mesh2025: <http://id.nlm.nih.gov/mesh/2025/>
+    PREFIX mesh2024: <http://id.nlm.nih.gov/mesh/2024/>
+    PREFIX mesh2023: <http://id.nlm.nih.gov/mesh/2023/>
+
+    SELECT ?dis
+    FROM <http://id.nlm.nih.gov/mesh>
+    WHERE {  
+      ?root rdfs:label "Immune System Diseases"@en .
+      ?root meshv:treeNumber ?tn_root .
+      ?dis meshv:treeNumber ?tn .
+      FILTER(STRSTARTS(STR(?tn),STR(?tn_root))) .
+    }
+    """
     
-    soup = BeautifulSoup(response.text, "html.parser")
-    autoimm_ul = soup.find("span", string="Autoimmune Diseases").find_all_next("ul")
+    response = requests.get(f"{MESH_SPARQL_URL}?query={quote(mesh_query)}")
     
-    mesh_ids = []
-    for disease_a in autoimm_ul[8].find_all("a"):
-        disease_url = disease_a.get('href')
-        response = requests.get(f'https://www.ncbi.nlm.nih.gov{disease_url}')
-        
-        if response.status_code == 200:
-            disease_soup = BeautifulSoup(response.text, "html.parser")
-            mesh_id_element = disease_soup.find(
-                "p", string=lambda text: text and text.startswith("MeSH Unique ID:")
-            )
-            if mesh_id_element:
-                mesh_ids.append(mesh_id_element.text.split()[-1])
-        else:
-            warnings.warn(f"Failed to retrieve {disease_url}", RuntimeWarning)
+    if not response.ok:
+        response.raise_for_status()
+    
+    # Parse XML response
+    root = etree.fromstring(response.text.encode())
+    ns = {"sr": "http://www.w3.org/2005/sparql-results#"}
+    mesh_uris = root.xpath("//sr:uri/text()", namespaces=ns)
+    
+    # Extract just the MeSH ID from the URI (e.g., "D001327" from "http://id.nlm.nih.gov/mesh/D001327")
+    mesh_ids = [mesh_uri.split("/")[-1] for mesh_uri in mesh_uris]
+    
+    # Remove duplicates while preserving order
+    mesh_ids = list(dict.fromkeys(mesh_ids))
     
     save_raw_data(mesh_ids, filename)
     print(f"Fetched {len(mesh_ids)} MeSH IDs")
@@ -230,12 +251,15 @@ def fetch_disease_info(efo_ids: List[str], force: bool = False) -> pd.DataFrame:
     """
     Fetch disease information and associated targets from Open Targets.
     
+    Uses the notebook's approach: extracts UniProt IDs directly from proteinIds
+    with source 'uniprot_swissprot' (no Ensembl mapping needed).
+    
     Args:
-        efo_ids: List of EFO IDs
+        efo_ids: List of EFO IDs (can contain None/NaN values)
         force: If True, refetch even if cached data exists
         
     Returns:
-        DataFrame with disease information
+        DataFrame with disease information including disease_targets
     """
     filename = "diseases_df.pkl"
     
@@ -247,8 +271,16 @@ def fetch_disease_info(efo_ids: List[str], force: bool = False) -> pd.DataFrame:
     
     print("Fetching disease data from Open Targets...")
     
+    # Clean EFO IDs - handle NaN/None values
+    clean_efo_ids = [eid for eid in efo_ids if eid and pd.notna(eid)]
+    
     ot_targets_info = []
-    for efo_id in efo_ids:
+    total = len(clean_efo_ids)
+    
+    for idx, efo_id in enumerate(clean_efo_ids):
+        if idx % 50 == 0:
+            print(f"  Progress: {idx}/{total} diseases")
+        
         query_string = """
         query disease($efoId: String!, $size: Int!){
             disease(efoId: $efoId) {
@@ -298,74 +330,18 @@ def fetch_disease_info(efo_ids: List[str], force: bool = False) -> pd.DataFrame:
         else:
             warnings.warn(f"Failed to fetch disease {efo_id}: {response.status_code}")
     
-    diseases_df = pd.DataFrame(ot_targets_info)
+    diseases_df = pd.DataFrame([elt for elt in ot_targets_info if elt is not None])
     
-    # Extract Ensembl IDs
-    diseases_df["ensembl_ids"] = diseases_df["associatedTargets"].apply(
-        lambda result: [row["target"]["id"] for row in result["rows"]]
+    # Extract disease targets directly from proteinIds (notebook approach)
+    # Uses uniprot_swissprot source - no Ensembl mapping needed
+    diseases_df["disease_targets"] = diseases_df["associatedTargets"].apply(
+        lambda result: [
+            uniprot["id"]
+            for row in result["rows"]
+            for uniprot in row["target"]["proteinIds"]
+            if uniprot["source"] == 'uniprot_swissprot'
+        ]
     )
-    
-    # Map Ensembl to UniProt
-    print("Mapping Ensembl IDs to UniProt...")
-    up = UniProt()
-    all_ensembl_ids = list({x for ids in diseases_df["ensembl_ids"] for x in ids})
-    
-    if all_ensembl_ids:
-        ensembl_id_map = up.mapping(fr="Ensembl", to="UniProtKB", query=all_ensembl_ids)
-        uniprot_map = {
-            result["from"]: result["to"]["primaryAccession"]
-            for result in ensembl_id_map["results"]
-        }
-        
-        diseases_df["uniprot_ids"] = diseases_df["ensembl_ids"].apply(
-            lambda ensembl_ids: [
-                uniprot_map[eid] for eid in ensembl_ids if eid in uniprot_map
-            ]
-        )
-    
-    # Fetch target evidence
-    print("Fetching target evidence...")
-    diseases_df["target_evidence"] = [[] for _ in range(len(diseases_df))]
-    
-    for i, disease in diseases_df.iterrows():
-        query_string = """
-        query disease($efoId: String!, $ensemblIds : [String!]!, $size: Int!){
-            disease(efoId: $efoId) {
-                evidences(ensemblIds: $ensemblIds, size: $size){ 
-                    count
-                    rows{
-                        target{
-                            id
-                        }
-                        score
-                        datatypeId
-                        variantEffect
-                        targetModulation
-                        targetRole
-                        directionOnTrait
-                    }
-                }
-            }
-        }
-        """
-        
-        response = requests.post(
-            OT_URL,
-            json={
-                "query": query_string,
-                "variables": {
-                    "efoId": disease["id"],
-                    "ensemblIds": disease["ensembl_ids"],
-                    "size": NB_EVIDENCES
-                }
-            }
-        )
-        
-        if response.status_code == 200:
-            evidence_data = json.loads(response.text)["data"]["disease"]["evidences"]["rows"]
-            diseases_df.at[i, "target_evidence"] = evidence_data
-        else:
-            warnings.warn(f"Failed to fetch evidence for {disease['id']}")
     
     save_raw_data(diseases_df, filename)
     print(f"Fetched {len(diseases_df)} diseases")
@@ -416,3 +392,88 @@ def fetch_clinical_trials(nct_ids: List[str], force: bool = False) -> pd.DataFra
     save_raw_data(trials_df, filename)
     print(f"Fetched {len(trials_df)} trials")
     return trials_df
+
+
+def fetch_reactome_pathways(
+    drugs_df: pd.DataFrame,
+    diseases_df: pd.DataFrame,
+    force: bool = False
+) -> Dict[str, List[str]]:
+    """
+    Fetch Reactome pathway mappings for drug and disease targets.
+    
+    Maps UniProt IDs to Reactome pathways using the UniProt ID mapping service.
+    This is used to find pathway overlaps between drugs and diseases.
+    
+    Args:
+        drugs_df: DataFrame with 'targets' column containing {action_type: [uniprot_ids]}
+        diseases_df: DataFrame with 'disease_targets' column containing [uniprot_ids]
+        force: If True, refetch even if cached data exists
+        
+    Returns:
+        Dictionary mapping UniProt IDs to lists of Reactome pathway IDs
+    """
+    filename = "reactome_map.pkl"
+    
+    if not force:
+        cached = load_raw_data(filename)
+        if cached is not None:
+            print(f"Loaded cached Reactome mappings: {len(cached)} proteins")
+            return cached
+    
+    print("Fetching Reactome pathway mappings...")
+    
+    # Collect all unique UniProt IDs from drugs
+    drug_targets = np.unique([
+        uniprot 
+        for targets in drugs_df["targets"] 
+        if targets
+        for uniprots in targets.values() 
+        for uniprot in uniprots
+    ])
+    
+    # Collect all unique UniProt IDs from diseases
+    disease_targets = np.unique([
+        uniprot
+        for uniprots in diseases_df["disease_targets"]
+        for uniprot in uniprots
+    ])
+    
+    print(f"  Drug targets: {len(drug_targets)}")
+    print(f"  Disease targets: {len(disease_targets)}")
+    
+    up = UniProt()
+    
+    # Map drug targets to Reactome (in batches of 20)
+    print("  Mapping drug targets to Reactome...")
+    drug_react_map = []
+    for i in range(0, len(drug_targets), 20):
+        res = up.mapping(fr="UniProtKB_AC-ID", to="Reactome", query=drug_targets[i:i+20].tolist())
+        if res and "results" in res:
+            drug_react_map += res["results"]
+    
+    # Map disease targets to Reactome (in batches of 20)
+    print("  Mapping disease targets to Reactome...")
+    disease_react_map = []
+    for i in range(0, len(disease_targets), 20):
+        res = up.mapping(fr="UniProtKB_AC-ID", to="Reactome", query=disease_targets[i:i+20].tolist())
+        if res and "results" in res:
+            disease_react_map += res["results"]
+    
+    # Combine and deduplicate
+    drug_react_df = pd.DataFrame(drug_react_map) if drug_react_map else pd.DataFrame(columns=["from", "to"])
+    disease_react_df = pd.DataFrame(disease_react_map) if disease_react_map else pd.DataFrame(columns=["from", "to"])
+    react_df = pd.concat([drug_react_df, disease_react_df], axis=0).drop_duplicates()
+    
+    # Build mapping dictionary: UniProt ID -> [Reactome pathway IDs]
+    up_react_map: Dict[str, List[str]] = {}
+    for _, react in react_df.iterrows():
+        uniprot_id = react["from"]
+        if uniprot_id not in up_react_map:
+            up_react_map[uniprot_id] = [react["to"]]
+        else:
+            up_react_map[uniprot_id].append(react["to"])
+    
+    save_raw_data(up_react_map, filename)
+    print(f"Mapped {len(up_react_map)} proteins to Reactome pathways")
+    return up_react_map

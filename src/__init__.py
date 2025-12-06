@@ -8,6 +8,7 @@ from .data_loader import (
     load_trials,
     load_indications,
     load_embeddings,
+    load_reactome_map,
 )
 
 from .pipeline import (
@@ -26,6 +27,7 @@ __all__ = [
     "load_trials",
     "load_indications",
     "load_embeddings",
+    "load_reactome_map",
     # Pipeline functions
     "run_full_pipeline",
     "run_data_fetching",

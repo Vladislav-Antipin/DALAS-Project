@@ -48,8 +48,10 @@ def compute_drug_disease_similarities(
     name_similarities = []
     for j, disease in diseases_df.iterrows():
         for i, drug in drugs_df.iterrows():
+            # Use disease_id if available, else fall back to id
+            disease_id = disease.get("disease_id", disease.get("id", ""))
             name_similarities.append({
-                "disease_id": disease["id"],
+                "disease_id": disease_id,
                 "drug_id": drug["drug_id"],
                 "disease_name": disease["name"].lower(),
                 "drug_name": drug["drug_name"].lower(),
