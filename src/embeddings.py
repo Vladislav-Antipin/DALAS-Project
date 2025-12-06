@@ -30,8 +30,12 @@ def compute_drug_disease_similarities(
     model = SentenceTransformer(model_name)
     
     # Normalize names
-    drug_names = drugs_df["drug_name"].str.lower()
-    disease_names = diseases_df["name"].str.lower()
+    # SentenceTransformer expects a simple list or 0-indexed iterable. If we pass a
+    # pandas Series with a non-zero/monotonic index (which happens after filtering),
+    # it will try to access positions by index and raise KeyError. Converting to list
+    # avoids the issue.
+    drug_names = drugs_df["drug_name"].str.lower().tolist()
+    disease_names = diseases_df["name"].str.lower().tolist()
     
     # Compute embeddings
     print("Encoding drug names...")

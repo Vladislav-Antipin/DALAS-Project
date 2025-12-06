@@ -21,4 +21,5 @@ dependencies = [
     "missingno>=0.5.2",
     "torch-geometric>=2.7.0",
     "scipy==1.15.2",
+    "lxml>=5.4.0",
 ]
