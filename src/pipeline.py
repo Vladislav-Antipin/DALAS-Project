@@ -23,6 +23,9 @@ from .data_processors import (
     load_processed_data,
 )
 from .embeddings import compute_drug_disease_similarities
+from .feature_engineering import run_feature_engineering
+from .data_merger import merge_all_features
+from .model_training import run_model_training
 
 
 def run_data_fetching(force: bool = False):
@@ -180,6 +183,57 @@ def run_embeddings(processed_data: dict = None, force: bool = False):
     return embeddings_df
 
 
+def run_features(force: bool = False):
+    """
+    Run feature engineering steps.
+    
+    Args:
+        force: If True, recompute all features
+    """
+    print("\n" + "="*60)
+    print("STEP 4: FEATURE ENGINEERING")
+    print("="*60)
+    
+    result = run_feature_engineering(force=force)
+    
+    print("\n✓ Feature engineering complete!")
+    return result
+
+
+def run_merge(force: bool = False):
+    """
+    Run data merging to create ML-ready dataset.
+    
+    Args:
+        force: If True, recompute merge
+    """
+    print("\n" + "="*60)
+    print("STEP 5: MERGING DATA")
+    print("="*60)
+    
+    merged_df = merge_all_features(force=force)
+    
+    print("\n✓ Data merging complete!")
+    return merged_df
+
+
+def run_training(force: bool = False):
+    """
+    Run model training.
+    
+    Args:
+        force: If True, retrain even if models exist
+    """
+    print("\n" + "="*60)
+    print("STEP 6: MODEL TRAINING")
+    print("="*60)
+    
+    results = run_model_training(force=force)
+    
+    print("\n✓ Model training complete!")
+    return results
+
+
 def run_full_pipeline(force_fetch: bool = False, force_process: bool = False):
     """
     Run the complete data pipeline.
@@ -199,7 +253,16 @@ def run_full_pipeline(force_fetch: bool = False, force_process: bool = False):
     processed_data = run_data_processing(raw_data=raw_data, force=force_process)
     
     # Step 3: Generate embeddings
-    _ = run_embeddings(processed_data=processed_data, force=force_process)  # Saved to disk
+    _ = run_embeddings(processed_data=processed_data, force=force_process)
+    
+    # Step 4: Feature engineering (fingerprints, pathway TF-IDF, labels)
+    _ = run_features(force=force_process)
+    
+    # Step 5: Merge all data into ML-ready dataset
+    merged_df = run_merge(force=force_process)
+    
+    # Step 6: Train models
+    _ = run_training(force=force_process)
     
     print("\n" + "="*80)
     print("✓ PIPELINE COMPLETE!")
@@ -215,11 +278,25 @@ def run_full_pipeline(force_fetch: bool = False, force_process: bool = False):
     print("    - trials_df.pkl")
     print("    - reactome_map.pkl")
     print("\n  Processed data (data/processed/):")
-    print("    - final_drugs_df.pkl (with drug_pathways)")
-    print("    - final_diseases_df.pkl (with disease_pathways)")
-    print("    - final_trials_df.pkl (with success classification)")
-    print("    - final_indications_df.pkl (with nct_evidence)")
+    print("    - final_drugs_df.pkl")
+    print("    - final_diseases_df.pkl")
+    print("    - final_trials_df.pkl")
+    print("    - final_indications_df.pkl")
     print("    - embeddings_df.pkl")
+    print("    - fingerprints_df.pkl")
+    print("    - drugs_with_pathways.pkl (TF-IDF features)")
+    print("    - diseases_with_pathways.pkl (TF-IDF features)")
+    print("    - labeled_indications_df.pkl")
+    print("    - merged_df.pkl (ML-ready dataset)")
+    print("\n  Results (results/):")
+    print("    - merged_df.pkl (copy for easy access)")
+    print(f"\n  Final dataset: {len(merged_df)} samples, {merged_df.shape[1]-1} features")
+    print("\n  Trained models (results/):")
+    print("    - random_forest_model.pkl")
+    print("    - logistic_regression_model.pkl")
+    print("    - rf_feature_importance.csv")
+    print("    - lr_feature_importance.csv")
+    print("    - model_metrics.pkl")
     print("\n")
 
 
@@ -230,9 +307,9 @@ def main():
     )
     parser.add_argument(
         "--step",
-        choices=["fetch", "process", "embeddings", "all"],
+        choices=["fetch", "process", "embeddings", "features", "merge", "train", "all"],
         default="all",
-        help="Which step(s) to run"
+        help="Which step(s) to run: fetch, process, embeddings, features, merge, train, or all"
     )
     parser.add_argument(
         "--force-fetch",
@@ -244,8 +321,16 @@ def main():
         action="store_true",
         help="Force re-processing of data"
     )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Force recompute for the specified step"
+    )
     
     args = parser.parse_args()
+    
+    # Determine force flag
+    force = args.force or args.force_process
     
     if args.step == "all":
         run_full_pipeline(
@@ -253,11 +338,17 @@ def main():
             force_process=args.force_process
         )
     elif args.step == "fetch":
-        run_data_fetching(force=args.force_fetch)
+        run_data_fetching(force=args.force_fetch or args.force)
     elif args.step == "process":
-        run_data_processing(force=args.force_process)
+        run_data_processing(force=force)
     elif args.step == "embeddings":
-        run_embeddings(force=args.force_process)
+        run_embeddings(force=force)
+    elif args.step == "features":
+        run_features(force=force)
+    elif args.step == "merge":
+        run_merge(force=force)
+    elif args.step == "train":
+        run_training(force=force)
 
 
 if __name__ == "__main__":

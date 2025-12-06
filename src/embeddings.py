@@ -10,7 +10,7 @@ def compute_drug_disease_similarities(
     drugs_df: pd.DataFrame,
     diseases_df: pd.DataFrame,
     model_name: str = ST_MODEL,
-    force: bool = False
+    force: bool = False,
 ) -> pd.DataFrame:
     """
     Compute semantic similarity between drug and disease names using embeddings.
@@ -29,13 +29,33 @@ def compute_drug_disease_similarities(
     # Load model
     model = SentenceTransformer(model_name)
     
-    # Normalize names
-    # SentenceTransformer expects a simple list or 0-indexed iterable. If we pass a
-    # pandas Series with a non-zero/monotonic index (which happens after filtering),
-    # it will try to access positions by index and raise KeyError. Converting to list
-    # avoids the issue.
-    drug_names = drugs_df["drug_name"].str.lower().tolist()
-    disease_names = diseases_df["name"].str.lower().tolist()
+    # Normalize and validate names
+    # SentenceTransformer expects a list of strings, so we need to make sure there
+    # are no NaNs/None/floats that would propagate into tokenization.
+    drugs_clean = (
+        drugs_df.loc[
+            drugs_df["drug_name"].notna() & (drugs_df["drug_name"].astype(str).str.strip() != "")
+        ]
+        .copy()
+    )
+    diseases_clean = (
+        diseases_df.loc[
+            diseases_df["name"].notna() & (diseases_df["name"].astype(str).str.strip() != "")
+        ]
+        .copy()
+    )
+
+    if drugs_clean.empty:
+        raise ValueError("No valid drug names available for embeddings.")
+    if diseases_clean.empty:
+        raise ValueError("No valid disease names available for embeddings.")
+
+    # Reset indices to avoid KeyError when the model iterates by index positions.
+    drugs_clean.reset_index(drop=True, inplace=True)
+    diseases_clean.reset_index(drop=True, inplace=True)
+
+    drug_names = drugs_clean["drug_name"].astype(str).str.lower().tolist()
+    disease_names = diseases_clean["name"].astype(str).str.lower().tolist()
     
     # Compute embeddings
     print("Encoding drug names...")
@@ -50,8 +70,8 @@ def compute_drug_disease_similarities(
     
     # Create result dataframe
     name_similarities = []
-    for j, disease in diseases_df.iterrows():
-        for i, drug in drugs_df.iterrows():
+    for j, disease in diseases_clean.iterrows():
+        for i, drug in drugs_clean.iterrows():
             # Use disease_id if available, else fall back to id
             disease_id = disease.get("disease_id", disease.get("id", ""))
             name_similarities.append({
