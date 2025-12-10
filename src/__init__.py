@@ -1,6 +1,6 @@
 """DALAS Drug Repurposing Package."""
 
-from typing import Any, TYPE_CHECKING
+from typing import Any
 
 from .data_loader import (
     load_all_processed,
@@ -35,18 +35,6 @@ _PIPELINE_EXPORTS = {
     "run_merge",
     "run_training",
 }
-
-if TYPE_CHECKING:  # pragma: no cover
-    from .pipeline import (
-        run_full_pipeline,
-        run_data_fetching,
-        run_data_processing,
-        run_embeddings,
-        run_features,
-        run_merge,
-        run_training,
-    )
-
 
 def __getattr__(name: str) -> Any:
     if name in _PIPELINE_EXPORTS:

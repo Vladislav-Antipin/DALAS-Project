@@ -277,7 +277,7 @@ def evaluate_model(
     print(f"  Recall:    {metrics['recall']:.4f}")
     print(f"  F1 Score:  {metrics['f1']:.4f}")
     print(f"  AUC-ROC:   {metrics['auc_roc']:.4f}")
-    print(f"  Confusion Matrix:")
+    print("  Confusion Matrix:")
     cm = metrics['confusion_matrix']
     print(f"    TN={cm[0,0]:4d}  FP={cm[0,1]:4d}")
     print(f"    FN={cm[1,0]:4d}  TP={cm[1,1]:4d}")
