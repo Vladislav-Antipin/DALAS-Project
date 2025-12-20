@@ -1,19 +1,11 @@
 # DALAS Drug Repurposing Project
 
-Predicting drug repurposing opportunities for autoimmune diseases using machine learning.
+Predicting drug repurposing opportunities for immune system diseases using machine learning.
 
-## 📁 Project Structure
 
-```
-DALAS-Project/
-├── src/            # Python code goes here
-├── notebooks/      # Jupyter notebooks for analysis
-├── data/           # Data files (not committed to git)
-├── results/        # Outputs, figures, models
-└── pyproject.toml  # Project dependencies
-```
 
-## 🚀 Getting Started
+
+# UV package amanger
 
 ### 1. Install uv (if you don't have it)
 
