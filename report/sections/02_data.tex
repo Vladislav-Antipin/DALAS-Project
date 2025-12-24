@@ -3,8 +3,30 @@
 \subsection{Data Sources}
 \todo[inline]{Describe where the data comes from, collection methods, and aggregation process.}
 
+Among the vast amount of medical, pharmacological and chemical publicly available data,
+ we focused our attention on those being able to provide us 
+
+\begin{table}[H]
+    \centering
+    \caption{Description of data sources.}
+    \label{tab:data_sources}
+    \rowcolors{2}{gray!15}{white} % alternate row colors
+    \begin{tabular}{p{3cm} p{5cm} p{6cm}}
+        \toprule
+        \textbf{Source} & \textbf{Access Method} & \textbf{Data Retrieved} \\
+        \midrule
+        MeSH RDF & SPARQL endpoint & Disease IDs and ontology \\
+        ChEMBL & REST API (Python client with query-style filters) & Drug chemical properties, targets and indications\\
+        UniProt & REST API (Python client) & Map target and pathway IDs\\
+        Open Targets & GraphQL API  & Disease targets\\
+        ClinicalTrials.gov & REST API & Trial results and metadata\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
 \subsection{Data Quality and Preprocessing}
 \todo[inline]{Discuss missing values, outliers, normalization, feature encoding, or transformations.}
+
 
 
 \begin{figure}[H]
@@ -30,6 +52,73 @@
 
 \subsection{Feature Description}
 \todo[inline]{Provide a table or list explaining each feature and its meaning. Optionally, include relationships between features.}
+
+\begin{table}[H]
+\centering
+\caption{Summary of datasets and merged data.}
+\label{tab:dataset_summary}
+\input{tables/dataset_summary.tex}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \caption{Description of features.}
+    \label{tab:feature_description}
+    \rowcolors{2}{gray!15}{white} % alternate row colors
+    \begin{tabular}{p{4cm}p{2cm}p{9cm}}
+       \toprule
+        \textbf{Feature} & \textbf{Type}& \textbf{Description} \\
+        \midrule
+        \multicolumn{2}{l}{\textbf{Drug}} \\
+        \midrule
+        \texttt{drug\_id}& str & Unique ChEMBL identifier\\
+        \texttt{chemical\_probe} & bool & Well-characterized and selective, typically used in biological research\\
+        \texttt{dosed\_ingredient} & bool & Active ingredient that has been dosed in humans \\
+        \texttt{inorganic\_flag} & bool & Inorganic molecule \\
+        \texttt{natural\_product} & bool & Derived from a natural source (not fully synthetic)\\
+        \texttt{oral} & bool & Known to be administered orally\\
+        \texttt{orphan} & bool & Intended for use against a rare condition\\
+        \texttt{parenteral} & bool & Known to be administered parenterally\\
+        \texttt{prodrug} & bool & Prodrug, activated after administration\\
+        \texttt{therapeutic\_flag} & bool & Has a therapeutic application, opposed to e.g. imaging\\
+        \texttt{topical} & bool & Known to be administered topically\\
+        \texttt{veterinary} & bool & Has veterinary application as well\\
+        \texttt{chirality} & cat & achiral,single enantiomer, mixture,nan \\
+        \texttt{alogp} & float & Octanol-water partition coefficient, lipophilicity indicator\\
+        \texttt{aromatic\_rings} & int & Number of aromatic rings\\
+        \texttt{full\_mwt} & float & Molecular weight of the full compound including any salts\\
+        \texttt{hba} & float & Number hydrogen bond acceptors\\
+        \texttt{hbd} & float & 	Number hydrogen bond donors\\
+        \texttt{heavy\_atoms} & int & Number of heavy (non-hydrogen) atoms\\
+        \texttt{mw\_freebase} & float & Molecular weight of parent compound\\
+        \texttt{np\_likeness\_score} & float & Natural product likeness score~\cite{ertl2008}\\
+        \texttt{num\_ro5\_violations} & int & Violations of Lipinski's rule-of-five, using HBA and HBD definitions\\
+        \texttt{psa} & float & Polar surface area\\
+        \texttt{qed\_weighted} & float & Weighted quantitative estimate of drug likeness~\cite{bickerton2012}\\
+        \texttt{ro3\_pass} & int & Passes the rule-of-three (mw < 300, logP < 3 etc)\\
+        \texttt{rtb} & int & Number rotatable bonds\\
+        \texttt{FP\_\#} & float& First PCs in Morgan molecular fingerprint space \\
+        \texttt{drug\_path\_\#} & float & First PCs in TF-IDF space derived from pathway lists\\
+        \midrule
+        \multicolumn{2}{l}{\textbf{Disease}} \\
+        \midrule
+        \texttt{disease\_id} & str & Unique EFO identifier\\
+        \texttt{ontology\_depth} & int & Depth in disease classification tree\\
+        \texttt{nb\_descendants} & int & Number descendants in disease classifications tree\\
+        \texttt{nb\_indications} & int & Number of drug indications\\
+        \texttt{cat\_\#} & bool & Ontological category other than immune system disorders\\
+        \texttt{} & & ???\\
+        \texttt{disease\_path\_\#} & float& First PCs in TF-IDF space derived from pathway lists\\
+        \midrule
+        \multicolumn{2}{l}{\textbf{Drug--Disease}} \\
+        \midrule
+        \texttt{success} & bool & Consensus success or failure\\
+        \texttt{path\_similarity} & float & Jaccard similarity of pathway lists \\
+        \texttt{name\_similarity} & float & Cosine similarity of name embeddings in PubMedBERT (later excluded due to data leak) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
 \begin{verbatim}
     HeteroData(

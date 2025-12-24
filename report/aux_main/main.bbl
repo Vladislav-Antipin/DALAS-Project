@@ -1,3 +1,14 @@
 \begin{thebibliography}{}
 
+\bibitem[Bickerton et~al., 2012]{bickerton2012}
+Bickerton, G.~R., Paolini, G.~V., Besnard, J., Muresan, S., and Hopkins, A.~L. (2012).
+\newblock Quantifying the chemical beauty of drugs.
+\newblock {\em Nat Chem}, 4(2):90--98.
+
+\bibitem[Ertl et~al., 2008]{ertl2008}
+Ertl, P., Roggo, S., and Schuffenhauer, A. (2008).
+\newblock Natural product-likeness score and its application for prioritization of compound libraries.
+\newblock {\em J. Chem. Inf. Model.}, 48(1):68--74.
+\newblock Epub 2007 Nov 23.
+
 \end{thebibliography}
