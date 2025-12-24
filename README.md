@@ -2,10 +2,9 @@
 
 Predicting drug repurposing opportunities for immune system diseases using machine learning.
 
+[Project Report (PDF)](report/aux_main/main.pdf)
 
-
-
-# UV package amanger
+# UV package manager
 
 ### 1. Install uv (if you don't have it)
 

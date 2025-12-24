@@ -1,10 +1,46 @@
 \section{Data}
 
 \subsection{Data Sources}
-Describe where the data comes from, collection methods, and aggregation process.
+\todo[inline]{Describe where the data comes from, collection methods, and aggregation process.}
 
 \subsection{Data Quality and Preprocessing}
-Discuss missing values, outliers, normalization, feature encoding, or transformations.
+\todo[inline]{Discuss missing values, outliers, normalization, feature encoding, or transformations.}
+
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.7\textwidth]{figures/03-pca-scree_plot.png}
+    \caption{Scree plot of PCA on merged data.}
+    \label{fig:03-pca-scree_plot}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.7\textwidth]{figures/03-pca-scatter_plot.png}
+    \caption{Scree plot of PCA on merged data.}
+    \label{fig:03-pca-scatter_plot}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.7\textwidth]{figures/03-pca-corr_circle.png}
+    \caption{Scree plot of PCA on merged data.}
+    \label{fig:03-pca-corr_circle}
+\end{figure}
 
 \subsection{Feature Description}
-Provide a table or list explaining each feature and its meaning. Optionally, include relationships between features.
+\todo[inline]{Provide a table or list explaining each feature and its meaning. Optionally, include relationships between features.}
+
+\begin{verbatim}
+    HeteroData(
+  drug={ x=[742, 127] },
+  disease={ x=[167, 25] },
+  pathway={ x=[1509, 1] },
+  (drug, interacts, pathway)={ edge_index=[2, 31266] },
+  (disease, associated_with, pathway)={ edge_index=[2, 13608] },
+  (drug, tryed_against, disease)={
+    edge_index=[2, 1298],
+    edge_label=[1298],
+  }
+)
+\end{verbatim}
