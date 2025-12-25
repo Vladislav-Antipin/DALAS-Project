@@ -359,9 +359,9 @@ INPUT ./figures/03-pca-corr_circle.png
 INPUT ./figures/03-pca-corr_circle.png
 INPUT ./figures/03-pca-corr_circle.png
 INPUT ./figures/03-pca-corr_circle.png
-INPUT ./tables/dataset_summary.tex
-INPUT ./tables/dataset_summary.tex
-INPUT tables/dataset_summary.tex
+INPUT ./tables/03-dataset_summary.tex
+INPUT ./tables/03-dataset_summary.tex
+INPUT tables/03-dataset_summary.tex
 INPUT /usr/local/texlive/2025basic/texmf-dist/fonts/tfm/public/lm/ec-lmr10.tfm
 INPUT /usr/local/texlive/2025basic/texmf-dist/fonts/tfm/public/lm/rm-lmr5.tfm
 INPUT /usr/local/texlive/2025basic/texmf-dist/fonts/tfm/public/lm/lmmi5.tfm
@@ -380,6 +380,9 @@ INPUT sections/03_methods.tex
 INPUT ./sections/04_results.tex
 INPUT ./sections/04_results.tex
 INPUT sections/04_results.tex
+INPUT ./tables/04-model_comparison.tex
+INPUT ./tables/04-model_comparison.tex
+INPUT tables/04-model_comparison.tex
 INPUT ./sections/05_discussion.tex
 INPUT ./sections/05_discussion.tex
 INPUT sections/05_discussion.tex

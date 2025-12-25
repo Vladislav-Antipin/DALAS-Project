@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex aux_main/main"] 1766615549.59396 "aux_main/main.aux" "aux_main/main.bbl" "aux_main/main" 1766615550.50774 0
+["bibtex aux_main/main"] 1766702610.56628 "aux_main/main.aux" "aux_main/main.bbl" "aux_main/main" 1766703168.28166 0
   "./bibliography.bib" 1766614490.22014 842 baa2bd6fa953a6ab73c160a54dc1a151 ""
   "/usr/local/texlive/2025basic/texmf-dist/bibtex/bst/base/apalike.bst" 1292289607 24635 604dafcc79f521a11ea73e506e1fbd98 ""
-  "aux_main/main.aux" 1766615550.42591 6396 c47215e4f08e12b6f4d6350ed1986b68 "pdflatex"
+  "aux_main/main.aux" 1766703168.19464 6631 df5f3e7ae329ed7152f7402f4fc9fbb5 "pdflatex"
   (generated)
   "aux_main/main.bbl"
   "aux_main/main.blg"
   (rewritten before read)
-["pdflatex"] 1766615549.62157 "/Users/vlad/Documents/University/Master-MIND/DALAS-Project/report/main.tex" "aux_main/main.pdf" "main" 1766615550.50794 0
+["pdflatex"] 1766703167.33699 "/Users/vlad/Documents/University/Master-MIND/DALAS-Project/report/main.tex" "aux_main/main.pdf" "main" 1766703168.28182 0
   "/Users/vlad/Documents/University/Master-MIND/DALAS-Project/report/main.tex" 1766615444.71078 600 16c73ab1959e972de4bf913a8569d14d ""
   "/usr/local/texlive/2025basic/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc" 1254269338 2375 baa924870cfb487815765f9094cf3728 ""
   "/usr/local/texlive/2025basic/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc" 1254269338 3031 6c4d3515bf7115d8518af1c9ab97ca44 ""
@@ -200,22 +200,23 @@
   "/usr/local/texlive/2025basic/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1755597450 378426 6f5f317eb6e87dce1d64f77f031f1ccb ""
   "/usr/local/texlive/2025basic/texmf-var/web2c/pdftex/pdflatex.fmt" 1755520171 2663820 dd3708f50d7f9885ccf64692e3a38380 ""
   "/usr/local/texlive/2025basic/texmf.cnf" 1741448314 628 81d1ada0f601fb1ffa62f1323192d946 ""
-  "aux_main/main.aux" 1766615550.42591 6396 c47215e4f08e12b6f4d6350ed1986b68 "pdflatex"
-  "aux_main/main.bbl" 1766615549.61501 549 0596cdcbd304a0c89ef04e9174905419 "bibtex aux_main/main"
-  "aux_main/main.out" 1766615550.42675 2110 4fe58e0fe210a21868bfc27e7ac5edd7 "pdflatex"
-  "aux_main/main.toc" 1766615550.4271 1242 78e42368c3801c7e67b7672f76bcb945 "pdflatex"
-  "figures/03-pca-corr_circle.png" 1766610844.7635 198916 a7f59b2b64ab19134d0470aae4667b3c ""
-  "figures/03-pca-scatter_plot.png" 1766610844.6421 645982 b4b96bae82a570d946c286f507247f64 ""
-  "figures/03-pca-scree_plot.png" 1766610844.52798 59566 1c0488d0e3e5986831e42c68a1e215fe ""
+  "aux_main/main.aux" 1766703168.19464 6631 df5f3e7ae329ed7152f7402f4fc9fbb5 "pdflatex"
+  "aux_main/main.bbl" 1766702610.58557 549 0596cdcbd304a0c89ef04e9174905419 "bibtex aux_main/main"
+  "aux_main/main.out" 1766703168.19539 2110 4fe58e0fe210a21868bfc27e7ac5edd7 "pdflatex"
+  "aux_main/main.toc" 1766703168.19571 1242 78e42368c3801c7e67b7672f76bcb945 "pdflatex"
+  "figures/03-pca-corr_circle.png" 1766702412.4137 198916 a7f59b2b64ab19134d0470aae4667b3c ""
+  "figures/03-pca-scatter_plot.png" 1766702412.30299 645908 58b481818396c686a82d5bc9253b40fb ""
+  "figures/03-pca-scree_plot.png" 1766702412.18179 59573 02b0aba922b7b746d015fb0263836381 ""
   "main.tex" 1766615444.71078 600 16c73ab1959e972de4bf913a8569d14d ""
   "preamble.tex" 1766615548.54053 607 c0a37eb901d1892f0cee6a354b708d07 ""
   "sections/01_introduction.tex" 1766602670.14876 1781 0ffdf7067523d36107d61c78d33666d0 ""
-  "sections/02_data.tex" 1766615540.52298 6151 3b12b00f8d55b09e4adc20bd046bc9b1 ""
+  "sections/02_data.tex" 1766702421.72181 6216 f4cb8498bb5680b57430c3470cd3cfe2 ""
   "sections/03_methods.tex" 1766506473.08838 313 146df78422caf9ed8a9f494f3632b3fb ""
-  "sections/04_results.tex" 1766506577.50723 464 9f953584e9fb85dbe3d01e02a4ffc7da ""
+  "sections/04_results.tex" 1766703167.12295 720 e4d1fa14b7445a7699a5d76c36a974d1 ""
   "sections/05_discussion.tex" 1766506500.42287 150 da0771a13b21d98bd0045dbc0949e756 ""
   "sections/06_conclusion.tex" 1766506504.81128 103 2b6fb2e155ea2c391815927464711e2b ""
-  "tables/dataset_summary.tex" 1766610840.87317 342 3e2788e53bb5ecc4f77f674069117bb7 ""
+  "tables/03-dataset_summary.tex" 1766702408.92567 342 a48b3d594bc7a56cb1138a192366cdad ""
+  "tables/04-model_comparison.tex" 1766703155.85602 977 2f1594583a5a2574b804f24b7bce7aa4 ""
   (generated)
   "aux_main/main.aux"
   "aux_main/main.log"

@@ -56,8 +56,8 @@ Among the vast amount of medical, pharmacological and chemical publicly availabl
 \begin{table}[H]
 \centering
 \caption{Summary of datasets and merged data.}
-\label{tab:dataset_summary}
-\input{tables/dataset_summary.tex}
+\label{tab:03-dataset_summary}
+\input{tables/03-dataset_summary.tex}
 \end{table}
 
 \begin{table}[H]
@@ -70,6 +70,7 @@ Among the vast amount of medical, pharmacological and chemical publicly availabl
        \toprule
         \textbf{Feature} & \textbf{Type}& \textbf{Description} \\
         \midrule
+        \rowcolor{white}
         \multicolumn{2}{l}{\textbf{Drug}} \\
         \midrule
         \texttt{drug\_id}& str & Unique ChEMBL identifier\\
@@ -88,8 +89,8 @@ Among the vast amount of medical, pharmacological and chemical publicly availabl
         \texttt{alogp} & float & Octanol-water partition coefficient, lipophilicity indicator\\
         \texttt{aromatic\_rings} & int & Number of aromatic rings\\
         \texttt{full\_mwt} & float & Molecular weight of the full compound including any salts\\
-        \texttt{hba} & float & Number hydrogen bond acceptors\\
-        \texttt{hbd} & float & 	Number hydrogen bond donors\\
+        \texttt{hba} & float & Number of hydrogen bond acceptors\\
+        \texttt{hbd} & float & 	Number of hydrogen bond donors\\
         \texttt{heavy\_atoms} & int & Number of heavy (non-hydrogen) atoms\\
         \texttt{mw\_freebase} & float & Molecular weight of parent compound\\
         \texttt{np\_likeness\_score} & float & Natural product likeness score~\cite{ertl2008}\\
@@ -97,20 +98,21 @@ Among the vast amount of medical, pharmacological and chemical publicly availabl
         \texttt{psa} & float & Polar surface area\\
         \texttt{qed\_weighted} & float & Weighted quantitative estimate of drug likeness~\cite{bickerton2012}\\
         \texttt{ro3\_pass} & int & Passes the rule-of-three (mw < 300, logP < 3 etc)\\
-        \texttt{rtb} & int & Number rotatable bonds\\
+        \texttt{rtb} & int & Number of rotatable bonds\\
         \texttt{FP\_\#} & float& First PCs in Morgan molecular fingerprint space \\
         \texttt{drug\_path\_\#} & float & First PCs in TF-IDF space derived from pathway lists\\
         \midrule
+        \rowcolor{white}
         \multicolumn{2}{l}{\textbf{Disease}} \\
         \midrule
         \texttt{disease\_id} & str & Unique EFO identifier\\
         \texttt{ontology\_depth} & int & Depth in disease classification tree\\
-        \texttt{nb\_descendants} & int & Number descendants in disease classifications tree\\
+        \texttt{nb\_descendants} & int & Number of descendants in disease classifications tree\\
         \texttt{nb\_indications} & int & Number of drug indications\\
         \texttt{cat\_\#} & bool & Ontological category other than immune system disorders\\
-        \texttt{} & & ???\\
         \texttt{disease\_path\_\#} & float& First PCs in TF-IDF space derived from pathway lists\\
         \midrule
+        \rowcolor{white}
         \multicolumn{2}{l}{\textbf{Drug--Disease}} \\
         \midrule
         \texttt{success} & bool & Consensus success or failure\\
