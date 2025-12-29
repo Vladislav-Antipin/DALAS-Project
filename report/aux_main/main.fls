@@ -380,9 +380,12 @@ INPUT sections/03_methods.tex
 INPUT ./sections/04_results.tex
 INPUT ./sections/04_results.tex
 INPUT sections/04_results.tex
-INPUT ./tables/04-model_comparison.tex
-INPUT ./tables/04-model_comparison.tex
-INPUT tables/04-model_comparison.tex
+INPUT ./tables/04-random_split-model_comparison.tex
+INPUT ./tables/04-random_split-model_comparison.tex
+INPUT tables/04-random_split-model_comparison.tex
+INPUT ./tables/04-time_split-model_comparison.tex
+INPUT ./tables/04-time_split-model_comparison.tex
+INPUT tables/04-time_split-model_comparison.tex
 INPUT ./sections/05_discussion.tex
 INPUT ./sections/05_discussion.tex
 INPUT sections/05_discussion.tex
