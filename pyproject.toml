@@ -22,4 +22,5 @@ dependencies = [
     "torch-geometric>=2.7.0",
     "scipy==1.15.2",
     "umap-learn>=0.5.9.post2",
+    "xgboost>=3.1.2",
 ]
