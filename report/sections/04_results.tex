@@ -3,25 +3,23 @@
 \subsection{Model Comparison}
 \todo[inline]{Compare models quantitatively (accuracy, RMSE, AUC, etc.) and qualitatively (strengths/weaknesses).}
 
-%     \begin{tabular}{p{4cm}p{2cm}p{9cm}}
-\begin{table}[H]
 
+
+\begin{table}[H]
 \centering
-\caption{Model comparison summary (random train test split).}
-\label{tab:04-random_split-model_comparison}
+\caption{Model comparison summary.}
+\label{tab:04-time_split-model_comparison}
 \rowcolors{2}{gray!15}{white} 
-\resizebox{\textwidth}{!}{%
-    \input{tables/04-random_split-model_comparison.tex}
-}
+\input{tables/04-time_split-model_comparison.tex}
 \end{table}
 
 \begin{table}[H]
 \centering
-\caption{Model comparison summary (time based train test split).}
-\label{tab:04-time_split-model_comparison}
+\caption{Best parameters.}
+\label{tab:04-time_split-best_parameters}
 \rowcolors{2}{gray!15}{white} 
-\resizebox{\textwidth}{!}{%
-    \input{tables/04-time_split-model_comparison.tex}
+\resizebox{\textwidth}{!}{
+    \input{tables/04-time_split-best_parameters.tex}
 }
 \end{table}
 

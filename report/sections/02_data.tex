@@ -4,7 +4,9 @@
 \todo[inline]{Describe where the data comes from, collection methods, and aggregation process.}
 
 Among the vast amount of medical, pharmacological and chemical publicly available data,
- we focused our attention on those being able to provide us 
+ we focused our attention on those being able to provide us information on basic classification of diseases (MeSH),
+ drug chemical descriptors and targets (ChEMBL), disease targets (Open Targets) as well as information on drug-disease indication studies (ClinicalTrials).
+ Table~\ref{tab:data_sources} summarizes information on data sources.
 
 \begin{table}[H]
     \centering
@@ -24,6 +26,30 @@ Among the vast amount of medical, pharmacological and chemical publicly availabl
     \end{tabular}
 \end{table}
 
+\subsection{Target variable definition}
+\todo[inline]{Start with explaining how you got the labels.}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/03-label-has_results_in_time.png}
+    \caption{Counts and proportions of published results over the time.}
+    \label{fig:03-label-has_results_in_time}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/03-label-stability_in_time.png}
+    \caption{Counts and proportions of label modalities over the time.}
+    \label{fig:03-label-stability_in_time}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.7\textwidth]{figures/03-label-distribution_missing_date.png}
+    \caption{Label distribution for indications with missing date.}
+    \label{fig:03-label-distribution_missing_date}
+\end{figure}
+
 \subsection{Data Quality and Preprocessing}
 \todo[inline]{Discuss missing values, outliers, normalization, feature encoding, or transformations.}
 
@@ -39,16 +65,17 @@ Among the vast amount of medical, pharmacological and chemical publicly availabl
 \begin{figure}[H]
     \centering
    \includegraphics[width=0.7\textwidth]{figures/03-pca-scatter_plot.png}
-    \caption{Scree plot of PCA on merged data.}
+    \caption{PCA scatter plot.}
     \label{fig:03-pca-scatter_plot}
 \end{figure}
 
 \begin{figure}[H]
     \centering
    \includegraphics[width=0.7\textwidth]{figures/03-pca-corr_circle.png}
-    \caption{Scree plot of PCA on merged data.}
+    \caption{PCA correlation circle.}
     \label{fig:03-pca-corr_circle}
 \end{figure}
+
 
 \subsection{Feature Description}
 \todo[inline]{Provide a table or list explaining each feature and its meaning. Optionally, include relationships between features.}
