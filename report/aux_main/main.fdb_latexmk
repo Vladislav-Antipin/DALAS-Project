@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex aux_main/main"] 1767829143.78017 "aux_main/main.aux" "aux_main/main.bbl" "aux_main/main" 1767829145.26898 0
+["bibtex aux_main/main"] 1767881224.96896 "aux_main/main.aux" "aux_main/main.bbl" "aux_main/main" 1767881556.85218 0
   "./bibliography.bib" 1766614490.22014 842 baa2bd6fa953a6ab73c160a54dc1a151 ""
   "/usr/local/texlive/2025basic/texmf-dist/bibtex/bst/base/apalike.bst" 1292289607 24635 604dafcc79f521a11ea73e506e1fbd98 ""
-  "aux_main/main.aux" 1767829145.18722 8041 eb56d649d5c3b7952d3cc784afd56c02 "pdflatex"
+  "aux_main/main.aux" 1767881556.76848 7147 4947e592ad88267b7dc7ffb86a58db91 "pdflatex"
   (generated)
   "aux_main/main.bbl"
   "aux_main/main.blg"
   (rewritten before read)
-["pdflatex"] 1767829143.80463 "/Users/vlad/Documents/University/Master-MIND/DALAS-Project/report/main.tex" "aux_main/main.pdf" "main" 1767829145.26914 0
+["pdflatex"] 1767881556.26535 "/Users/vlad/Documents/University/Master-MIND/DALAS-Project/report/main.tex" "aux_main/main.pdf" "main" 1767881556.85236 0
   "/Users/vlad/Documents/University/Master-MIND/DALAS-Project/report/main.tex" 1767004740.2967 600 16c73ab1959e972de4bf913a8569d14d ""
   "/usr/local/texlive/2025basic/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc" 1254269338 2375 baa924870cfb487815765f9094cf3728 ""
   "/usr/local/texlive/2025basic/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc" 1254269338 3031 6c4d3515bf7115d8518af1c9ab97ca44 ""
@@ -200,27 +200,21 @@
   "/usr/local/texlive/2025basic/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1755597450 378426 6f5f317eb6e87dce1d64f77f031f1ccb ""
   "/usr/local/texlive/2025basic/texmf-var/web2c/pdftex/pdflatex.fmt" 1755520171 2663820 dd3708f50d7f9885ccf64692e3a38380 ""
   "/usr/local/texlive/2025basic/texmf.cnf" 1741448314 628 81d1ada0f601fb1ffa62f1323192d946 ""
-  "aux_main/main.aux" 1767829145.18722 8041 eb56d649d5c3b7952d3cc784afd56c02 "pdflatex"
-  "aux_main/main.bbl" 1767829143.79827 549 0596cdcbd304a0c89ef04e9174905419 "bibtex aux_main/main"
-  "aux_main/main.out" 1767829145.18808 2304 d75b5cbb1d675dae278c39df8db1da1e "pdflatex"
-  "aux_main/main.toc" 1767829145.18838 1334 f390bd5c572e36cd8f2e1c2e13076d05 "pdflatex"
-  "figures/03-label-distribution_missing_date.png" 1767827544.08895 53439 38c1c9d996206f0bd312f1a6825c2555 ""
-  "figures/03-label-has_results_in_time.png" 1767827543.90158 184122 3c7e9a1ee8f37cb3c9552267735d68e9 ""
-  "figures/03-label-stability_in_time.png" 1767827544.26197 271645 0665bc6dff01e1696a4738a69c244e67 ""
-  "figures/03-pca-corr_circle.png" 1767827408.10067 276727 3da4c385ee9d54576874e15c3c328f10 ""
-  "figures/03-pca-scatter_plot.png" 1767827406.9008 542740 46d037012f882315032dc6daded32d94 ""
-  "figures/03-pca-scree_plot.png" 1767827406.77641 85561 d54ca78c920f618311cc281acfbec53c ""
+  "aux_main/main.aux" 1767881556.76848 7147 4947e592ad88267b7dc7ffb86a58db91 "pdflatex"
+  "aux_main/main.bbl" 1767881224.98758 549 0596cdcbd304a0c89ef04e9174905419 "bibtex aux_main/main"
+  "aux_main/main.out" 1767881556.76932 3410 7fb0bc692985d49044a4f14c3c5331b9 "pdflatex"
+  "aux_main/main.toc" 1767881556.76962 1852 9f7dc2170c35d661676109f89fbf9992 "pdflatex"
   "main.tex" 1767004740.2967 600 16c73ab1959e972de4bf913a8569d14d ""
   "preamble.tex" 1767004750.64072 607 c0a37eb901d1892f0cee6a354b708d07 ""
   "sections/01_introduction.tex" 1767004752.98462 1781 0ffdf7067523d36107d61c78d33666d0 ""
-  "sections/02_data.tex" 1767391346.32923 7351 3bad26b2ec6417a1e0db7a3405ff0a0a ""
+  "sections/02_data.tex" 1767881556.07346 19908 074f0979268925883149ac8046348a66 ""
   "sections/03_methods.tex" 1766506473.08838 313 146df78422caf9ed8a9f494f3632b3fb ""
   "sections/04_results.tex" 1767829142.0822 890 043715a7eb3d6f874c71d1a1cb136d7e ""
   "sections/05_discussion.tex" 1766506500.42287 150 da0771a13b21d98bd0045dbc0949e756 ""
   "sections/06_conclusion.tex" 1766506504.81128 103 2b6fb2e155ea2c391815927464711e2b ""
-  "tables/03-dataset_summary.tex" 1767827400.6655 342 27ccaec742f0a81da8165b90fbcb8d4f ""
-  "tables/04-time_split-best_parameters.tex" 1767829098.70979 623 008eac919f3b53ca89f68f773f14c41f ""
-  "tables/04-time_split-model_comparison.tex" 1767829098.7073 383 4a6c5f8260492d93a7dd7d0a4141153e ""
+  "tables/03-dataset_summary.tex" 1767880533.85999 342 27ccaec742f0a81da8165b90fbcb8d4f ""
+  "tables/04-time_split-best_parameters.tex" 1767880783.21121 624 91be1a5e7a47d599c4573b6e4335b420 ""
+  "tables/04-time_split-model_comparison.tex" 1767880783.20685 383 b838630d4cfaaba94a41c0115213b699 ""
   (generated)
   "aux_main/main.aux"
   "aux_main/main.log"

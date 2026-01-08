@@ -4,9 +4,14 @@
 \todo[inline]{Describe where the data comes from, collection methods, and aggregation process.}
 
 Among the vast amount of medical, pharmacological and chemical publicly available data,
- we focused our attention on those being able to provide us information on basic classification of diseases (MeSH),
+ we focused our attention on some being able to provide us information on basic classification of diseases (MeSH),
  drug chemical descriptors and targets (ChEMBL), disease targets (Open Targets) as well as information on drug-disease indication studies (ClinicalTrials).
- Table~\ref{tab:data_sources} summarizes information on data sources.
+ Table~\ref{tab:data_sources} summarizes information on data sources. Although initially we were using the web
+ scraping to get information on disease classification, we found out that this way of getting medical 
+ information is rather deprecated, so we queried the corresponding databases instead. Data concerning drugs and diseases
+was agglomerated using the cross references furnished by the same databases (ChEMBL and Open Targets). We used as well
+a UniProt identifier mapper that allowed us to unify synonymous target IDs as well as enrich them with corresponding 
+molecular pathway identifiers from Reactome database.
 
 \begin{table}[H]
     \centering
@@ -29,64 +34,117 @@ Among the vast amount of medical, pharmacological and chemical publicly availabl
 \subsection{Target variable definition}
 \todo[inline]{Start with explaining how you got the labels.}
 
-\begin{figure}[H]
-    \centering
-   \includegraphics[width=0.9\textwidth]{figures/03-label-has_results_in_time.png}
-    \caption{Counts and proportions of published results over the time.}
-    \label{fig:03-label-has_results_in_time}
-\end{figure}
+The prediction target is a binary success / fail variable indicating whether there was
+shown an effect or the absence thereof of a drug against a disease. So we needed to obtain 
+binary success labels for each clinically tried drug-disease combination. Drugs that have passed
+the fourth (last) clinical trial phase for a given disease are automatically labelled as successful.
+However, other cases are not as obvious. If the last phase wasn't (yet) passed, we can understand the reason
+by addressing the corresponding clinical trials. There are several possibilities: either this combination was never
+tried (which is most often the case); or it was tried and shown to be not-effective or effective but for earlier phases; 
+or finally simply because there are no results published or the study was terminated for various (often financial) reasons.
+There exists some manually and automatically annotated clinical trial databases, but the problem is that either
+they are pretty limited in time span (e.g. last 10 years) or their "non-success" label encompasses simultaneously
+trials failed due to drug inefficiency and to other reasons. So we decided to automatically label drug-disease indications
+ that have been tried at least once using following rule:
 
-\begin{figure}[H]
-    \centering
-   \includegraphics[width=0.9\textwidth]{figures/03-label-stability_in_time.png}
-    \caption{Counts and proportions of label modalities over the time.}
-    \label{fig:03-label-stability_in_time}
-\end{figure}
+\begin{itemize}
+  \item If phase 4 is passed, it's definitely a success
+  \item If there is clinical trial evidence, check out results
+    \begin{itemize}
+        \item access success of the trial based on results p-values 
+        \item trial is successful if median p-value is below 0.05, fail if above 0.2, not known otherwise
+        \item if the hightest tried phase is at least 3 and number of successes there is twice 
+        as big as fails, assign success to the indication
+        \item otherwise if the latests phases has twice more fails than successes, assign fail
+    \end{itemize}
+  \item If still not decided, check whether this indication was abandoned -
+   the latest date available for any clinical trial concerning this indication was before 2020.
+   We label such indication as fail.
+\end{itemize}
 
-\begin{figure}[H]
-    \centering
-   \includegraphics[width=0.7\textwidth]{figures/03-label-distribution_missing_date.png}
-    \caption{Label distribution for indications with missing date.}
-    \label{fig:03-label-distribution_missing_date}
-\end{figure}
+It is interesting to note that most of undecided indications and clinical trials
+without published results happen to be approximately before 2000 and after 2010. One can speculate
+that it is linked to the fact that ClinicalTrials.gouv was launched in 2000 and it 
+became mandatory to publish there all studies (but not full results) since 2007.
 
-\subsection{Data Quality and Preprocessing}
-\todo[inline]{Discuss missing values, outliers, normalization, feature encoding, or transformations.}
-
-
-
-\begin{figure}[H]
-    \centering
-   \includegraphics[width=0.7\textwidth]{figures/03-pca-scree_plot.png}
-    \caption{Scree plot of PCA on merged data.}
-    \label{fig:03-pca-scree_plot}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-   \includegraphics[width=0.7\textwidth]{figures/03-pca-scatter_plot.png}
-    \caption{PCA scatter plot.}
-    \label{fig:03-pca-scatter_plot}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-   \includegraphics[width=0.7\textwidth]{figures/03-pca-corr_circle.png}
-    \caption{PCA correlation circle.}
-    \label{fig:03-pca-corr_circle}
-\end{figure}
+It's important to note that some of those choices are arbitrary and 
+this probably constitutes the most important weakness of this project.
 
 
-\subsection{Feature Description}
+% \begin{figure}[H]
+%     \centering
+%    \includegraphics[width=0.9\textwidth]{figures/03-label-has_results_in_time.png}
+%     \caption{Counts and proportions of published results over the time.}
+%     \label{fig:03-label-has_results_in_time}
+% \end{figure}
+
+% \begin{figure}[H]
+%     \centering
+%    \includegraphics[width=0.9\textwidth]{figures/03-label-stability_in_time.png}
+%     \caption{Counts and proportions of label modalities over the time.}
+%     \label{fig:03-label-stability_in_time}
+% \end{figure}
+
+% \begin{figure}[H]
+%     \centering
+%    \includegraphics[width=0.7\textwidth]{figures/03-label-distribution_missing_date.png}
+%     \caption{Label distribution for indications with missing date.}
+%     \label{fig:03-label-distribution_missing_date}
+% \end{figure}
+
+
+
+
+
+% \begin{figure}[H]
+%     \centering
+%    \includegraphics[width=0.7\textwidth]{figures/03-pca-scree_plot.png}
+%     \caption{Scree plot of PCA on merged data.}
+%     \label{fig:03-pca-scree_plot}
+% \end{figure}
+
+% \begin{figure}[H]
+%     \centering
+%    \includegraphics[width=0.7\textwidth]{figures/03-pca-scatter_plot.png}
+%     \caption{PCA scatter plot.}
+%     \label{fig:03-pca-scatter_plot}
+% \end{figure}
+
+% \begin{figure}[H]
+%     \centering
+%    \includegraphics[width=0.7\textwidth]{figures/03-pca-corr_circle.png}
+%     \caption{PCA correlation circle.}
+%     \label{fig:03-pca-corr_circle}
+% \end{figure}
+
+
+\subsection{Feature Engineering and Description}
 \todo[inline]{Provide a table or list explaining each feature and its meaning. Optionally, include relationships between features.}
 
-\begin{table}[H]
-\centering
-\caption{Summary of datasets and merged data.}
-\label{tab:03-dataset_summary}
-\rowcolors{2}{gray!15}{white} 
-\input{tables/03-dataset_summary.tex}
-\end{table}
+Description of extracted features can be found in Table~\ref{tab:feature_description}. Categorical features were all one-hot encoded. 
+Most drug features describe chemical and structural properties of those drugs, a well as some andimistration information. 
+Among engendered features are Morgan molecular fingerprints with 2 atoms radius obtained with RDKit module 
+from drug's SMILES (flat string representation of the structure) and yielding a 2048 dimensional bit vector
+it dimension coding for presence or absence of a particular substructure. To reduce the dimensionality, 
+first 100 dimensions were taken and called \verb|FP_#|.
+
+Disease features are comprised of disease ontology description, one of them being ontological category
+in addition to immune system diseases, called \verb|cat_#|, for example some of immune diseases are as well 
+neoplastic (e.g. leukemia).
+
+For both dieses and drugs, we obtained a list of molecular (we chose protein) targets - molecules upon which a drug acts or that 
+are involved in the pathogenesis of a diseases. Since targets themselves are extremely heterogenous and very intertwined
+into molecular pathways, we converted a list of targets for each drug or disease into a list of corresponding pathways. 
+We further performed TF-IDF vectorizations on pathway lists separately for drugs and for diseases. TF-IDF helps downweighting
+ housekeeping pathways (very common ones) and highlights informative ones. We then performed a PCA and extracted first  
+ 50 principal components for drugs and 50 for diseases, called as \verb|drug_path_#| and \verb|disease_path_#|. 
+ This information captures drug-drug and disease-disease mechanistic similarity based on shared pathways.
+
+ To capture the drug-disease pathway similarity, we computed a Jaccard similarity index based on corresponding pathway 
+ ID lists. We wanted to include as well drug-disease name similarity based on PubMedBERT embeddings, which reflects how related
+ a drug and a disease in a scientific literature, but later we realized that including this feature for model training
+ would be a mistake since PubMedBERT is trained on recent literature and thus poses a risk of a data leak.
+
 
 \begin{table}[H]
     \centering
@@ -150,16 +208,118 @@ Among the vast amount of medical, pharmacological and chemical publicly availabl
     \end{tabular}
 \end{table}
 
+\subsection{Exploratory Data Analysis}
+\todo[inline]{Discuss missing values, outliers, normalization, feature encoding, or transformations.}
+
+\subsubsection{Missing Values}
+
+Among collected data and chosen features, only a particular group of drug features present missing values.
+To find out what it is linked to, we created an indicator variable for missingness
+ for this group of features and built a correlation heatmap to visualize missingness patterns. Indeed,
+ this group of chemical descriptors (such as number of aromatic rings or lipophylicity) tend to be absent together
+ and they are associated with biotherapeutics marker. Biotherapeutics are drugs derived from living 
+ organisms rather than being chemically synthesized. Most of them are antibodies or other proteins - 
+ large biopolymers for which this group of chemical descriptors is not relevant. Indeed, manual
+ inspection of drugs with missing values confirms this (e.g. with insulin among such drugs). So we decided 
+ to consider only small molecule drugs since chemical description of biopolymers requires another approaches, 
+ imputing those missing chemical descriptors would be a mistake. After the removal of those cases, data is ready for merging, 
+ the result containing all information on each drug-disease indication.
+
+\begin{table}[H]
+\centering
+\caption{Summary of datasets and merged data.}
+\label{tab:03-dataset_summary}
+\rowcolors{2}{gray!15}{white} 
+\input{tables/03-dataset_summary.tex}
+\end{table}
+
+
+\subsubsection{Univariate and bivariate analysis}
+
+Inspection of feature distributions across label values of variables not related to molecular pathways or fingerprints
+shows approximately bell-shaped but sometimes multimodal or slightly skewed distributions. Nevertheless, we don't find 
+log transformation of the features necessary here. As for 
+disease ontologies or some drug descriptors, there are some outliers, but it may be a part of normal
+biological or chemical variability so we will analyze potential outliers with dimension reduction techniques.
+We can also notice that feature distributions are rather similar between success and failure groups. It's expected since unfortunately such basic descriptors alone
+cannot discriminate success cases. However, we can notice that engineered name and path similarity features tend to be higher for 
+success groups, this indicates that those variables might be promising predictors combined with
+other variables, although name similarity was excluded from further analysis since was considered as spoiler.
+
+On a correlation heatmap for the whole merged dataset we can notice that some 
+chemical descriptors with molecular fingerprints and drug pathway embeddings, disease ontology types with disease pathway embeddings 
+form, as expected, clusters with strong or moderate associations. When we focus on more 
+interpretable features (not structural or mechanistic embeddings), we can explain some of them. 
+For example number of heavy atoms is associated with molecular weight. Number hydrogen bond acceptors and donors (HBA and HBD) are supposed to be associated with
+higher hydrophilicity of a molecule and it indeed correlates positively with  polar surface area (PSA) 
+and negatively with octanol-water partition coefficient (AlogP). Number of rule of 5 violation is a feature 
+based on some of those chemical descriptors so it is, as expected, associated with them. Interestingly, 
+number of aromatic rings correlates negatively with the indicator that the drug was obtained from the natural
+source (NP-likeness score). Apparently, purely synthetic drugs contain more aromatic rings.
+
+As for disease ontology, we can for example see that immune diseases labelled as hemic or lymphatic tend 
+to be neoplastic as well, it makes sense since most of oncological conditions concerning the immune system are
+ indeed various types of leukemias and lymphomas. Another example is positive association between urogenital diseases and infections.
+
+
+
+\subsubsection{Dimension Reduction and Outlier Analysis}
+
+When we perform PCA on centered and scaled merged data we can first notice that first two principal components explain only 10 \%
+of total variance, and most of the variance is distributed among a large number of components. It can mean that no 
+linear combination of these features form a single or several dominant axes of data variability. This suggest that the feature space is intrinsically 
+high dimensional and associations between variables are likely non-linear which is expected for such a complex system.
+Furthermore, a lot of features were explicitly designed to be uncorrelated (principal components for molecular fingerprints and pathways embeddings).
+We can however cautiously take a look at the data projection on first two principal components and notice that the major variation is associated with
+disease heterogeneity, since the most prominent arrows on correlation plot associated with first principal 
+components are disease category indicators and disease pathway embeddings, for example neoplastic blood disorders as opposed to respiratory tract diseases. 
+
+The second principal component is rather associated with drug related variability, in particular we 
+can notice a group of potential outliers for high values of firs and second principal component.
+Their closer inspection reveals that these indications involve three drugs sirolimus, everolimus and ridaforolimus. 
+These drugs turn out to be antineoplastic and immunosuppressor drugs with the same structural code - large 
+macrolide ring. We considered it as a part of normal drug variation that cannot be attributed to a mistake
+or poor data filtering and thus we decided to not exclude them.
+
+
+Although PCA is unsupervised method, when we label the data a posteriori, we can see a slight separation of success and
+ fail cases along the first principal component. We could speculate that it might be linked to different success rates for 
+ various disease types, for example clinical studies for neoplastic blood diseases might have fewer successes because of smaller success rate or may be 
+ because they are more often studied...
+
+Non linear dimension reduction methods such as UMAP and t-SNE result in a rather large number of small clusters.
+Apparently, those clusters correspond to the indications involving same of very similar drugs or diseases.
+
+\subsubsection{Supervised Dimension Reduction}
+By performing supervised dimension reduction models - LDA and PLS-DA we can see that
+the label distributions along LDA axis or in projection to first two components of PLS-DA, 
+are, although overlapping, are rather well separated
+
+\subsection{Graph Representation}
+
+We need to acknowledge that the chosen approach for binary classification of drug-disease
+indications, although is valid, doesn't model the true structure of the problem.
+
+Indeed, the data is inherently structured and a bipartite drug-disease graph with 
+a connecting layer comprised of associated molecular pathways. And most of advanced research in the 
+field of drug discovery involve working with graphs and Graph Neural Networks directly
+rather than engineering features as we did. To this end, we organized the same data in the form 
+of \verb|HeteroData| graph with Pytorch Geometric module. Although we think 
+that the richer information about connections on a molecular / mechanistic levels as well as 
+more observations are needed to build a graph suitable for the robust model training.
+
+
 \begin{verbatim}
-    HeteroData(
-  drug={ x=[742, 127] },
-  disease={ x=[167, 25] },
-  pathway={ x=[1509, 1] },
-  (drug, interacts, pathway)={ edge_index=[2, 31266] },
-  (disease, associated_with, pathway)={ edge_index=[2, 13608] },
+HeteroData(
+  drug={ x=[525, 127] },
+  disease={ x=[149, 25] },
+  pathway={ x=[1487, 1] },
+  (drug, interacts, pathway)={ edge_index=[2, 17338] },
+  (disease, associated_with, pathway)={ edge_index=[2, 12064] },
   (drug, tryed_against, disease)={
-    edge_index=[2, 1298],
-    edge_label=[1298],
+    edge_index=[2, 890],
+    edge_label=[890],
   }
 )
 \end{verbatim}
+

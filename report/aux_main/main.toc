@@ -4,8 +4,13 @@
 \contentsline {section}{\numberline {2}Data}{2}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Data Sources}{2}{subsection.2.1}%
 \contentsline {subsection}{\numberline {2.2}Target variable definition}{3}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}Data Quality and Preprocessing}{4}{subsection.2.3}%
-\contentsline {subsection}{\numberline {2.4}Feature Description}{5}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.3}Feature Engineering and Description}{4}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Exploratory Data Analysis}{5}{subsection.2.4}%
+\contentsline {subsubsection}{\numberline {2.4.1}Missing Values}{6}{subsubsection.2.4.1}%
+\contentsline {subsubsection}{\numberline {2.4.2}Univariate and bivariate analysis}{6}{subsubsection.2.4.2}%
+\contentsline {subsubsection}{\numberline {2.4.3}Dimension Reduction and Outlier Analysis}{7}{subsubsection.2.4.3}%
+\contentsline {subsubsection}{\numberline {2.4.4}Supervised Dimension Reduction}{7}{subsubsection.2.4.4}%
+\contentsline {subsection}{\numberline {2.5}Graph Representation}{8}{subsection.2.5}%
 \contentsline {section}{\numberline {3}Methods}{8}{section.3}%
 \contentsline {subsection}{\numberline {3.1}Model Overview}{8}{subsection.3.1}%
 \contentsline {subsection}{\numberline {3.2}Implementation Details}{8}{subsection.3.2}%
