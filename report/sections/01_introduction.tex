@@ -31,7 +31,7 @@ We decided to specify a group of diverse but closely related diseases  - immune 
 
 \subsection{Pipeline Overview}
 
-To address the drug repurposing prediction problem, we developed a data pipeline that integrates multiple public biomedical databases, extracts relevant features, and trains machine learning models. Figures~\ref{fig:pipeline-simple} and~\ref{fig:pipeline-detailed} provide two views of this pipeline.
+To address the drug repurposing prediction problem, we developed a data pipeline that integrates multiple public biomedical databases, extracts relevant features, and trains machine learning models. Figures~\ref{fig:pipeline-simple},~\ref{fig:pipeline-gaps}, and~\ref{fig:pipeline-balanced} provide increasingly detailed views of this pipeline.
 
 % === VERSION A: Simple arrows ===
 \begin{figure}[H]
@@ -80,63 +80,6 @@ To address the drug repurposing prediction problem, we developed a data pipeline
 \end{tikzpicture}
 \caption{Simplified pipeline overview showing the three main stages of our drug repurposing prediction system. Data from multiple biomedical databases is processed into numerical features, which are then used to train machine learning models. The Labels box (yellow) represents the target variable---trial success or failure---derived from clinical trial outcomes using heuristic rules we defined.}
 \label{fig:pipeline-simple}
-\end{figure}
-
-% === VERSION B: Reorganized layout (minimal crossing) ===
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[
-    source/.style={rectangle, draw, rounded corners, fill=blue!15, minimum width=1.9cm, minimum height=0.85cm, align=center, font=\small},
-    feature/.style={rectangle, draw, rounded corners, fill=green!15, minimum width=2.4cm, minimum height=1.3cm, align=center, font=\small},
-    labelbox/.style={rectangle, draw, rounded corners, fill=yellow!30, minimum width=1.8cm, minimum height=1.3cm, align=center, font=\small},
-    mlbox/.style={rectangle, draw, rounded corners, fill=orange!15, minimum width=11.5cm, minimum height=0.9cm, align=center, font=\small},
-    arrow/.style={-{Stealth[length=2mm]}, thick, gray!60},
-    seclabel/.style={font=\small\bfseries}
-]
-
-% === DATA SOURCES (reordered: ChEMBL, UniProt, MeSH, OpenTargets, ClinicalTrials) ===
-\node[source] (chembl) at (0,0) {ChEMBL\\[-2pt]{\scriptsize(Drugs)}};
-\node[source] (up) at (2.5,0) {UniProt\\[-2pt]{\scriptsize(Pathways)}};
-\node[source] (mesh) at (5,0) {MeSH\\[-2pt]{\scriptsize(Diseases)}};
-\node[source] (ot) at (7.5,0) {Open Targets\\[-2pt]{\scriptsize(Targets)}};
-\node[source] (ct) at (10.2,0) {ClinicalTrials\\[-2pt]{\scriptsize(Trials)}};
-\node[seclabel] at (5, 1) {Data Sources};
-
-% === FEATURES (reordered: Drug, Disease, Drug-Disease, Labels) ===
-\node[feature] (drug) at (0.6,-3.2) {Drug Features\\[-2pt]{\scriptsize Molecular props}\\[-2pt]{\scriptsize Fingerprints}};
-\node[feature] (disease) at (4,-3.2) {Disease Features\\[-2pt]{\scriptsize Ontology depth}\\[-2pt]{\scriptsize Categories}};
-\node[feature] (pair) at (7.4,-3.2) {Drug--Disease\\[-2pt]{\scriptsize Pathway overlap}\\[-2pt]{\scriptsize Name similarity}};
-\node[labelbox] (labels) at (10.4,-3.2) {Labels\\[-2pt]{\scriptsize (Target)}};
-\node[seclabel] at (5, -1.5) {Feature Engineering};
-
-% === ML ===
-\node[mlbox] (ml) at (5,-5.8) {\textbf{Machine Learning} --- Predict: Will drug $X$ work for disease $Y$?};
-\node[seclabel] at (5, -4.7) {Prediction};
-
-% === ARROWS: Sources to Features ===
-% ChEMBL → Drug (straight down)
-\draw[arrow] (chembl.south) -- (drug.north);
-% UniProt → Drug, Disease, Drug-Disease (fan out)
-\draw[arrow] (up.south) -- ([xshift=5pt]drug.north);
-\draw[arrow] (up.south) -- ([xshift=-8pt]disease.north);
-\draw[arrow] (up.south) -- (pair.north);
-% MeSH → Disease (straight down)
-\draw[arrow] (mesh.south) -- (disease.north);
-% OpenTargets → Disease
-\draw[arrow] (ot.south) -- ([xshift=8pt]disease.north);
-% ClinicalTrials → Labels + Drug-Disease (dates)
-\draw[arrow] (ct.south) -- (labels.north);
-\draw[arrow] (ct.south) -- ([xshift=8pt]pair.north);
-
-% === ARROWS: Features to ML ===
-\draw[arrow] (drug.south) -- ([xshift=-3.5cm]ml.north);
-\draw[arrow] (disease.south) -- ([xshift=-1cm]ml.north);
-\draw[arrow] (pair.south) -- ([xshift=1.5cm]ml.north);
-\draw[arrow] (labels.south) -- ([xshift=4cm]ml.north);
-
-\end{tikzpicture}
-\caption{Detailed data flow with reorganized layout. UniProt provides pathway mappings for drugs, diseases, and their similarity. ClinicalTrials provides both trial dates (for Drug--Disease) and outcomes (for Labels).}
-\label{fig:pipeline-detailed}
 \end{figure}
 
 % === VERSION C: With text gaps (experimental) ===
@@ -190,71 +133,6 @@ To address the drug repurposing prediction problem, we developed a data pipeline
 \end{tikzpicture}
 \caption{Same as Figure~\ref{fig:pipeline-detailed} but with labels having white backgrounds to create visual ``gaps'' where arrows pass behind text.}
 \label{fig:pipeline-gaps}
-\end{figure}
-
-% === VERSION D: Containers + detailed arrows (arrowheads on top) ===
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[
-    source/.style={rectangle, draw, rounded corners, fill=blue!15, minimum width=1.9cm, minimum height=0.85cm, align=center, font=\small},
-    feature/.style={rectangle, draw, rounded corners, fill=green!15, minimum width=2.4cm, minimum height=1.3cm, align=center, font=\small},
-    labelbox/.style={rectangle, draw, rounded corners, fill=yellow!30, minimum width=1.8cm, minimum height=1.3cm, align=center, font=\small},
-    container/.style={rectangle, draw, rounded corners},
-    arrow/.style={-{Stealth[length=2mm]}, thick, gray!60},
-    seclabel/.style={font=\small\bfseries, fill=white, inner sep=2pt}
-]
-
-% === CONTAINERS (drawn first, behind everything) ===
-\begin{scope}[on background layer]
-    \node[container, fill=blue!5, minimum width=12.8cm, minimum height=1.5cm] (srcbox) at (5.1, 0) {};
-    \node[container, fill=green!5, minimum width=12.8cm, minimum height=2cm] (featbox) at (5.1, -3.2) {};
-    \node[container, fill=orange!8, minimum width=12.8cm, minimum height=1.2cm] (mlbox) at (5.1, -6) {};
-\end{scope}
-
-% === DATA SOURCES (reordered: ChEMBL, MeSH, UniProt, OpenTargets, ClinicalTrials) ===
-\node[source] (chembl) at (0,0) {ChEMBL\\[-2pt]{\scriptsize(Drugs)}};
-\node[source] (mesh) at (2.5,0) {MeSH\\[-2pt]{\scriptsize(Diseases)}};
-\node[source] (up) at (5.1,0) {UniProt\\[-2pt]{\scriptsize(Pathways)}};
-\node[source, minimum width=2.1cm] (ot) at (7.7,0) {Open Targets\\[-2pt]{\scriptsize(Targets)}};
-\node[source, minimum width=2.1cm] (ct) at (10.2,0) {ClinicalTrials\\[-2pt]{\scriptsize(Trials)}};
-
-% === FEATURES ===
-\node[feature] (drug) at (0.8,-3.2) {Drug Features\\[-2pt]{\scriptsize Molecular props}\\[-2pt]{\scriptsize Fingerprints}};
-\node[feature] (disease) at (4.1,-3.2) {Disease Features\\[-2pt]{\scriptsize Ontology depth}\\[-2pt]{\scriptsize Categories}};
-\node[feature] (pair) at (7.4,-3.2) {Drug--Disease\\[-2pt]{\scriptsize Pathway overlap}\\[-2pt]{\scriptsize Name similarity}};
-\node[labelbox] (labels) at (10.2,-3.2) {Labels\\[-2pt]{\scriptsize (Target)}};
-
-% === ML ===
-\node at (5.1, -6) {\textbf{Machine Learning} --- Predict: Will drug $X$ work for disease $Y$?};
-
-% === ARROWS (drawn before labels so labels appear on top with white background) ===
-% ChEMBL → Drug
-\draw[arrow] (chembl.south) -- (drug.north);
-% MeSH → Disease
-\draw[arrow] (mesh.south) -- ([xshift=-5pt]disease.north);
-% UniProt → Drug, Disease, Drug-Disease (fan out from center)
-\draw[arrow] (up.south) -- ([xshift=8pt]drug.north);
-\draw[arrow] (up.south) -- ([xshift=5pt]disease.north);
-\draw[arrow] (up.south) -- (pair.north);
-% OpenTargets → Disease
-\draw[arrow] (ot.south) -- ([xshift=12pt]disease.north);
-% ClinicalTrials → Labels + Drug-Disease
-\draw[arrow] (ct.south) -- (labels.north);
-\draw[arrow] (ct.south) -- ([xshift=8pt]pair.north);
-% Features to ML
-\draw[arrow] (drug.south) -- ([xshift=-3.3cm]mlbox.north);
-\draw[arrow] (disease.south) -- ([xshift=-1cm]mlbox.north);
-\draw[arrow] (pair.south) -- ([xshift=1.3cm]mlbox.north);
-\draw[arrow] (labels.south) -- ([xshift=3.8cm]mlbox.north);
-
-% === SECTION LABELS (drawn last, on top of arrows, with white background for gap effect) ===
-\node[seclabel] at (5.1, 1) {Data Sources};
-\node[seclabel] at (5.1, -1.85) {Feature Engineering};
-\node[seclabel] at (5.1, -5.1) {Prediction};
-
-\end{tikzpicture}
-\caption{Detailed pipeline showing data flow from sources to features. Arrows indicate which databases contribute to each feature category. UniProt provides pathway mappings used across drug, disease, and pair features. ClinicalTrials provides both trial metadata and outcome labels.}
-\label{fig:pipeline-final}
 \end{figure}
 
 % === VERSION E: Balanced spacing (Modified Figure 4 with wider layout) ===
