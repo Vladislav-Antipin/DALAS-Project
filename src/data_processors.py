@@ -1,12 +1,12 @@
 """Functions for processing and cleaning raw data."""
 
 import pickle
-from typing import Any
+from typing import Any, Tuple
 
 import pandas as pd
 import numpy as np
 
-from .config import PROCESSED_DATA_DIR
+from .config import PROCESSED_DATA_DIR, RAW_DATA_DIR
 
 
 def save_processed_data(obj: Any, filename: str) -> None:
@@ -26,12 +26,20 @@ def load_processed_data(filename: str) -> Any:
     return None
 
 
+def save_raw_data(obj: Any, filename: str) -> None:
+    """Save object as pickle in raw data directory."""
+    filepath = RAW_DATA_DIR / filename
+    with open(filepath, "wb") as f:
+        pickle.dump(obj, f)
+    print(f"Saved: {filepath}")
+
+
 def process_drugs_data(drugs_df: pd.DataFrame, mechanism_df: pd.DataFrame) -> pd.DataFrame:
     """
     Process and clean drug data.
     
     Args:
-        drugs_df: Raw drugs DataFrame
+        drugs_df: Raw drugs DataFrame (or already processed from notebook)
         mechanism_df: Raw mechanisms DataFrame with targets
         
     Returns:
@@ -39,19 +47,49 @@ def process_drugs_data(drugs_df: pd.DataFrame, mechanism_df: pd.DataFrame) -> pd
     """
     print("Processing drug data...")
     
+    # Check if data is already processed (from notebook output)
+    if 'drug_id' in drugs_df.columns and 'drug_name' in drugs_df.columns:
+        print("  Data appears to be already processed, adding targets...")
+        final_drugs_df = drugs_df.copy()
+        
+        # Add targets if not present
+        if 'targets' not in final_drugs_df.columns:
+            final_drugs_df["targets"] = None
+            for i, drug in final_drugs_df.iterrows():
+                drug_targets = mechanism_df.loc[
+                    mechanism_df["molecule_chembl_id"] == drug["drug_id"],
+                    ["action_type", "uniprot_ids"]
+                ]
+                if drug_targets.shape[0] > 0:
+                    targets_dict = {}
+                    for _, r in drug_targets.iterrows():
+                        action_type = r["action_type"]
+                        if action_type not in targets_dict:
+                            targets_dict[action_type] = []
+                        targets_dict[action_type] += r["uniprot_ids"]
+                    final_drugs_df.at[i, "targets"] = targets_dict
+        
+        print(f"Processed {len(final_drugs_df)} drugs")
+        return final_drugs_df
+    
+    # Process raw data from ChEMBL API
     # Filter: available and not withdrawn
-    final_drugs_df = (
-        drugs_df[
-            (drugs_df['availability_type'] > 0)
-            & ~drugs_df['withdrawn_flag']
-        ]
-        .drop(columns=[
-            'atc_classifications', 'availability_type',
-            'cross_references', 'molecule_hierarchy',
-            'molecule_synonyms', 'polymer_flag',
-            'usan_stem', 'usan_substem'
-        ])
-    )
+    cols_to_drop = [c for c in [
+        'atc_classifications', 'availability_type',
+        'cross_references', 'molecule_hierarchy',
+        'molecule_synonyms', 'polymer_flag',
+        'usan_stem', 'usan_substem'
+    ] if c in drugs_df.columns]
+    
+    # Handle availability_type filter
+    if 'availability_type' in drugs_df.columns:
+        filter_mask = (
+            (drugs_df['availability_type'] > 0) | drugs_df['availability_type'].isna()
+        ) & (~drugs_df['withdrawn_flag'] | drugs_df['withdrawn_flag'].isna())
+    else:
+        filter_mask = ~drugs_df.get('withdrawn_flag', pd.Series([False] * len(drugs_df)))
+    
+    final_drugs_df = drugs_df[filter_mask].drop(columns=cols_to_drop, errors='ignore')
     
     # Process biotherapeutic flag
     final_drugs_df["biotherapeutic"] = final_drugs_df["biotherapeutic"].notnull().astype(int)
@@ -131,6 +169,8 @@ def process_trials_data(trials_df: pd.DataFrame) -> pd.DataFrame:
     """
     Process and clean clinical trials data, including success classification.
     
+    Matches notebook 02-data_preparation.ipynb logic with first_date and last_date.
+    
     Args:
         trials_df: Raw trials DataFrame
         
@@ -149,29 +189,48 @@ def process_trials_data(trials_df: pd.DataFrame) -> pd.DataFrame:
     final_trials_df["success"] = None
     final_trials_df["median_p_value"] = None
     final_trials_df["p_value_list"] = None
+    final_trials_df["first_date"] = None
+    final_trials_df["last_date"] = None
     
     # Extract key information from nested structures
     for i, study in final_trials_df.iterrows():
         protocol = study["protocolSection"]
+        status_module = protocol["statusModule"]
         
         # Basic info
         final_trials_df.loc[i, "nct_id"] = protocol["identificationModule"]["nctId"]
-        final_trials_df.loc[i, "status"] = protocol["statusModule"]["overallStatus"]
+        final_trials_df.loc[i, "status"] = status_module["overallStatus"]
         
-        # Dates
-        start_date_struct = protocol["statusModule"].get("startDateStruct", {})
-        final_trials_df.loc[i, "start_date"] = start_date_struct.get("date")
+        # Dates - find first and last dates from all date fields
+        first_date = "9999"  # largest by default
+        last_date = "0000"   # smallest by default
         
-        completion_date_struct = protocol["statusModule"].get("completionDateStruct", {})
+        for key, val in status_module.items():
+            if "date" in key.lower():
+                # if dictionary with the "date" field
+                if isinstance(val, dict) and "date" in val:
+                    first_date = min(first_date, val["date"])
+                    last_date = max(last_date, val["date"])
+                # if itself a date string
+                elif isinstance(val, str):
+                    first_date = min(first_date, val)
+                    last_date = max(last_date, val)
+        
+        final_trials_df.loc[i, "first_date"] = first_date
+        final_trials_df.loc[i, "last_date"] = last_date
+        
+        # End date
+        completion_date_struct = status_module.get("completionDateStruct", {"date": None})
         final_trials_df.loc[i, "end_date"] = completion_date_struct.get("date")
         
-        final_trials_df.loc[i, "why_stopped"] = protocol["statusModule"].get("whyStopped")
+        final_trials_df.loc[i, "why_stopped"] = status_module.get("whyStopped")
         
         # Phase
-        phases = protocol["designModule"].get("phases", [])
-        phases = [int(phase[-1]) for phase in phases if phase != "NA"]
-        if phases:
-            final_trials_df.loc[i, "phase"] = np.max(phases)
+        if "designModule" in protocol:
+            phases = protocol["designModule"].get("phases", [])
+            phases = [int(phase[-1]) for phase in phases if phase != "NA"]
+            if phases:
+                final_trials_df.loc[i, "phase"] = np.max(phases)
         
         # P-values from results
         if study["hasResults"]:
@@ -202,7 +261,7 @@ def process_trials_data(trials_df: pd.DataFrame) -> pd.DataFrame:
         first_columns + [c for c in final_trials_df.columns if c not in first_columns]
     ]
     
-    # Classify success based on p-values
+    # Classify success based on p-values (matching notebook logic)
     for i, study in final_trials_df.iterrows():
         if study["p_value_list"]:
             p_vals = np.array(study["p_value_list"])
@@ -219,23 +278,31 @@ def process_trials_data(trials_df: pd.DataFrame) -> pd.DataFrame:
             elif medp > 0.2 and prop05 < 0.1:
                 final_trials_df.loc[i, "success"] = "fail"
     
+    # Drop duplicates
+    final_trials_df = final_trials_df.drop_duplicates(subset='nct_id')
+    
     print(f"Processed {len(final_trials_df)} trials")
     return final_trials_df
 
 
 def process_indications_data(
     indications_df: pd.DataFrame,
-    trials_df: pd.DataFrame
-) -> pd.DataFrame:
+    trials_df: pd.DataFrame,
+    drugs_df: pd.DataFrame = None
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
     Process and clean drug-disease indications data with trial evidence.
+    
+    Matches notebook 02-data_preparation.ipynb logic with overall_success
+    determination and dates_df generation.
     
     Args:
         indications_df: Raw indications DataFrame
         trials_df: Processed trials DataFrame
+        drugs_df: Processed drugs DataFrame (for first_approval dates)
         
     Returns:
-        Processed indications DataFrame
+        Tuple of (processed indications DataFrame, dates DataFrame)
     """
     print("Processing indications data...")
     
@@ -251,20 +318,42 @@ def process_indications_data(
             if ref["ref_type"] == "ClinicalTrials":
                 final_indications_df.at[i, "nct_ids"] = ref["ref_id"].split(",")
     
-    # Add trial evidence
+    # Add trial evidence and dates
     final_indications_df["nct_evidence"] = None
+    final_indications_df["first_trial_date"] = "9999"
+    final_indications_df["last_trial_date"] = "0000"
     
     for i, indication in final_indications_df.iterrows():
         if indication["nct_ids"]:
             success_list = []
-            for nct_id in indication["nct_ids"]:
+            first_trial_date = "9999"
+            last_trial_date = "0000"
+            
+            for nct_id in set(indication["nct_ids"]):
                 success = trials_df.loc[trials_df["nct_id"] == nct_id, "success"].values
                 phase = trials_df.loc[trials_df["nct_id"] == nct_id, "phase"].values
                 
                 if len(success) > 0 and success[0] is not None:
-                    phase_str = str(int(phase[0])) if len(phase) > 0 and not pd.isna(phase[0]) else ""
+                    phase_str = str(int(phase[0])) if len(phase) > 0 and not pd.isna(phase[0]) else "nan"
                     success_list.append(success[0] + phase_str)
+                
+                # Get dates
+                first_date = trials_df.loc[trials_df["nct_id"] == nct_id, "first_date"]
+                if not first_date.empty:
+                    first_date = first_date.values[0]
+                    if isinstance(first_date, str) and first_date:
+                        first_trial_date = min(first_trial_date, first_date)
+                
+                last_date = trials_df.loc[trials_df["nct_id"] == nct_id, "last_date"]
+                if not last_date.empty:
+                    last_date = last_date.values[0]
+                    if isinstance(last_date, str) and last_date:
+                        last_trial_date = max(last_trial_date, last_date)
             
+            if first_trial_date != "9999":
+                final_indications_df.loc[i, "first_trial_date"] = first_trial_date
+            if last_trial_date != "0000":
+                final_indications_df.loc[i, "last_trial_date"] = last_trial_date
             final_indications_df.at[i, "nct_evidence"] = success_list
     
     # Rename for consistency
@@ -279,5 +368,82 @@ def process_indications_data(
         first_columns + [c for c in final_indications_df.columns if c not in first_columns]
     ]
     
+    # Add disease_id column
+    final_indications_df["disease_id"] = final_indications_df["efo_id"]
+    
+    # Drop duplicates
+    final_indications_df = final_indications_df.drop_duplicates(subset=['disease_id', 'drug_id'])
+    
+    # Determine overall_success (matching notebook 02 logic)
+    final_indications_df["overall_success"] = None
+    
+    for i, row in final_indications_df.iterrows():
+        # If phase 4 is passed, it's definitely a success
+        if final_indications_df.loc[i, "max_phase_for_ind"] == "4.0":
+            final_indications_df.at[i, "overall_success"] = True
+        
+        # If there's evidence about trials for this combination
+        elif final_indications_df.loc[i, "nct_evidence"]:
+            all_results = final_indications_df.loc[i, "nct_evidence"]
+            # Filter out results with "None" in them
+            valid_results = [r for r in all_results if "None" not in r and "nan" not in r]
+            
+            if valid_results:
+                highest_phase = max([int(result[-1]) for result in valid_results])
+                latest_results = np.array([
+                    result[:-1] for result in valid_results
+                    if int(result[-1]) == highest_phase
+                ])
+                nb_success = np.sum(latest_results == "success")
+                nb_fail = np.sum(latest_results == "fail")
+                
+                if highest_phase >= 3 and nb_success > 2 * nb_fail:
+                    final_indications_df.at[i, "overall_success"] = True
+                elif nb_fail > 2 * nb_success:
+                    final_indications_df.at[i, "overall_success"] = False
+        
+        # If still not decided - check if abandoned
+        if final_indications_df.at[i, "overall_success"] is None:
+            last_trial_date = final_indications_df.loc[i, "last_trial_date"]
+            if last_trial_date < "2020" or last_trial_date == "0000":
+                final_indications_df.at[i, "overall_success"] = False
+    
+    final_indications_df["overall_success"] = final_indications_df["overall_success"].astype("boolean")
+    
+    # Reorder columns with overall_success
+    first_columns = ["drug_id", "disease_id", "overall_success", "nct_evidence", "max_phase_for_ind"]
+    final_indications_df = final_indications_df[
+        first_columns + [c for c in final_indications_df.columns if c not in first_columns]
+    ]
+    
+    # Generate dates_df (matching notebook 02 logic)
+    dates_df = final_indications_df.groupby(
+        ["drug_id", "disease_id"], as_index=False
+    )["first_trial_date"].min()
+    
+    # Merge with drug first_approval if available
+    if drugs_df is not None and "first_approval" in drugs_df.columns:
+        drugs_df_copy = drugs_df.copy()
+        drugs_df_copy["first_approval"] = drugs_df_copy["first_approval"].apply(
+            lambda x: str(int(x)) if pd.notna(x) else "9999"
+        )
+        dates_df = dates_df.merge(
+            drugs_df_copy[["drug_id", "first_approval"]], 
+            how="left", 
+            on="drug_id"
+        ).fillna("9999")
+        
+        # If no trial date, use first approval date
+        for i, row in dates_df.iterrows():
+            if dates_df.loc[i, "first_trial_date"] == "9999" and dates_df.loc[i, "first_approval"] != "9999":
+                dates_df.loc[i, "first_trial_date"] = dates_df.loc[i, "first_approval"]
+        
+        dates_df = dates_df.drop(columns=["first_approval"])
+    
+    # Replace absent dates with "0000" (will take only newest for test)
+    dates_df["first_trial_date"] = dates_df["first_trial_date"].apply(
+        lambda x: "0000" if x == "9999" else x
+    )
+    
     print(f"Processed {len(final_indications_df)} indications")
-    return final_indications_df
+    return final_indications_df, dates_df

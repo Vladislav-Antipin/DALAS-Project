@@ -5,16 +5,18 @@ import pickle
 import json
 import warnings
 from typing import List, Any
+from urllib.parse import quote
 
 import pandas as pd
+import numpy as np
 import requests
-from bs4 import BeautifulSoup
+from lxml import etree
 from chembl_webresource_client.new_client import new_client
 from bioservices import UniProt
 
 from .config import (
     MESH_URL, OT_URL, NCT_URL, RAW_DATA_DIR,
-    NB_TOP_TARGETS, NB_EVIDENCES
+    NB_TOP_TARGETS
 )
 
 
@@ -37,7 +39,9 @@ def load_raw_data(filename: str) -> Any:
 
 def fetch_mesh_ids(force: bool = False) -> List[str]:
     """
-    Extract all MeSH IDs for autoimmune diseases.
+    Extract all MeSH IDs for immune system diseases using SPARQL query.
+    
+    Matches notebook 01_1-data_retrieval.ipynb logic.
     
     Args:
         force: If True, refetch even if cached data exists
@@ -53,29 +57,38 @@ def fetch_mesh_ids(force: bool = False) -> List[str]:
             print(f"Loaded cached MeSH IDs: {len(cached)} IDs")
             return cached
     
-    print("Fetching MeSH IDs from NCBI...")
-    response = requests.get(MESH_URL)
+    print("Fetching MeSH IDs via SPARQL query...")
     
-    if response.status_code != 200:
-        raise ConnectionError(f"Failed to retrieve MeSH data: {response.status_code}")
+    mesh_query = """
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX meshv: <http://id.nlm.nih.gov/mesh/vocab#>
+PREFIX mesh: <http://id.nlm.nih.gov/mesh/>
+PREFIX mesh2025: <http://id.nlm.nih.gov/mesh/2025/>
+PREFIX mesh2024: <http://id.nlm.nih.gov/mesh/2024/>
+PREFIX mesh2023: <http://id.nlm.nih.gov/mesh/2023/>
+
+SELECT ?dis
+FROM <http://id.nlm.nih.gov/mesh>
+WHERE {  
+  ?root rdfs:label "Immune System Diseases"@en .
+  ?root meshv:treeNumber ?tn_root .
+  ?dis meshv:treeNumber ?tn .
+  FILTER(STRSTARTS(STR(?tn),STR(?tn_root))) .
+}
+"""
     
-    soup = BeautifulSoup(response.text, "html.parser")
-    autoimm_ul = soup.find("span", string="Autoimmune Diseases").find_all_next("ul")
+    response = requests.get(f"{MESH_URL}?query={quote(mesh_query)}")
     
-    mesh_ids = []
-    for disease_a in autoimm_ul[8].find_all("a"):
-        disease_url = disease_a.get('href')
-        response = requests.get(f'https://www.ncbi.nlm.nih.gov{disease_url}')
-        
-        if response.status_code == 200:
-            disease_soup = BeautifulSoup(response.text, "html.parser")
-            mesh_id_element = disease_soup.find(
-                "p", string=lambda text: text and text.startswith("MeSH Unique ID:")
-            )
-            if mesh_id_element:
-                mesh_ids.append(mesh_id_element.text.split()[-1])
-        else:
-            warnings.warn(f"Failed to retrieve {disease_url}", RuntimeWarning)
+    if not response.ok:
+        response.raise_for_status()
+    
+    root = etree.fromstring(response.text.encode())
+    ns = {"sr": "http://www.w3.org/2005/sparql-results#"}
+    mesh_ids = root.xpath("//sr:uri/text()", namespaces=ns)
+    mesh_ids = [mesh_id.split("/")[-1] for mesh_id in mesh_ids]
     
     save_raw_data(mesh_ids, filename)
     print(f"Fetched {len(mesh_ids)} MeSH IDs")
@@ -206,15 +219,21 @@ def fetch_mechanisms_and_targets(chembl_ids: List[str], force: bool = False) -> 
     all_uniprot_ids = list({x for ids in targets_df["uniprot_ids"] for x in ids})
     
     if all_uniprot_ids:
-        up_id_map = up.mapping(fr="UniProtKB", to="UniProtKB", query=all_uniprot_ids)
-        primary_up_ids = list({
-            result["to"]["primaryAccession"] 
-            for result in up_id_map["results"]
-        })
-        
-        targets_df["uniprot_ids"] = targets_df["uniprot_ids"].apply(
-            lambda up_ids: [up_id for up_id in up_ids if up_id in primary_up_ids]
-        )
+        try:
+            up_id_map = up.mapping(fr="UniProtKB", to="UniProtKB", query=all_uniprot_ids)
+            if up_id_map and "results" in up_id_map:
+                primary_up_ids = list({
+                    result["to"]["primaryAccession"] 
+                    for result in up_id_map["results"]
+                })
+                
+                targets_df["uniprot_ids"] = targets_df["uniprot_ids"].apply(
+                    lambda up_ids: [up_id for up_id in up_ids if up_id in primary_up_ids]
+                )
+            else:
+                print("Warning: UniProt mapping returned no results, keeping original IDs")
+        except Exception as e:
+            print(f"Warning: UniProt mapping failed ({e}), keeping original IDs")
     
     # Merge mechanism with targets
     mechanism_df = mechanism_df.merge(targets_df, on="target_chembl_id")
@@ -229,6 +248,9 @@ def fetch_mechanisms_and_targets(chembl_ids: List[str], force: bool = False) -> 
 def fetch_disease_info(efo_ids: List[str], force: bool = False) -> pd.DataFrame:
     """
     Fetch disease information and associated targets from Open Targets.
+    
+    Matches notebook 01_1-data_retrieval.ipynb logic - extracts disease_targets
+    directly from SwissProt protein IDs.
     
     Args:
         efo_ids: List of EFO IDs
@@ -246,6 +268,9 @@ def fetch_disease_info(efo_ids: List[str], force: bool = False) -> pd.DataFrame:
             return cached
     
     print("Fetching disease data from Open Targets...")
+    
+    # Filter out None/NaN EFO IDs
+    efo_ids = [eid for eid in efo_ids if eid and pd.notna(eid)]
     
     ot_targets_info = []
     for efo_id in efo_ids:
@@ -298,74 +323,17 @@ def fetch_disease_info(efo_ids: List[str], force: bool = False) -> pd.DataFrame:
         else:
             warnings.warn(f"Failed to fetch disease {efo_id}: {response.status_code}")
     
-    diseases_df = pd.DataFrame(ot_targets_info)
+    diseases_df = pd.DataFrame([elt for elt in ot_targets_info if elt is not None])
     
-    # Extract Ensembl IDs
-    diseases_df["ensembl_ids"] = diseases_df["associatedTargets"].apply(
-        lambda result: [row["target"]["id"] for row in result["rows"]]
+    # Extract disease_targets directly from SwissProt (matching notebook logic)
+    diseases_df["disease_targets"] = diseases_df["associatedTargets"].apply(
+        lambda result: [
+            uniprot["id"]
+            for row in result["rows"]
+            for uniprot in row["target"]["proteinIds"]
+            if uniprot["source"] == 'uniprot_swissprot'
+        ]
     )
-    
-    # Map Ensembl to UniProt
-    print("Mapping Ensembl IDs to UniProt...")
-    up = UniProt()
-    all_ensembl_ids = list({x for ids in diseases_df["ensembl_ids"] for x in ids})
-    
-    if all_ensembl_ids:
-        ensembl_id_map = up.mapping(fr="Ensembl", to="UniProtKB", query=all_ensembl_ids)
-        uniprot_map = {
-            result["from"]: result["to"]["primaryAccession"]
-            for result in ensembl_id_map["results"]
-        }
-        
-        diseases_df["uniprot_ids"] = diseases_df["ensembl_ids"].apply(
-            lambda ensembl_ids: [
-                uniprot_map[eid] for eid in ensembl_ids if eid in uniprot_map
-            ]
-        )
-    
-    # Fetch target evidence
-    print("Fetching target evidence...")
-    diseases_df["target_evidence"] = [[] for _ in range(len(diseases_df))]
-    
-    for i, disease in diseases_df.iterrows():
-        query_string = """
-        query disease($efoId: String!, $ensemblIds : [String!]!, $size: Int!){
-            disease(efoId: $efoId) {
-                evidences(ensemblIds: $ensemblIds, size: $size){ 
-                    count
-                    rows{
-                        target{
-                            id
-                        }
-                        score
-                        datatypeId
-                        variantEffect
-                        targetModulation
-                        targetRole
-                        directionOnTrait
-                    }
-                }
-            }
-        }
-        """
-        
-        response = requests.post(
-            OT_URL,
-            json={
-                "query": query_string,
-                "variables": {
-                    "efoId": disease["id"],
-                    "ensemblIds": disease["ensembl_ids"],
-                    "size": NB_EVIDENCES
-                }
-            }
-        )
-        
-        if response.status_code == 200:
-            evidence_data = json.loads(response.text)["data"]["disease"]["evidences"]["rows"]
-            diseases_df.at[i, "target_evidence"] = evidence_data
-        else:
-            warnings.warn(f"Failed to fetch evidence for {disease['id']}")
     
     save_raw_data(diseases_df, filename)
     print(f"Fetched {len(diseases_df)} diseases")

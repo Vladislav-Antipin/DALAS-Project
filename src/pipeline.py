@@ -1,4 +1,11 @@
-"""Main pipeline for fetching and processing all data."""
+"""Main pipeline for fetching and processing all data.
+
+Matches the logic from notebooks:
+- 01_1-data_retrieval.ipynb
+- 01_2-rdkit_fingerprints.ipynb
+- 01_3-additional_disease_features.ipynb
+- 02-data_preparation.ipynb
+"""
 
 import argparse
 import pandas as pd
@@ -11,6 +18,7 @@ from .data_fetchers import (
     fetch_disease_info,
     fetch_clinical_trials,
     load_raw_data,
+    save_raw_data,
 )
 from .data_processors import (
     process_drugs_data,
@@ -21,6 +29,9 @@ from .data_processors import (
     load_processed_data,
 )
 from .embeddings import compute_drug_disease_similarities
+from .fingerprints import generate_fingerprints
+from .disease_features import generate_extended_disease_features
+from .pathway_mapping import map_targets_to_pathways, generate_pathway_embeddings
 
 
 def run_data_fetching(force: bool = False):
@@ -83,6 +94,8 @@ def run_data_processing(raw_data: dict = None, force: bool = False):
     """
     Run all data processing steps.
     
+    Matches notebooks 01_1, 01_2, 01_3, and 02 logic.
+    
     Args:
         raw_data: Dictionary of raw dataframes (if None, loads from cache)
         force: If True, reprocess even if processed data exists
@@ -102,44 +115,92 @@ def run_data_processing(raw_data: dict = None, force: bool = False):
             "indications_df": load_raw_data("indications_df.pkl"),
         }
     
-    # 1. Process drugs
-    print("\n[1/4] Processing drugs...")
+    # 1. Process drugs (matching notebook 01_1)
+    print("\n[1/8] Processing drugs...")
     final_drugs_df = process_drugs_data(
         raw_data["drugs_df"],
         raw_data["mechanism_df"]
     )
-    save_processed_data(final_drugs_df, "final_drugs_df.pkl")
+    save_raw_data(final_drugs_df, "drugs_df.pkl")
     
-    # 2. Process diseases
-    print("\n[2/4] Processing diseases...")
+    # 2. Process diseases (matching notebook 01_1)
+    print("\n[2/8] Processing diseases...")
     final_diseases_df = process_diseases_data(raw_data["diseases_df"])
-    save_processed_data(final_diseases_df, "final_diseases_df.pkl")
+    save_raw_data(final_diseases_df, "diseases_df.pkl")
     
-    # 3. Process trials
-    print("\n[3/4] Processing trials...")
-    final_trials_df = process_trials_data(raw_data["trials_df"])
-    save_processed_data(final_trials_df, "final_trials_df.pkl")
-    
-    # 4. Process indications
-    print("\n[4/4] Processing indications...")
-    final_indications_df = process_indications_data(
-        raw_data["indications_df"],
-        final_trials_df
+    # 3. Map targets to pathways (matching notebook 01_1)
+    print("\n[3/8] Mapping targets to Reactome pathways...")
+    final_drugs_df, final_diseases_df = map_targets_to_pathways(
+        final_drugs_df,
+        final_diseases_df,
+        force=force
     )
-    save_processed_data(final_indications_df, "final_indications_df.pkl")
+    
+    # 4. Generate pathway embeddings
+    print("\n[4/8] Generating pathway embeddings...")
+    final_drugs_df, final_diseases_df = generate_pathway_embeddings(
+        final_drugs_df,
+        final_diseases_df,
+        force=force
+    )
+    save_raw_data(final_drugs_df, "drugs_df.pkl")
+    save_raw_data(final_diseases_df, "diseases_df.pkl")
+    
+    # 5. Generate molecular fingerprints (matching notebook 01_2)
+    print("\n[5/8] Generating molecular fingerprints...")
+    fingerprints_df = generate_fingerprints(
+        raw_data["drugs_df"],  # Use raw drugs for SMILES
+        use_morgan=True,
+        n_components=100,
+        use_only_safe_drugs=True,
+        force=force
+    )
+    save_raw_data(fingerprints_df, "fingerprints_df.pkl")
+    
+    # 6. Generate extended disease features (matching notebook 01_3)
+    print("\n[6/8] Generating extended disease features...")
+    extended_diseases_df = generate_extended_disease_features(
+        final_diseases_df,
+        raw_data["indications_df"],
+        force=force
+    )
+    save_raw_data(extended_diseases_df, "extended_diseases_df.pkl")
+    
+    # 7. Process trials (matching notebook 02)
+    print("\n[7/8] Processing trials...")
+    final_trials_df = process_trials_data(raw_data["trials_df"])
+    save_processed_data(final_trials_df, "trials_df.pkl")
+    
+    # 8. Process indications with overall_success (matching notebook 02)
+    print("\n[8/8] Processing indications...")
+    final_indications_df, dates_df = process_indications_data(
+        raw_data["indications_df"],
+        final_trials_df,
+        final_drugs_df
+    )
+    save_processed_data(final_indications_df, "indications_df.pkl")
+    save_processed_data(dates_df, "dates_df.pkl")
+    
+    # Also save drugs and diseases to processed directory
+    save_processed_data(final_drugs_df, "drugs_df.pkl")
+    save_processed_data(extended_diseases_df, "diseases_df.pkl")
     
     print("\n✓ Data processing complete!")
     return {
         "final_drugs_df": final_drugs_df,
-        "final_diseases_df": final_diseases_df,
+        "final_diseases_df": extended_diseases_df,
         "final_trials_df": final_trials_df,
         "final_indications_df": final_indications_df,
+        "fingerprints_df": fingerprints_df,
+        "dates_df": dates_df,
     }
 
 
 def run_embeddings(processed_data: dict = None, force: bool = False):
     """
     Generate embeddings and compute similarities.
+    
+    Matches notebook 01_1-data_retrieval.ipynb logic.
     
     Args:
         processed_data: Dictionary of processed dataframes (if None, loads from cache)
@@ -153,8 +214,8 @@ def run_embeddings(processed_data: dict = None, force: bool = False):
     if processed_data is None:
         print("\nLoading processed data from cache...")
         processed_data = {
-            "final_drugs_df": load_processed_data("final_drugs_df.pkl"),
-            "final_diseases_df": load_processed_data("final_diseases_df.pkl"),
+            "final_drugs_df": load_processed_data("drugs_df.pkl"),
+            "final_diseases_df": load_processed_data("diseases_df.pkl"),
         }
     
     print("\nComputing drug-disease name similarities...")
@@ -163,7 +224,7 @@ def run_embeddings(processed_data: dict = None, force: bool = False):
         processed_data["final_diseases_df"],
         force=force
     )
-    save_processed_data(embeddings_df, "embeddings_df.pkl")
+    save_raw_data(embeddings_df, "embeddings_df.pkl")
     
     print("\n✓ Embeddings generation complete!")
     return embeddings_df
@@ -172,6 +233,8 @@ def run_embeddings(processed_data: dict = None, force: bool = False):
 def run_full_pipeline(force_fetch: bool = False, force_process: bool = False):
     """
     Run the complete data pipeline.
+    
+    Matches the full flow from notebooks 01_1 through 02.
     
     Args:
         force_fetch: If True, refetch all raw data
@@ -184,30 +247,33 @@ def run_full_pipeline(force_fetch: bool = False, force_process: bool = False):
     # Step 1: Fetch raw data
     raw_data = run_data_fetching(force=force_fetch)
     
-    # Step 2: Process data
+    # Step 2: Process data (includes fingerprints, pathways, disease features)
     processed_data = run_data_processing(raw_data=raw_data, force=force_process)
     
     # Step 3: Generate embeddings
-    _ = run_embeddings(processed_data=processed_data, force=force_process)  # Saved to disk
+    _ = run_embeddings(processed_data=processed_data, force=force_process)
     
     print("\n" + "="*80)
     print("✓ PIPELINE COMPLETE!")
     print("="*80)
     print("\nGenerated datasets:")
-    print("  Raw data (data/raw/):")
+    print("  Raw data (data/01-result/):")
     print("    - mesh_ids.pkl")
     print("    - indications_df.pkl")
-    print("    - drugs_df.pkl")
+    print("    - drugs_df.pkl (with targets and pathways)")
     print("    - mechanism_df.pkl")
     print("    - targets_df.pkl")
+    print("    - diseases_df.pkl (with disease_targets and pathways)")
+    print("    - trials_df.pkl")
+    print("    - fingerprints_df.pkl")
+    print("    - embeddings_df.pkl")
+    print("    - extended_diseases_df.pkl")
+    print("\n  Processed data (data/02-result/):")
+    print("    - drugs_df.pkl")
     print("    - diseases_df.pkl")
     print("    - trials_df.pkl")
-    print("\n  Processed data (data/processed/):")
-    print("    - final_drugs_df.pkl")
-    print("    - final_diseases_df.pkl")
-    print("    - final_trials_df.pkl")
-    print("    - final_indications_df.pkl")
-    print("    - embeddings_df.pkl")
+    print("    - indications_df.pkl (with overall_success)")
+    print("    - dates_df.pkl")
     print("\n")
 
 
