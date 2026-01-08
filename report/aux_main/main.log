@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.18)  29 DEC 2025 11:42
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.18)  8 JAN 2026 00:39
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -725,78 +725,96 @@ LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 23
  (/usr/local/texlive/2025basic/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )) (./sections/02_data.tex
-Overfull \hbox (3.81151pt too wide) in paragraph at lines 22--22
+Overfull \hbox (3.81151pt too wide) in paragraph at lines 24--24
 []|\T1/lmr/m/n/12 ClinicalTrials.gov| 
  []
 
 
 
 [2{/usr/local/texlive/2025basic/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}]
-<figures/03-pca-scree_plot.png, id=105, 501.5538pt x 392.4261pt>
+<figures/03-label-has_results_in_time.png, id=112, 714.7503pt x 354.6048pt>
+File: figures/03-label-has_results_in_time.png Graphic file (type png)
+<use figures/03-label-has_results_in_time.png>
+Package pdftex.def Info: figures/03-label-has_results_in_time.png  used on input line 34.
+(pdftex.def)             Requested size: 407.66833pt x 202.26208pt.
+<figures/03-label-stability_in_time.png, id=114, 714.7503pt x 354.6048pt>
+File: figures/03-label-stability_in_time.png Graphic file (type png)
+<use figures/03-label-stability_in_time.png>
+Package pdftex.def Info: figures/03-label-stability_in_time.png  used on input line 41.
+(pdftex.def)             Requested size: 407.66833pt x 202.26208pt.
+<figures/03-label-distribution_missing_date.png, id=115, 498.4221pt x 376.7676pt>
+File: figures/03-label-distribution_missing_date.png Graphic file (type png)
+<use figures/03-label-distribution_missing_date.png>
+Package pdftex.def Info: figures/03-label-distribution_missing_date.png  used on input line 48.
+(pdftex.def)             Requested size: 317.07614pt x 239.68742pt.
+
+
+[3 <./figures/03-label-has_results_in_time.png> <./figures/03-label-stability_in_time.png>]
+<figures/03-pca-scree_plot.png, id=125, 501.072pt x 376.7676pt>
 File: figures/03-pca-scree_plot.png Graphic file (type png)
 <use figures/03-pca-scree_plot.png>
-Package pdftex.def Info: figures/03-pca-scree_plot.png  used on input line 34.
-(pdftex.def)             Requested size: 317.07614pt x 248.09201pt.
-<figures/03-pca-scatter_plot.png, id=107, 498.1812pt x 392.4261pt>
+Package pdftex.def Info: figures/03-pca-scree_plot.png  used on input line 60.
+(pdftex.def)             Requested size: 317.07614pt x 238.4169pt.
+<figures/03-pca-scatter_plot.png, id=126, 494.8086pt x 376.7676pt>
 File: figures/03-pca-scatter_plot.png Graphic file (type png)
 <use figures/03-pca-scatter_plot.png>
-Package pdftex.def Info: figures/03-pca-scatter_plot.png  used on input line 41.
-(pdftex.def)             Requested size: 317.07614pt x 249.77461pt.
+Package pdftex.def Info: figures/03-pca-scatter_plot.png  used on input line 67.
+(pdftex.def)             Requested size: 317.07614pt x 241.44662pt.
 
 
-[3 <./figures/03-pca-scree_plot.png>]
-<figures/03-pca-corr_circle.png, id=116, 523.9575pt x 392.4261pt>
+[4 <./figures/03-label-distribution_missing_date.png> <./figures/03-pca-scree_plot.png>]
+<figures/03-pca-corr_circle.png, id=136, 393.6306pt x 376.7676pt>
 File: figures/03-pca-corr_circle.png Graphic file (type png)
 <use figures/03-pca-corr_circle.png>
-Package pdftex.def Info: figures/03-pca-corr_circle.png  used on input line 48.
-(pdftex.def)             Requested size: 317.07614pt x 237.48738pt.
+Package pdftex.def Info: figures/03-pca-corr_circle.png  used on input line 74.
+(pdftex.def)             Requested size: 317.07614pt x 303.4956pt.
  (./tables/03-dataset_summary.tex)
 
-[4 <./figures/03-pca-scatter_plot.png> <./figures/03-pca-corr_circle.png>]
+[5 <./figures/03-pca-scatter_plot.png> <./figures/03-pca-corr_circle.png>]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 70.
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 77.
+(Font)              <5> on input line 97.
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 104.
  (/usr/local/texlive/2025basic/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-Underfull \hbox (badness 10000) in paragraph at lines 100--101
+Underfull \hbox (badness 10000) in paragraph at lines 127--128
 []|\T1/lmr/m/n/10 Weighted quan-ti-ta-tive es-ti-mate of drug like-
  []
 
 
-Overfull \hbox (9.82343pt too wide) in paragraph at lines 70--124
+Overfull \hbox (9.82343pt too wide) in paragraph at lines 97--151
  [][] 
  []
 
 
 
-[5]
+[6]
 
-[6]) (./sections/03_methods.tex) (./sections/04_results.tex (./tables/04-random_split-model_comparison.tex) (./tables/04-time_split-model_comparison.tex)) (./sections/05_discussion.tex) (./sections/06_conclusion.tex
+[7]) (./sections/03_methods.tex) (./sections/04_results.tex (./tables/04-time_split-model_comparison.tex) (./tables/04-time_split-best_parameters.tex)
 
-[7]) (aux_main/main.bbl)
+[8]) (./sections/05_discussion.tex) (./sections/06_conclusion.tex) (aux_main/main.bbl)
 
-[8] (aux_main/main.aux)
+[9] (aux_main/main.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 4FE58E0FE210A21868BFC27E7AC5EDD7;2110.
+(rerunfilecheck)             Checksum: D75B5CBB1D675DAE278C39DF8DB1DA1E;2304.
  ) 
 Here is how much of TeX's memory you used:
- 24009 strings out of 474662
- 446792 string characters out of 5751109
- 837145 words of memory out of 5000000
- 46535 multiletter control sequences out of 15000+600000
+ 24042 strings out of 474662
+ 448030 string characters out of 5751109
+ 837361 words of memory out of 5000000
+ 46562 multiletter control sequences out of 15000+600000
  623478 words of font info for 88 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
  104i,12n,104p,501b,851s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmr17.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmri12.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmtt12.pfb>
-Output written on aux_main/main.pdf (8 pages, 965886 bytes).
+Output written on aux_main/main.pdf (9 pages, 1357801 bytes).
 PDF statistics:
- 217 PDF objects out of 1000 (max. 8388607)
- 182 compressed objects within 2 object streams
- 49 named destinations out of 1000 (max. 500000)
- 156 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 238 PDF objects out of 1000 (max. 8388607)
+ 196 compressed objects within 2 object streams
+ 55 named destinations out of 1000 (max. 500000)
+ 179 words of extra memory for PDF output out of 10000 (max. 10000000)
 
