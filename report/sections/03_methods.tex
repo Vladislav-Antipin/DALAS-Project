@@ -2,7 +2,130 @@
 \label{sec:methods}
 
 \subsection{Model Overview}
-\todo[inline]{Briefly describe the models used. Include general principles (e.g., linear models, random forests, neural networks).}
+
+We frame drug repurposing as a \textbf{pairwise prediction problem}: given a drug-disease pair represented by features from both entities, predict whether this combination will be successful. Crucially, this formulation is \emph{symmetric}---neither the drug nor the disease is treated as a fixed query; instead, each (drug, disease) pair constitutes a single data point with features derived from:
+\begin{itemize}
+    \item the drug (chemical properties, molecular fingerprints, pathway associations),
+    \item the disease (ontological features, pathway associations), and
+    \item their interaction (e.g., pathway similarity between drug targets and disease-associated pathways).
+\end{itemize}
+
+This symmetric approach differs from conditional formulations such as ``given a disease, rank candidate drugs'' or ``given a drug, identify treatable diseases.'' While those asymmetric framings fix one entity and search over the other, our model learns to score arbitrary drug-disease combinations without privileging either entity. The prediction task can be viewed as \textbf{link prediction} in a bipartite drug-disease graph, where we predict whether an edge (successful treatment) should exist between a drug node and a disease node.
+
+To address this task, we evaluate six machine learning classifiers spanning different algorithmic paradigms, allowing us to compare the effectiveness of various modeling approaches on our high-dimensional, imbalanced dataset.
+
+\subsubsection{Instance-Based Methods}
+
+\paragraph{k-Nearest Neighbors (KNN).}
+KNN is a non-parametric method that classifies samples based on the majority class among their $k$ nearest neighbors in feature space. While conceptually simple and making no assumptions about the underlying data distribution, KNN can struggle with high-dimensional data due to the curse of dimensionality. We include it as a baseline to assess whether local similarity in feature space is predictive of treatment success.
+
+\subsubsection{Linear Models}
+
+\paragraph{Logistic Regression.}
+Logistic regression models the log-odds of the positive class as a linear combination of features, providing interpretable coefficients that quantify each feature's contribution to the prediction. We employ elastic net regularization, which combines L1 (lasso) and L2 (ridge) penalties, enabling both feature selection and handling of correlated features. The regularization strength $C$ and the mixing parameter \texttt{l1\_ratio} are tuned via cross-validation.
+
+\paragraph{Support Vector Machine (SVM).}
+SVMs find an optimal separating hyperplane that maximizes the margin between classes. We explore multiple kernel functions: linear (for linearly separable patterns), polynomial (for moderate non-linear relationships), and radial basis function (RBF) kernels (for complex non-linear boundaries). The regularization parameter $C$ controls the trade-off between margin maximization and classification error, while kernel-specific parameters (degree for polynomial, $\gamma$ for RBF) modulate the decision boundary complexity.
+
+\subsubsection{Ensemble Methods}
+
+\paragraph{Random Forest.}
+Random forests aggregate predictions from multiple decision trees, each trained on a bootstrap sample of the data with a random subset of features considered at each split. This bagging approach reduces overfitting and variance compared to individual trees while maintaining the ability to capture non-linear relationships and feature interactions. The ensemble nature also provides natural estimates of feature importance.
+
+\paragraph{Gradient Boosting.}
+Gradient boosting builds an additive model by sequentially fitting weak learners (shallow decision trees) to the residual errors of the current ensemble. Each tree corrects the mistakes of its predecessors, progressively improving predictive accuracy. Key hyperparameters include the number of estimators, tree depth, learning rate (which controls the contribution of each tree), and subsample ratio (for stochastic gradient boosting).
+
+\paragraph{XGBoost.}
+XGBoost (Extreme Gradient Boosting) extends gradient boosting with several enhancements: regularization terms in the objective function to prevent overfitting, efficient handling of sparse data, and parallel tree construction. Additional hyperparameters such as \texttt{colsample\_bytree} (feature subsampling per tree) and \texttt{gamma} (minimum loss reduction for splits) provide finer control over model complexity.
+
+\subsubsection{Model Selection Rationale}
+
+Our model selection is motivated by several characteristics of the pairwise prediction problem:
+\begin{itemize}
+    \item \textbf{High dimensionality:} With approximately 250 features (molecular fingerprints, pathway embeddings, chemical descriptors from both drug and disease), we require models that can handle high-dimensional inputs without overfitting. Regularized linear models and tree-based ensembles are well-suited for this setting.
+    \item \textbf{Class imbalance:} The dataset exhibits a 2.5:1 ratio of failures to successes. All models are configured with class balancing mechanisms (see Section~\ref{sec:implementation}).
+    \item \textbf{Concatenated pair representations:} Since we represent each drug-disease pair by concatenating drug features, disease features, and interaction features into a single vector, standard tabular classifiers can be applied directly. This contrasts with graph-based approaches that would model drugs and diseases as separate node types.
+    \item \textbf{Interpretability vs.\ performance trade-off:} Linear models offer interpretability through feature coefficients, while ensemble methods typically achieve higher predictive performance at the cost of interpretability.
+    \item \textbf{Mixed feature types:} Our features include continuous chemical descriptors, binary flags, and dimensionality-reduced embeddings. Tree-based methods are naturally suited to mixed feature types, while distance-based methods (KNN, SVM) benefit from proper scaling.
+\end{itemize}
 
 \subsection{Implementation Details}
-\todo[inline]{Mention important parameters, software/libraries used, and cross-validation setup.}
+\label{sec:implementation}
+
+\subsubsection{Preprocessing Pipeline}
+
+All models are embedded in a scikit-learn \texttt{Pipeline} that applies consistent preprocessing before classification:
+\begin{itemize}
+    \item \textbf{Missing value imputation:} Numeric features are imputed with column means; categorical features use the most frequent value. In practice, missing values were largely eliminated during data preparation (see Section~\ref{sec:data}).
+    \item \textbf{Feature scaling:} Numeric features are standardized to zero mean and unit variance using \texttt{StandardScaler}, which is essential for distance-based methods (KNN, SVM) and improves convergence for gradient-based optimization (logistic regression).
+\end{itemize}
+
+\subsubsection{Handling Class Imbalance}
+
+Given the imbalanced class distribution (approximately 71\% failures, 29\% successes), we employ class weighting strategies:
+\begin{itemize}
+    \item For logistic regression, SVM, and random forest, we set \texttt{class\_weight='balanced'}, which inversely weights classes proportional to their frequencies.
+    \item For XGBoost, we set \texttt{scale\_pos\_weight} to the ratio of negative to positive samples, achieving an equivalent effect.
+    \item KNN and standard gradient boosting do not natively support class weighting; their performance may be affected by the imbalance.
+\end{itemize}
+
+\subsubsection{Train-Test Split Strategy}
+
+To simulate realistic deployment conditions where models must generalize to future drug-disease pairs, we employ a \textbf{temporal split} rather than random stratified sampling. Data are sorted by the first clinical trial date associated with each indication, and the earliest 85\% of samples form the training set while the most recent 15\% constitute the test set. The split date corresponds to August 2014, ensuring that the model is evaluated on genuinely future data.
+
+This temporal approach prevents data leakage that could occur if training samples contained information from trials conducted after the test set trials, which would artificially inflate performance estimates.
+
+\subsubsection{Cross-Validation and Hyperparameter Tuning}
+
+Hyperparameter optimization is performed using 5-fold cross-validation on the training set via \texttt{GridSearchCV}. The optimization objective is the F1-score for the positive (success) class, chosen because:
+\begin{itemize}
+    \item It balances precision and recall, both of which are important: high precision avoids wasting resources on predicted successes that fail, while high recall ensures promising drug-disease pairs are not overlooked.
+    \item F1-score is more informative than accuracy for imbalanced datasets.
+\end{itemize}
+
+Table~\ref{tab:hyperparameters} summarizes the hyperparameter search spaces for each model.
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \caption{Hyperparameter search spaces for each classifier.}
+    \label{tab:hyperparameters}
+    \rowcolors{2}{gray!15}{white}
+    \begin{tabular}{p{4cm} p{10cm}}
+        \toprule
+        \textbf{Model} & \textbf{Hyperparameters} \\
+        \midrule
+        k-Nearest Neighbors & \texttt{n\_neighbors} $\in \{5, 10, 20, 30\}$, \texttt{weights} $\in \{\text{uniform}, \text{distance}\}$, \texttt{p} $\in \{1, 2\}$ \\
+        Logistic Regression & \texttt{C} $\in \{0.01, 0.1, 1, 10, 100\}$, \texttt{l1\_ratio} $\in \{0, 0.25, 0.5, 0.75, 1\}$ \\
+        SVM (linear) & \texttt{C} $\in \{0.01, 0.1, 1, 10\}$ \\
+        SVM (polynomial) & \texttt{C} $\in \{0.1, 1, 10\}$, \texttt{degree} $\in \{2, 3, 4\}$, \texttt{gamma} $\in \{\text{scale}, \text{auto}\}$ \\
+        SVM (RBF) & \texttt{C} $\in \{0.1, 1, 10\}$, \texttt{gamma} $\in \{\text{scale}, \text{auto}\}$ \\
+        Random Forest & \texttt{n\_estimators} $\in \{100, 300, 500\}$, \texttt{max\_depth} $\in \{\text{None}, 10, 20\}$, \texttt{min\_samples\_split} $\in \{2, 5\}$, \texttt{min\_samples\_leaf} $\in \{1, 2\}$ \\
+        Gradient Boosting & \texttt{n\_estimators} $\in \{100, 300\}$, \texttt{max\_depth} $\in \{3, 5\}$, \texttt{learning\_rate} $\in \{0.01, 0.05, 0.1\}$, \texttt{subsample} $\in \{0.8, 1.0\}$ \\
+        XGBoost & \texttt{n\_estimators} $\in \{100, 300\}$, \texttt{max\_depth} $\in \{3, 5\}$, \texttt{learning\_rate} $\in \{0.01, 0.05, 0.1\}$, \texttt{subsample} $\in \{0.8, 1.0\}$, \texttt{colsample\_bytree} $\in \{0.8, 1.0\}$, \texttt{gamma} $\in \{0, 0.1\}$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsubsection{Software and Libraries}
+
+All experiments are implemented in Python 3.11 using the following libraries:
+\begin{itemize}
+    \item \textbf{scikit-learn} (v1.x): Preprocessing, cross-validation, and implementations of KNN, logistic regression, SVM, random forest, and gradient boosting.
+    \item \textbf{XGBoost}: High-performance gradient boosting implementation.
+    \item \textbf{pandas} and \textbf{NumPy}: Data manipulation and numerical operations.
+    \item \textbf{RDKit}: Molecular fingerprint generation (Morgan fingerprints with radius 2).
+    \item \textbf{Sentence Transformers} (PubMedBERT): Drug and disease name embeddings.
+\end{itemize}
+
+\subsubsection{Evaluation Metrics}
+
+Model performance is assessed using multiple metrics computed on the held-out test set:
+\begin{itemize}
+    \item \textbf{F1-score}: Harmonic mean of precision and recall for the positive class.
+    \item \textbf{ROC-AUC}: Area under the receiver operating characteristic curve, measuring discrimination ability.
+    \item \textbf{Precision-Recall AUC}: More informative than ROC-AUC for imbalanced datasets.
+    \item \textbf{Confusion matrix}: Provides a detailed breakdown of true/false positives/negatives.
+\end{itemize}
+
+The best model from cross-validation is refitted on the entire training set before final evaluation on the test set.
