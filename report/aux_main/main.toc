@@ -13,10 +13,11 @@
 \contentsline {subsection}{\numberline {2.5}Graph Representation}{8}{subsection.2.5}%
 \contentsline {section}{\numberline {3}Methods}{8}{section.3}%
 \contentsline {subsection}{\numberline {3.1}Model Overview}{8}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Implementation Details}{8}{subsection.3.2}%
-\contentsline {section}{\numberline {4}Results}{8}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Model Comparison}{8}{subsection.4.1}%
-\contentsline {subsection}{\numberline {4.2}Feature Analysis}{9}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}Failure and Success Cases}{9}{subsection.4.3}%
-\contentsline {section}{\numberline {5}Discussion}{9}{section.5}%
-\contentsline {section}{\numberline {6}Conclusion}{9}{section.6}%
+\contentsline {subsection}{\numberline {3.2}Implementation Details}{9}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Evaluation Strategy}{9}{subsection.3.3}%
+\contentsline {section}{\numberline {4}Results}{10}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Model Comparison}{10}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Feature Analysis}{10}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Failure and Success Cases}{11}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Discussion}{11}{section.5}%
+\contentsline {section}{\numberline {6}Conclusion}{11}{section.6}%

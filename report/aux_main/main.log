@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.18)  8 JAN 2026 15:12
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.18)  8 JAN 2026 18:48
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -758,33 +758,35 @@ Overfull \hbox (9.82343pt too wide) in paragraph at lines 155--209
 
 [6]
 
-[7]) (./sections/03_methods.tex) (./sections/04_results.tex (./tables/04-time_split-model_comparison.tex)
+[7]) (./sections/03_methods.tex
 
-[8] (./tables/04-time_split-best_parameters.tex)) (./sections/05_discussion.tex) (./sections/06_conclusion.tex) (aux_main/main.bbl
+[8]
 
-[9])
+[9{/usr/local/texlive/2025basic/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/local/texlive/2025basic/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2025basic/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}]) (./sections/04_results.tex (./tables/04-time_split-model_comparison.tex)
 
-[10] (aux_main/main.aux)
+[10]) (./sections/05_discussion.tex) (./sections/06_conclusion.tex) (aux_main/main.bbl)
+
+[11] (aux_main/main.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 7FB0BC692985D49044A4F14C3C5331B9;3410.
+(rerunfilecheck)             Checksum: 14F220CB544B4B9026D7036128F17283;3566.
  ) 
 Here is how much of TeX's memory you used:
- 23994 strings out of 474662
- 446058 string characters out of 5751109
- 838946 words of memory out of 5000000
+ 23998 strings out of 474662
+ 445898 string characters out of 5751109
+ 838978 words of memory out of 5000000
  46514 multiletter control sequences out of 15000+600000
- 623478 words of font info for 88 fonts, out of 8000000 for 9000
+ 629451 words of font info for 90 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
- 104i,12n,104p,501b,851s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmr17.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmri12.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmtt12.pfb>
-Output written on aux_main/main.pdf (10 pages, 245745 bytes).
+ 104i,15n,104p,501b,851s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmr17.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmri12.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmtt12.pfb>
+Output written on aux_main/main.pdf (11 pages, 264168 bytes).
 PDF statistics:
- 250 PDF objects out of 1000 (max. 8388607)
- 218 compressed objects within 3 object streams
- 55 named destinations out of 1000 (max. 500000)
- 189 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 277 PDF objects out of 1000 (max. 8388607)
+ 239 compressed objects within 3 object streams
+ 57 named destinations out of 1000 (max. 500000)
+ 197 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -3,5 +3,95 @@
 \subsection{Model Overview}
 \todo[inline]{Briefly describe the models used. Include general principles (e.g., linear models, random forests, neural networks).}
 
+Since the prediction target is a binary success/failure for given drug-disease indication, we
+ evaluated several supervised models for binary classification, 
+including Logistic Regression, 
+k-Nearest Neighbors (kNN), 
+Support Vector Machines (SVM), 
+Random Forest, 
+Gradient Boosting, 
+and XGBoost.
+
+Logistic regression estimates probability of success using sigmoid-transformed
+ linear combinations of the input features. Its biggest advantage is high interoperability
+ since feature waits indicate their importance, however it is limited to linearly
+ separable problems.
+
+k-Nearest Neighbors is instance based model, making predictions by looking at labels
+of the closest points in the feature space. Therefore, there is no actual training phase and the assumption behind this model is that similar observations
+tend to have the same label. Nevertheless it is very sensitive to noise and the curse of dimensionality, 
+as well as poorly interpretable (only by samples that voted).
+
+Support Vector Machines are fitting a decision boundary, maximizing the margin between classes.
+Although it may be similar to regularized linear regression, the usage of kernel functions
+allows fitting of non-linear decision boundaries.
+
+Tree-based ensemble learning models leverage hierarchical decision rules
+ and combine prediction of multiple models. A random forest aggregates 
+ multiple decision trees based on random subsets of variables and observations, 
+ this decreases the overfitting so characteristic of decision trees. Gradient boosting and
+ XGBoost instead build trees sequentially, where each new tree learns errors of the previous ones.
+ XGboost is an optimized version of Gradient Boosting, but has more parameters to tune.
+
+As for graph-based approach, we chose to use a Heterogenous Graph Neural Network (GNN) link classifier from PyTorch Geometric module.
+Instead of learning patterns based on tabular features only, it learns representations by propagating information
+across connected nodes and edges, enabling the model to capture more complex relationships.
+This approach avoids manual feature engineering, but requires a large number of samples and 
+rich informative connections in a graph, and, as other Artificial Neural Networks, prone to overfitting.
+
 \subsection{Implementation Details}
-\todo[inline]{Mention important parameters, software/libraries used, and cross-validation setup.}
+\todo[inline]{Mention important parameters, software/libraries used.}
+
+All numeric features are centered and scaled. No imputation was needed since 
+observations with missing values corresponding to biopolymer drugs were excluded.
+
+Most of the mentioned models are imported from \verb|sklearn| module, except for XGBoost
+imported from \verb|xgboost| and GNN from \verb|torch_geometric| modules. In order to perform
+hyperparameter tuning, we used a grid-search cross validation \verb|GridSearchCV| with search spaces indicated 
+in Table~\ref{tab:hyperparameters}.
+
+Since most of the clinical trials and thus corresponding indications usually fail,
+the classes are imbalanced with failures being several times more abundant (around 3 times for our data).
+So we used options for class balancing where it was possible (all models except for kNN and Gradient Boosting).
+
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \caption{Hyperparameter search spaces for each classifier.}
+    \label{tab:hyperparameters}
+    \rowcolors{2}{gray!15}{white}
+    \begin{tabular}{p{4cm} p{10cm}}
+        \toprule
+        \textbf{Model} & \textbf{Hyperparameters} \\
+        \midrule
+        k-Nearest Neighbors & \texttt{n\_neighbors} $\in \{5, 10, 20, 30\}$, \texttt{weights} $\in \{\text{uniform}, \text{distance}\}$, \texttt{p} $\in \{1, 2\}$ \\
+        Logistic Regression & \texttt{C} $\in \{0.01, 0.1, 1, 10, 100\}$, \texttt{l1\_ratio} $\in \{0, 0.25, 0.5, 0.75, 1\}$ \\
+        SVM (linear) & \texttt{C} $\in \{0.01, 0.1, 1, 10\}$ \\
+        SVM (polynomial) & \texttt{C} $\in \{0.1, 1, 10\}$, \texttt{degree} $\in \{2, 3, 4\}$, \texttt{gamma} $\in \{\text{scale}, \text{auto}\}$ \\
+        SVM (RBF) & \texttt{C} $\in \{0.1, 1, 10\}$, \texttt{gamma} $\in \{\text{scale}, \text{auto}\}$ \\
+        Random Forest & \texttt{n\_estimators} $\in \{100, 300, 500\}$, \texttt{max\_depth} $\in \{\text{None}, 10, 20\}$, \texttt{min\_samples\_split} $\in \{2, 5\}$, \texttt{min\_samples\_leaf} $\in \{1, 2\}$ \\
+        Gradient Boosting & \texttt{n\_estimators} $\in \{100, 300\}$, \texttt{max\_depth} $\in \{3, 5\}$, \texttt{learning\_rate} $\in \{0.01, 0.05, 0.1\}$, \texttt{subsample} $\in \{0.8, 1.0\}$ \\
+        XGBoost & \texttt{n\_estimators} $\in \{100, 300\}$, \texttt{max\_depth} $\in \{3, 5\}$, \texttt{learning\_rate} $\in \{0.01, 0.05, 0.1\}$, \texttt{subsample} $\in \{0.8, 1.0\}$, \texttt{colsample\_bytree} $\in \{0.8, 1.0\}$, \texttt{gamma} $\in \{0, 0.1\}$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+
+\subsection{Evaluation Strategy}
+
+Drug-disease indication success prediction requires avoiding temporal data leak - 
+in order to simulate fairly the real application, we need to use older research results
+to predict success of new indications. Thus, we performed a train-test split based on
+on start date of the first clinical trial for each indication. Taking 15\% for test set 
+results in temporal splitting by August 2014.
+
+The training set is further used for hyperparameter tuning using 
+grid search with 5-fold cross-validation and model selection based 
+on cross-validation performances. 
+
+Since we deal with imbalanced classes, we must not use accuracy as evaluation metric since
+it will underemphasize incorrect prediction of minority (success) class. We thus used F1 score
+(harmonic mean of precision and recall) for model hyperparameter tuning, selection and evaluation, 
+as well as precision-recall curves instead of ROC curves for analyzing how clarification result varies 
+based on decision threshold (it works only for models yielding class probabilities).
+
