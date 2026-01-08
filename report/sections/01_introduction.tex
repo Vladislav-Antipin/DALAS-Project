@@ -214,3 +214,101 @@ The pipeline consists of three main stages:
 \end{enumerate}
 
 The following sections detail each stage: Section~\ref{sec:data} describes the data sources and preprocessing, Section~\ref{sec:methods} presents the machine learning methodology, and Section~\ref{sec:results} reports our findings. 
+
+\subsection{Biological Rationale: The Drug--Pathway--Disease Network}
+
+A key insight underlying drug repurposing is that drugs and diseases are connected through shared biological pathways. Figure~\ref{fig:tripartite} illustrates this relationship as a tripartite graph with three layers:
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    drugnode/.style={circle, draw, fill=blue!25, minimum size=0.8cm, font=\small},
+    pathnode/.style={circle, draw, fill=green!25, minimum size=0.8cm, font=\small},
+    diseasenode/.style={circle, draw, fill=red!20, minimum size=0.8cm, font=\small},
+    edge/.style={thick, gray!50},
+    layerlabel/.style={font=\small\bfseries, align=center}
+]
+
+% === LAYER LABELS with counts (raised higher for breathing room) ===
+\node[layerlabel] at (0, 3.0) {Drugs};
+\node[font=\scriptsize, text=gray, align=center] at (0, 2.3) {(n=525)\\{\tiny$\sim$9 paths/drug}};
+\node[layerlabel] at (4.5, 3.0) {Pathways};
+\node[font=\scriptsize, text=gray, align=center] at (4.5, 2.3) {(n=1{,}491)\\{\tiny 889 shared}};
+\node[layerlabel] at (9, 3.0) {Diseases};
+\node[font=\scriptsize, text=gray, align=center] at (9, 2.3) {(n=149)\\{\tiny$\sim$56 paths/disease}};
+
+% === DRUG NODES (left) - 6 nodes representing 525 drugs ===
+\node[drugnode] (d1) at (0, 1) {$d_1$};
+\node[drugnode] (d2) at (0, 0) {$d_2$};
+\node[drugnode] (d3) at (0, -1) {$d_3$};
+\node[drugnode] (d4) at (0, -2) {$d_4$};
+\node[drugnode] (d5) at (0, -3) {$d_5$};
+\node[drugnode] (d6) at (0, -4) {$d_6$};
+
+% === PATHWAY NODES (middle) - 7 nodes representing 1491 pathways (most numerous) ===
+\node[pathnode] (p1) at (4.5, 1) {$p_1$};
+\node[pathnode] (p2) at (4.5, 0.15) {$p_2$};
+\node[pathnode] (p3) at (4.5, -0.7) {$p_3$};
+\node[pathnode] (p4) at (4.5, -1.55) {$p_4$};
+\node[pathnode] (p5) at (4.5, -2.4) {$p_5$};
+\node[pathnode] (p6) at (4.5, -3.25) {$p_6$};
+\node[pathnode] (p7) at (4.5, -4.1) {$p_7$};
+
+% === DISEASE NODES (right) - 3 nodes representing 149 diseases (fewest) ===
+\node[diseasenode] (dis1) at (9, 0.2) {$y_1$};
+\node[diseasenode] (dis2) at (9, -1.5) {$y_2$};
+\node[diseasenode] (dis3) at (9, -3.2) {$y_3$};
+
+% === DRUG-PATHWAY EDGES (sparse: ~9 pathways per drug median) ===
+% Most drugs connect to 1-2 pathways in this simplified view
+\draw[edge] (d1) -- (p1);
+\draw[edge] (d2) -- (p2);
+\draw[edge] (d3) -- (p3);
+\draw[edge] (d3) -- (p4);
+\draw[edge] (d4) -- (p4);
+\draw[edge] (d5) -- (p5);
+\draw[edge] (d5) -- (p6);
+\draw[edge] (d6) -- (p7);
+% Some drugs target shared pathways
+\draw[edge] (d1) -- (p2);
+\draw[edge] (d4) -- (p3);
+
+% === PATHWAY-DISEASE EDGES (dense: ~56 pathways per disease median) ===
+% Each disease connects to many pathways
+% Disease 1 (connects to ~4 pathways)
+\draw[edge] (p1) -- (dis1);
+\draw[edge] (p2) -- (dis1);
+\draw[edge] (p3) -- (dis1);
+\draw[edge] (p4) -- (dis1);
+% Disease 2 (connects to ~5 pathways)
+\draw[edge] (p2) -- (dis2);
+\draw[edge] (p3) -- (dis2);
+\draw[edge] (p4) -- (dis2);
+\draw[edge] (p5) -- (dis2);
+\draw[edge] (p6) -- (dis2);
+% Disease 3 (connects to ~4 pathways)
+\draw[edge] (p4) -- (dis3);
+\draw[edge] (p5) -- (dis3);
+\draw[edge] (p6) -- (dis3);
+\draw[edge] (p7) -- (dis3);
+
+% === ANNOTATIONS ===
+\node[font=\scriptsize, text=gray, align=center] at (2.25, -5.4) {Drugs target\\pathways};
+\node[font=\scriptsize, text=gray, align=center] at (6.75, -5.4) {Pathways are\\implicated in diseases};
+
+% === ARROWS for annotation ===
+\draw[-{Stealth[length=2mm]}, gray!50, thick] (1.2, -5.0) -- (2.2, -4.5);
+\draw[-{Stealth[length=2mm]}, gray!50, thick] (7.8, -5.0) -- (6.8, -4.5);
+
+\end{tikzpicture}
+\caption{Tripartite graph representing the biological relationship between drugs, pathways, and diseases. Drugs (left, blue) interact with biological pathways (center, green) by modulating their activity. Pathways, in turn, are implicated in diseases (right, red) when their dysregulation contributes to pathology. This structure enables drug repurposing: if drug $d_1$ modulates pathway $p_2$, and $p_2$ is implicated in disease $y_2$, then $d_1$ is a candidate for treating $y_2$. Our pathway similarity feature captures the overlap between drug-associated and disease-associated pathways.}
+\label{fig:tripartite}
+\end{figure}
+
+\begin{itemize}
+    \item \textbf{Drugs} (left): Pharmaceutical compounds that modulate biological targets. In our dataset, these are approved drugs from ChEMBL with known mechanisms.
+    \item \textbf{Pathways} (center): Biological signaling cascades (e.g., from Reactome via UniProt) that drugs can activate or inhibit. A drug connects to a pathway if it targets proteins involved in that pathway.
+    \item \textbf{Diseases} (right): Medical conditions characterized by pathway dysregulation. A disease connects to a pathway if genetic or molecular evidence links them (from Open Targets).
+\end{itemize}
+
+This tripartite structure motivates our \emph{pathway similarity} feature: we compute the Jaccard similarity between the set of pathways associated with a drug and those associated with a disease. High similarity suggests the drug affects biological processes relevant to the disease, making it a stronger repurposing candidate. Unlike direct drug--disease associations (which would be ``cheating''), pathway-mediated connections provide mechanistic justification for predictions.
