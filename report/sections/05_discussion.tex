@@ -27,11 +27,22 @@ It is also unfortunately expected to see number of indications being predictive 
 how intensively researched is the disease, this constitutes a bias towards well-studied diseases and potentially neglecting 
 rare or poorly studied ones. However, analysis of feature distributions for correctly classified and misclassified cases didn't reveal any prominent bias.
 So probably the importance of number of indications reflects a bias in clinical research itself rather than a bias in the model.
+It can be also a reflection of data availability bias - rare diseases tend to be less annotated.
 
-We can also identify
-
-
-... biases: publication, data availability, rare diseases, a lot of unknowns, obvious negatives are not tried ...
+Another important source of bias is label assignment, since not only it is challenging
+to assess the success of clinical trials with poorly published results, most of the
+combinations were never actually tried. Some of them were not tried because of evident
+ mechanistic incompatibility, some because of lack of fund for some research directions.
+ And even if a drug--disease indication has been shown inefficient in a clinical trial,
+ it was nevertheless preselected from thousands of potential alternatives as promising one,
+ otherwise it would not get funded. Furthermore, there is a publication bias reflected in
+ better publication quality and documentation of successful trials, also some failed 
+ trials may be preliminary terminated without proper justification (e.g. indicate funding issues only,
+ concealing drug inefficiency).
+ One of possible solutions may be to include "obvious negatives"
+ combinations in the dataset or use semisupervised approaches such as Positive Unlabeled (PU) learning models, 
+ that rely on positive class and considers other data as unlabeled (mixture of positive and negative class),
+  allowing to indirectly reconstruct the negative class.
 
 
 

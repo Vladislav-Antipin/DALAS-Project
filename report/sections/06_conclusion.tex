@@ -1,8 +1,17 @@
 \section{Conclusion}
 \todo[inline]{Summarize your work, key findings, and potential future directions.}
 
-Although the evaluation results show only moderate prediction success and biases, it is still surprising that such a simple metric (number of shared pathways)
-combined with simple chemical and molecular descriptors can be predictive of a success, unless we missed some other biases.
+Although the evaluation results are likely biased towards better studied diseases
 
-... improvements: PU, explore more Graph models, more targets, consider directionality,
-more diseases, better labels, consider biopolymers, smartly include obvious negatives....
+and show only moderate prediction success, it is still surprising that a pathway similarity metric, based on very simplified assumptions,
+combined with simple chemical and molecular descriptors can be predictive of a success.
+
+Future directions for ameliorating our approach would be:
+\begin{itemize}
+    \item consider non-protein targets and biopolymer drugs
+    \item include directionality of the association with target
+    \item extend the scope of studied diseases
+    \item integrate labels from other sources
+    \item continue exploring Graph Neural Networks to model molecular interaction network
+    \item try semisupervised Positive Unlabeled models
+\end{itemize}
