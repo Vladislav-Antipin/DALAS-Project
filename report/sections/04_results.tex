@@ -16,7 +16,7 @@ is expected given high dimensionality of the problem.
 \label{tab:04-time_split-model_comparison}
 \rowcolors{2}{gray!15}{white} 
 \input{tables/04-time_split-model_comparison.tex}
-\end{table}
+\end{table} 
 
 We will use then XGBoost for final evaluation on test set and 
 we obtain precision 0.658, recall 0.595 and F1 score 0.625 (Figure~\ref{fig:04-time_split-xgb-confusion_matrix}). 
@@ -26,8 +26,13 @@ It means that there are no abrupt drops in precision as model becomes less stric
 that model performance is rather stable. Area under the ROC curve is 0.824 (Figure~\ref{fig:04-time_split-xgb-roc}), 
 but it is a less reliable metric in case of class imbalance.
 
-We performed as well training of Heterogenous GNN separately and obtained accuracy 0.612, precision 0.429
-and recall 0.714 (Figure~\ref{fig:04-time_split-gnn-confusion_matrix}). BUT: COMPETE
+We performed as well training of Heterogenous GNN and obtained accuracy 0.612, precision 0.429, 
+recall 0.714 and F1 score 0.535 (Figure~\ref{fig:04-time_split-gnn-confusion_matrix}). Unlike the other machine learning
+models, the GNN was evaluated independently for two reasons. First, GNN implementation is rather
+exploratory in this project and we cannot yet ensure that all GNN learning parameters were correctly
+configured. Second, differences in model architecture made made direct comparison with other models
+in the common cross-validation setting non-trivial. Therefore, GNN results should be interpreted as complementary 
+and preliminary.
 
 
 

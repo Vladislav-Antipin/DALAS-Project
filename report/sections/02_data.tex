@@ -42,7 +42,7 @@ However, other cases are not as obvious. If the last phase wasn't (yet) passed, 
 by addressing the corresponding clinical trials. There are several possibilities: either this combination was never
 tried (which is most often the case); or it was tried and shown to be not-effective or effective but for earlier phases; 
 or finally simply because there are no results published or the study was terminated for various (often financial) reasons.
-There exists some manually and automatically annotated clinical trial databases, but the problem is that either
+There exists some manually and automatically annotated clinical trial databases \cite{gao2024automatic} \cite{chen2025trialbench}, but the problem is that either
 they are pretty limited in time span (e.g. last 10 years) or their "non-success" label encompasses simultaneously
 trials failed due to drug inefficiency and to other reasons. So we decided to automatically label drug-disease indications
  that have been tried at least once using following rule:
@@ -180,9 +180,12 @@ or poor data filtering and thus we decided to not exclude them.
 
 
 Although PCA is unsupervised method, when we label the data a posteriori, we can see a slight separation of success and
- fail cases along the first principal component. We could speculate that it might be linked to different success rates for 
+ fail cases along the diagonal between the first two principal components. Interestingly enough, a Quantitative Estimate of Druglikeness (QED)
+  contributes to both principal components and is aligned with samples labelled as success. This suggests that the 
+  first independent directions of greatest variability in the data capture in part the difference in indication success. 
+  We could also speculate that it might be linked to different success rates for 
  various disease types, for example clinical studies for neoplastic blood diseases might have fewer successes because of smaller success rate or may be 
- because they are more often studied...
+ because they are more often studied. 
 
 Non linear dimension reduction methods such as Isomap, UMAP and t-SNE (Figures~\ref{fig:03-isomap}~and~\ref{fig:03-umap}~and~\ref{fig:03-tsne}) result in a rather large number of small clusters.
 Apparently, those clusters correspond to the indications involving same of very similar drugs or diseases.
@@ -200,7 +203,7 @@ indications, although is valid, doesn't model the true structure of the problem.
 Indeed, the data is inherently structured and a bipartite drug-disease graph with 
 a connecting layer comprised of associated molecular pathways. And most of advanced research in the 
 field of drug discovery involve working with graphs and Graph Neural Networks directly
-rather than engineering features as we did. To this end, we organized the same data in the form 
+rather than engineering features as we did \cite{keramida2025ai}. To this end, we organized the same data in the form 
 of \verb|HeteroData| graph with Pytorch Geometric module. Although we think 
 that the richer information about connections on a molecular / mechanistic levels as well as 
 more observations are needed to build a graph suitable for the robust model training.
