@@ -1,0 +1,31 @@
+\begin{thebibliography}{}
+
+\bibitem[Bickerton et~al., 2012]{bickerton2012}
+Bickerton, G.~R., Paolini, G.~V., Besnard, J., Muresan, S., and Hopkins, A.~L. (2012).
+\newblock Quantifying the chemical beauty of drugs.
+\newblock {\em Nat Chem}, 4(2):90--98.
+
+\bibitem[Chen et~al., 2025]{chen2025trialbench}
+Chen, J., Hu, Y., Cai, M., and et~al. (2025).
+\newblock Trialbench: Multi-modal ai-ready datasets for clinical trial prediction.
+\newblock {\em Scientific Data}, 12:1564.
+\newblock Received 05 September 2024; Accepted 04 July 2025; Published 26 September 2025.
+
+\bibitem[Ertl et~al., 2008]{ertl2008}
+Ertl, P., Roggo, S., and Schuffenhauer, A. (2008).
+\newblock Natural product-likeness score and its application for prioritization of compound libraries.
+\newblock {\em J. Chem. Inf. Model.}, 48(1):68--74.
+\newblock Epub 2007 Nov 23.
+
+\bibitem[Gao et~al., 2024]{gao2024automatic}
+Gao, C., Pradeepkumar, J., Das, T., Thati, S., and Sun, J. (2024).
+\newblock Automatically labeling \$200b life-saving datasets: A large clinical trial outcome benchmark.
+\newblock arXiv preprint, submitted 13 June 2024, perpetual non-exclusive license.
+
+\bibitem[Keramida et~al., 2025]{keramida2025ai}
+Keramida, P., Syrigos, N.~K., Kouvela, M., Poulakou, G., Charpidou, A., and Fiste, O. (2025).
+\newblock Ai-driven drug repurposing: Applications and challenges.
+\newblock {\em Oncology Reports}.
+\newblock Open Access, published 13 November 2025, correspondence to Paraskevi Keramida.
+
+\end{thebibliography}

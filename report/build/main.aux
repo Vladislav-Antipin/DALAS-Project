@@ -1,0 +1,117 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{2}{section.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Problem Statement}{2}{subsection.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Motivation and Objectives}{2}{subsection.1.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Complete pipeline overview for drug repurposing prediction.}}{2}{figure.caption.2}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:pipeline-balanced}{{1}{2}{Complete pipeline overview for drug repurposing prediction}{figure.caption.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Biological Rationale: The Drug--Pathway--Disease Network}{3}{subsection.1.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Tripartite graph representing the biological relationship between drugs, pathways, and diseases. Edges connecting drugs and diseases indicating clinical success are not represented.}}{3}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:tripartite}{{2}{3}{Tripartite graph representing the biological relationship between drugs, pathways, and diseases. Edges connecting drugs and diseases indicating clinical success are not represented}{figure.caption.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Data}{3}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Data Sources}{3}{subsection.2.1}\protected@file@percent }
+\citation{gao2024automatic}
+\citation{chen2025trialbench}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Description of data sources.}}{4}{table.caption.4}\protected@file@percent }
+\newlabel{tab:data_sources}{{1}{4}{Description of data sources}{table.caption.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Target variable definition}{4}{subsection.2.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Counts and proportions of drug-disease indications by success label over time.}}{5}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:03-label-stability_in_time}{{3}{5}{Counts and proportions of drug-disease indications by success label over time}{figure.caption.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Feature Engineering and Description}{5}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Exploratory Data Analysis}{6}{subsection.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.1}Missing Values}{6}{subsubsection.2.4.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Missing values heatmap in the drugs dataset.}}{6}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:03-na-drugs_with_bioth}{{4}{6}{Missing values heatmap in the drugs dataset}{figure.caption.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Missingness analysis of drug descriptors with correlation heatmap.}}{6}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:03-corr_matrix-na}{{5}{6}{Missingness analysis of drug descriptors with correlation heatmap}{figure.caption.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Summary of data dimensions and label counts.}}{7}{table.caption.7}\protected@file@percent }
+\newlabel{tab:03-dataset_summary}{{2}{7}{Summary of data dimensions and label counts}{table.caption.7}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.2}Univariate and Bivariate Analysis}{7}{subsubsection.2.4.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Focused view of the correlation heatmap on interpretable features.}}{8}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:03-corr_matrix-short}{{6}{8}{Focused view of the correlation heatmap on interpretable features}{figure.caption.8}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.3}Dimension Reduction and Outlier Analysis}{8}{subsubsection.2.4.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces PCA projection of samples onto the first two principal components.}}{9}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:03-pca-scatter_plot}{{7}{9}{PCA projection of samples onto the first two principal components}{figure.caption.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces PCA correlation circle showing feature contributions to the first two principal components. Only arrows with length above 0.5 are shown.}}{9}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:03-pca-corr_circle}{{8}{9}{PCA correlation circle showing feature contributions to the first two principal components. Only arrows with length above 0.5 are shown}{figure.caption.9}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.4.4}Supervised Dimension Reduction}{9}{subsubsection.2.4.4}\protected@file@percent }
+\citation{keramida2025ai}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}Graph Representation}{10}{subsection.2.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Methods}{10}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Model Overview}{10}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Implementation Details}{11}{subsection.3.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Hyperparameter search spaces for each classifier.}}{11}{table.caption.10}\protected@file@percent }
+\newlabel{tab:hyperparameters}{{3}{11}{Hyperparameter search spaces for each classifier}{table.caption.10}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Evaluation Strategy}{11}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{12}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Model Comparison}{12}{subsection.4.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Model performance after hyperparameter tuning (5-fold cross validation).}}{12}{table.caption.11}\protected@file@percent }
+\newlabel{tab:04-time_split-model_comparison}{{4}{12}{Model performance after hyperparameter tuning (5-fold cross validation)}{table.caption.11}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Confusion matrix for XGBoost on the test dataset.}}{13}{figure.caption.12}\protected@file@percent }
+\newlabel{fig:04-time_split-xgb-confusion_matrix}{{9}{13}{Confusion matrix for XGBoost on the test dataset}{figure.caption.12}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Precision-recall curve for XGBoost on the test dataset.}}{13}{figure.caption.12}\protected@file@percent }
+\newlabel{fig:04-time_split-xgb-pr}{{10}{13}{Precision-recall curve for XGBoost on the test dataset}{figure.caption.12}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Feature Analysis}{13}{subsection.4.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Permutation feature importance for trained XGBoost.}}{14}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:04-time_split-xgb-perm_importance}{{11}{14}{Permutation feature importance for trained XGBoost}{figure.caption.13}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Two-dimensional partial dependence of the two most important features.}}{14}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:04-time_split-xgb-2d_partial_dependence}{{12}{14}{Two-dimensional partial dependence of the two most important features}{figure.caption.13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Failure and Success Cases}{14}{subsection.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Discussion}{14}{section.5}\protected@file@percent }
+\bibstyle{apalike}
+\bibdata{bibliography}
+\bibcite{bickerton2012}{Bickerton et~al., 2012}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{15}{section.6}\protected@file@percent }
+\bibcite{chen2025trialbench}{Chen et~al., 2025}
+\bibcite{ertl2008}{Ertl et~al., 2008}
+\bibcite{gao2024automatic}{Gao et~al., 2024}
+\bibcite{keramida2025ai}{Keramida et~al., 2025}
+\citation{ertl2008}
+\citation{bickerton2012}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Appendix}{17}{appendix.A}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}Supplementary Tables}{17}{subsection.A.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {A1}{\ignorespaces Description of features retained for analysis.}}{17}{table.caption.15}\protected@file@percent }
+\newlabel{tab:feature_description}{{A1}{17}{Description of features retained for analysis}{table.caption.15}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {A2}{\ignorespaces Best estimator parameters after hyperparameter tuning.}}{18}{table.caption.16}\protected@file@percent }
+\newlabel{tab:04-time_split-best_parameters}{{A2}{18}{Best estimator parameters after hyperparameter tuning}{table.caption.16}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Supplementary Figures}{18}{subsection.A.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {A1}{\ignorespaces Counts and proportions of clinical trials with published results over time.}}{18}{figure.caption.17}\protected@file@percent }
+\newlabel{fig:03-label-has_results_in_time}{{A1}{18}{Counts and proportions of clinical trials with published results over time}{figure.caption.17}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A2}{\ignorespaces Distribution of success labels for drug–disease indications with missing start dates.}}{19}{figure.caption.18}\protected@file@percent }
+\newlabel{fig:03-label-distribution_missing_date}{{A2}{19}{Distribution of success labels for drug–disease indications with missing start dates}{figure.caption.18}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A3}{\ignorespaces Feature distributions by success label.}}{20}{figure.caption.19}\protected@file@percent }
+\newlabel{fig:03-feature_dist_by_success}{{A3}{20}{Feature distributions by success label}{figure.caption.19}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A4}{\ignorespaces Correlation heatmap of all features.}}{21}{figure.caption.20}\protected@file@percent }
+\newlabel{fig:03-corr_matrix-all_features}{{A4}{21}{Correlation heatmap of all features}{figure.caption.20}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A5}{\ignorespaces Scree plot of explained variance for PCA components.}}{21}{figure.caption.21}\protected@file@percent }
+\newlabel{fig:03-pca-scree_plot}{{A5}{21}{Scree plot of explained variance for PCA components}{figure.caption.21}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A6}{\ignorespaces Structures of drugs corresponding to outlier indications.}}{22}{figure.caption.22}\protected@file@percent }
+\newlabel{fig:03-rdkit_structure-drug_outliers}{{A6}{22}{Structures of drugs corresponding to outlier indications}{figure.caption.22}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A7}{\ignorespaces Isomap projection of samples in the feature space using 10 nearest neighbors.}}{22}{figure.caption.23}\protected@file@percent }
+\newlabel{fig:03-isomap}{{A7}{22}{Isomap projection of samples in the feature space using 10 nearest neighbors}{figure.caption.23}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A8}{\ignorespaces UMAP projection of samples in the feature space using 7 nearest neighbors and a minimal distance of 1.}}{23}{figure.caption.24}\protected@file@percent }
+\newlabel{fig:03-umap}{{A8}{23}{UMAP projection of samples in the feature space using 7 nearest neighbors and a minimal distance of 1}{figure.caption.24}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A9}{\ignorespaces t-SNE projection of samples in the feature space using a perplexity of 40.}}{24}{figure.caption.25}\protected@file@percent }
+\newlabel{fig:03-tsne}{{A9}{24}{t-SNE projection of samples in the feature space using a perplexity of 40}{figure.caption.25}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A10}{\ignorespaces Linear Discriminant Analysis (LDA) projection highlighting class separation.}}{25}{figure.caption.26}\protected@file@percent }
+\newlabel{fig:03-lda_projection}{{A10}{25}{Linear Discriminant Analysis (LDA) projection highlighting class separation}{figure.caption.26}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A11}{\ignorespaces Partial Least Squares Discriminant Analysis (PLS-DA) projection of samples highlighting class separation.}}{26}{figure.caption.27}\protected@file@percent }
+\newlabel{fig:03-plsda}{{A11}{26}{Partial Least Squares Discriminant Analysis (PLS-DA) projection of samples highlighting class separation}{figure.caption.27}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A12}{\ignorespaces ROC curve for XGBoost on the test dataset.}}{27}{figure.caption.28}\protected@file@percent }
+\newlabel{fig:04-time_split-xgb-roc}{{A12}{27}{ROC curve for XGBoost on the test dataset}{figure.caption.28}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A13}{\ignorespaces Confusion matrix for Heterogenous GNN on the test dataset.}}{28}{figure.caption.29}\protected@file@percent }
+\newlabel{fig:04-time_split-gnn-confusion_matrix}{{A13}{28}{Confusion matrix for Heterogenous GNN on the test dataset}{figure.caption.29}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A14}{\ignorespaces Partial dependence of the two most important features.}}{29}{figure.caption.30}\protected@file@percent }
+\newlabel{fig:04-time_split-xgb-1d_partial_dependence}{{A14}{29}{Partial dependence of the two most important features}{figure.caption.30}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A15}{\ignorespaces Correlation heatmap of XGBoost test classification results with predictors.}}{29}{figure.caption.31}\protected@file@percent }
+\newlabel{fig:04-time_split-xgb-corr_matrix-confusion}{{A15}{29}{Correlation heatmap of XGBoost test classification results with predictors}{figure.caption.31}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A16}{\ignorespaces Feature distributions for samples correctly vs. incorrectly classified by XGBoost.}}{30}{figure.caption.32}\protected@file@percent }
+\newlabel{fig:04-time_split-xgb-feature_distribution_by_correct}{{A16}{30}{Feature distributions for samples correctly vs. incorrectly classified by XGBoost}{figure.caption.32}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A17}{\ignorespaces Correlation heatmap of Heterogenous GNN test classification results with predictors.}}{31}{figure.caption.33}\protected@file@percent }
+\newlabel{fig:04-time_split-gnn-corr_matrix-confusion}{{A17}{31}{Correlation heatmap of Heterogenous GNN test classification results with predictors}{figure.caption.33}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A18}{\ignorespaces Feature distributions for samples correctly vs. incorrectly classified by Heterogenous GNN.}}{32}{figure.caption.34}\protected@file@percent }
+\newlabel{fig:04-time_split-gnn-feature_distribution_by_correct}{{A18}{32}{Feature distributions for samples correctly vs. incorrectly classified by Heterogenous GNN}{figure.caption.34}{}}
+\gdef \@abspage@last{32}
