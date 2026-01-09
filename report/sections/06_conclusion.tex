@@ -1,14 +1,17 @@
 \section{Conclusion}
 
-Although the evaluation results are likely biased towards better studied diseases and show only moderate prediction success, it is still surprising that a pathway similarity metric, based on very simplified assumptions,
-combined with simple chemical and molecular descriptors can be predictive of a success.
+Although the evaluation results are likely biased toward better-studied diseases and 
+demonstrate only moderate predictive performance, 
+it is notable that a pathway similarity metric, based on simplified assumptions, combined with basic 
+chemical and molecular descriptors can still provide meaningful predictions.
 
 Future directions for ameliorating our approach would be:
-\begin{itemize}
-    \item consider non-protein targets and biopolymer drugs
-    \item include directionality of the association with target
-    \item extend the scope of studied diseases
-    \item integrate labels from other sources
-    \item continue exploring Graph Neural Networks to model molecular interaction network
-    \item try semisupervised Positive Unlabeled models
+\begin{itemize}[nosep]
+    \item considering non-protein targets and biopolymer drugs,
+    \item incorporating the directionality of associations with targets,
+    \item expanding the scope of studied diseases,
+    \item integrating labels from additional data sources,
+    \item further exploring Graph Neural Networks to model molecular interaction networks, and
+    \item going further in interpretation of pathway embeddings and molecular fingerprints by
+     relating them back to the original interpretable pathways and chemical structures.
 \end{itemize}

@@ -3,11 +3,10 @@
 \subsection{Model Comparison}
 
 
-Best estimators after hyperparameter tuning are presented in Table~\ref{tab:04-time_split-model_comparison}
- and the corresponding hyperparameters in Table~\ref{tab:04-time_split-best_parameters}.
-Based on mean cross-validation scores, we can say that all models perform relatively similarly
-having mean F1 score between 0.6 and 0.65. The best one is XGBoost and the worst one is kNN, what
-is expected given high dimensionality of the problem.
+The best estimators after hyperparameter tuning are presented in Table~\ref{tab:04-time_split-model_comparison},
+with their corresponding hyperparameters in Table~\ref{tab:04-time_split-best_parameters}.
+Based on mean cross-validation F1 scores, all models perform relatively similarly, ranging from 0.60 to 0.65. 
+XGBoost achieved the highest performance, while kNN performed the worst, which is expected given high dimensionality of the problem.
 
 \begin{table}[H]
 \centering
@@ -17,13 +16,13 @@ is expected given high dimensionality of the problem.
 \input{tables/04-time_split-model_comparison.tex}
 \end{table} 
 
-We will use then XGBoost for final evaluation on test set and 
-we obtain precision 0.658, recall 0.595 and F1 score 0.625 (Figure~\ref{fig:04-time_split-xgb-confusion_matrix}). 
+We then used XGBoost for final evaluation on test, achieving a precision of 0.658, recall of 0.595 and F1 score of 0.625 (Figure~\ref{fig:04-time_split-xgb-confusion_matrix}). 
 
-Precision-recall curve (Figure~\ref{fig:04-time_split-xgb-pr}) presents rather smooth descent from 1 to chance level (success prevalence of 0.313).
-It means that there are no abrupt drops in precision as model becomes less strict (higher recall) and
-that model performance is rather stable. Area under the ROC curve is 0.824 (Figure~\ref{fig:04-time_split-xgb-roc}), 
-but it is a less reliable metric in case of class imbalance.
+The precision-recall curve (Figure~\ref{fig:04-time_split-xgb-pr}) shows a rather smooth decline from 1 to chance level
+ (success prevalence of 0.313),  indicating that precision does not drop abruptly as the model becomes less strict (higher recall) 
+ and that overall performance is relatively stable. 
+ The area under the ROC curve is 0.824 (Figure~\ref{fig:04-time_split-xgb-roc}), however, 
+this metric is less reliable in the presence of class imbalance.
 
 
 \begin{figure}[H]
@@ -42,30 +41,28 @@ but it is a less reliable metric in case of class imbalance.
     \end{minipage}
 \end{figure}
 
-We performed as well training of Heterogenous GNN and obtained accuracy 0.612, precision 0.429, 
-recall 0.714 and F1 score 0.535 (Figure~\ref{fig:04-time_split-gnn-confusion_matrix}). Unlike the other machine learning
-models, the GNN was evaluated independently for two reasons. First, GNN implementation is rather
-exploratory in this project and we cannot yet ensure that all GNN learning parameters were correctly
-configured. Second, differences in model architecture made made direct comparison with other models
-in the common cross-validation setting non-trivial. Therefore, GNN results should be interpreted as complementary 
-and preliminary.
+We also trained a Heterogenous GNN, achieving a precision of 0.429, 
+recall of 0.714 and F1 score 0.535 (Figure~\ref{fig:04-time_split-gnn-confusion_matrix}). Unlike the other machine learning
+models, the GNN was evaluated independently for two reasons. First, GNN implementation in this project is rather
+exploratory, and we cannot yet ensure that all learning parameters were correctly
+configured. Second, differences in model architecture make direct comparison with other models
+in the standard cross-validation setting non-trivial. Therefore, GNN results should be interpreted 
+as preliminary and complementary.
 
 
 
 \subsection{Feature Analysis}
 
-Since XGBoost model is not interpretable by design, we need to use post-hoc explanation
-strategy. We chose to use a permutation feature importance estimation (still using F1 score) and partial dependence analysis
-from \verb|sklearn| module (Figure~\ref{fig:04-time_split-xgb-perm_importance}). Permutation of pathway similarity feature results in 15\%
-decrease in F1 score, around 3.5\% for number of indications for a disease (proxy of disease "popularity") and 
-6-th component in disease pathway embedding space. Other features, including various disease and drug pathway embeddings a
-nd molecular fingerprints present less than 3.5\% decrease in F1 score.
+Since XGBoost model is not interpretable by design, we applied post-hoc explanation
+methods. We used permutation feature importance (evaluated using the F1 score) and partial dependence analysis
+from \verb|sklearn| module (Figure~\ref{fig:04-time_split-xgb-perm_importance}). Permuting the pathway similarity feature led to a
+ 15\% decrease in F1 score, while the number of indications for a disease (proxy of disease "popularity") and 6-th component in disease pathway embedding space
+ caused decreases of approximately 3.5\%. Other features, including various disease and drug pathway embeddings and molecular fingerprints, resulted in less than 3.5\% decrease in F1 score.
 
-Partial dependence plot (Figure~\ref{fig:04-time_split-xgb-1d_partial_dependence}) shows that the steepest increase in success prediction happens
- at around 0.25 for pathway similarity  and 90 for number of indications for a disease.
-Two-dimensional partial dependence plot for pathway similarity and number of indications (Figure~\ref{fig:04-time_split-xgb-2d_partial_dependence})
-shows that the model needs simultaneously high pathway similarity and large number of 
-indications to be sure in success prediction.
+The one-dimensional partial dependence plot (Figure~\ref{fig:04-time_split-xgb-1d_partial_dependence}) indicates that the 
+steepest increase in success prediction occurs at a pathway similarity of around 0.25 and approximately 70 indications per disease. 
+The two-dimensional partial dependence plot for pathway similarity and number of indications (Figure~\ref{fig:04-time_split-xgb-2d_partial_dependence})
+shows that the model requires both high pathway similarity and a large number of indications to confidently predict a successful outcome.
 
 \begin{figure}[H]
     \centering
@@ -87,13 +84,32 @@ indications to be sure in success prediction.
 
 \subsection{Failure and Success Cases}
 
-We added to the test set features indicating whether each observation is true positive (TP),
-true negative (TN), false positive (FP) or false negative (FN) and just correct (TP or TN).
+We added features to the test set indicating whether each observation is true positive (TP),
+true negative (TN), false positive (FP) or false negative (FN) and simply correctly classified (TP or TN).
+Pearson correlations between these confusion indicators and predictor features were computed, 
+with caution: since the new variables are binary, these correlations should be interpreted as point-biserial
+ correlations  (Figures~\ref{fig:04-time_split-xgb-corr_matrix-confusion}~and~\ref{fig:04-time_split-gnn-corr_matrix-confusion}). 
+We also examined the distributions of predictors for correctly versus incorrectly classified 
+cases (Figures~\ref{fig:04-time_split-xgb-feature_distribution_by_correct}~and~\ref{fig:04-time_split-gnn-feature_distribution_by_correct}). 
+Overall there are no major differences, and while some variables show slight biases, their interpretation remains speculative.
 
-We can analyze Pearson correlations of those confusion estimates with predictor features 
-(being cautious with interpretation since these introduced variables are binary labels, 
-so it must be interpreted as point-biserial correlation) (Figures~\ref{fig:04-time_split-xgb-corr_matrix-confusion}~and~\ref{fig:04-time_split-gnn-corr_matrix-confusion}) 
-as well as distributions of predictors
-in correctly classified and misclassified cases (Figures~\ref{fig:04-time_split-xgb-feature_distribution_by_correct}~and~\ref{fig:04-time_split-gnn-feature_distribution_by_correct}). We can see that there is no major difference 
-between those cases. The distributions for some variables present a slight bias, but their interpretation will be speculative.
+\begin{figure}[H]
+    \centering
+
+    \begin{minipage}{0.48\textwidth}
+        \centering
+       \includegraphics[width=\textwidth]{figures/04-time_split-xgb-corr_matrix-confusion.png}
+        \caption{Correlation heatmap of XGBoost test classification results with predictors.}
+        \label{fig:04-time_split-xgb-corr_matrix-confusion}
+    \end{minipage}\hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+       \includegraphics[width=\textwidth]{figures/04-time_split-xgb-feature_distribution_by_correct.png}
+        \caption{Feature distributions for samples correctly vs. incorrectly classified by XGBoost.}
+        \label{fig:04-time_split-xgb-feature_distribution_by_correct}
+    \end{minipage}
+\end{figure}
+
+
+
 

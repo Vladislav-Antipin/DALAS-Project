@@ -1,0 +1,30 @@
+\contentsline {section}{\numberline {1}Introduction}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Problem Statement and Objectives}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Biological Rationale: The Drug--Pathway--Disease Network}{3}{subsection.1.2}%
+\contentsline {section}{\numberline {2}Data}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Data Sources}{4}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Target variable definition}{4}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Feature Engineering and Description}{5}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Exploratory Data Analysis}{6}{subsection.2.4}%
+\contentsline {subsubsection}{\numberline {2.4.1}Missing Values}{6}{subsubsection.2.4.1}%
+\contentsline {subsubsection}{\numberline {2.4.2}Univariate and Bivariate Analysis}{7}{subsubsection.2.4.2}%
+\contentsline {subsubsection}{\numberline {2.4.3}Dimension Reduction and Outlier Analysis}{8}{subsubsection.2.4.3}%
+\contentsline {subsubsection}{\numberline {2.4.4}Supervised Dimension Reduction}{9}{subsubsection.2.4.4}%
+\contentsline {subsection}{\numberline {2.5}Graph Representation}{10}{subsection.2.5}%
+\contentsline {section}{\numberline {3}Methods}{10}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Model Overview}{10}{subsection.3.1}%
+\contentsline {subsubsection}{\numberline {3.1.1}Linear Models}{10}{subsubsection.3.1.1}%
+\contentsline {subsubsection}{\numberline {3.1.2}Tree-Based Ensembles}{11}{subsubsection.3.1.2}%
+\contentsline {subsubsection}{\numberline {3.1.3}Graph-Based Model}{11}{subsubsection.3.1.3}%
+\contentsline {subsection}{\numberline {3.2}Implementation Details}{11}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Evaluation Strategy}{12}{subsection.3.3}%
+\contentsline {section}{\numberline {4}Results}{12}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Model Comparison}{12}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Feature Analysis}{13}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Failure and Success Cases}{14}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Discussion}{15}{section.5}%
+\contentsline {section}{\numberline {6}Conclusion}{16}{section.6}%
+\contentsline {section}{\numberline {A}Appendix}{18}{appendix.A}%
+\contentsline {subsection}{\numberline {A.1}Supplementary Tables}{18}{subsection.A.1}%
+\contentsline {subsection}{\numberline {A.2}Supplementary Figures}{19}{subsection.A.2}%
+\contentsline {subsection}{\numberline {A.3}Supplementary Algorithms and Listings}{30}{subsection.A.3}%
