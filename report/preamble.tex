@@ -16,8 +16,26 @@
 \usepackage{todonotes}
 % \usepackage{natbib}
 
+\usepackage{listings}
+\lstset{
+    basicstyle=\ttfamily\small,
+    frame=single,
+    breaklines=true,
+    showstringspaces=false,
+    numbers=none
+}
+
+% for fancy graphs
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{backgrounds}
+
+% For algorithms
+\usepackage{algorithm}       % Provides the floating algorithm environment
+\usepackage{algorithmic}     % Provides the algorithmic environment for pseudocode
+
+% Optional: for better fonts or spacing in algorithm
+\usepackage{amsmath}         % For math symbols like <, >, etc.
+\usepackage{amssymb}         % For additional symbols if needed
 
 % Custom commands
 \newcommand{\figref}[1]{Figure~\ref{#1}}

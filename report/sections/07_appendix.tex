@@ -1,9 +1,12 @@
 \appendix
-\renewcommand{\thefigure}{A\arabic{figure}}
+\renewcommand{\thefigure}{A\arabic{figure}}  
+\renewcommand{\thetable}{A\arabic{table}}   
+\renewcommand{\thealgorithm}{A\arabic{algorithm}} 
 \setcounter{figure}{0}
-\renewcommand{\thetable}{A\arabic{table}}
 \setcounter{table}{0}
+\setcounter{algorithm}{0}
 \section{Appendix}
+
 \subsection{Supplementary Tables}
 \begin{table}[H]
     \centering
@@ -78,6 +81,97 @@
 
 \subsection{Supplementary Figures}
 
+
+% START OF GRAPH FIGURE ===
+\begin{figure}[H]
+\centering
+        \begin{tikzpicture}[
+            drugnode/.style={circle, draw, fill=blue!25, minimum size=0.8cm, font=\small},
+            pathnode/.style={circle, draw, fill=green!25, minimum size=0.8cm, font=\small},
+            diseasenode/.style={circle, draw, fill=red!20, minimum size=0.8cm, font=\small},
+            edge/.style={thick, gray!50},
+            layerlabel/.style={font=\small\bfseries, align=center}
+        ]
+
+        % === LAYER LABELS with counts (raised higher for breathing room) ===
+        \node[layerlabel] at (0, 3.0) {Drugs};
+        \node[font=\scriptsize, text=gray, align=center] at (0, 2.3) {(n=525)\\{\tiny$\sim$9 paths/drug}};
+        \node[layerlabel] at (4.5, 3.0) {Pathways};
+        \node[font=\scriptsize, text=gray, align=center] at (4.5, 2.3) {(n=1{,}491)\\{\tiny 889 shared}};
+        \node[layerlabel] at (9, 3.0) {Diseases};
+        \node[font=\scriptsize, text=gray, align=center] at (9, 2.3) {(n=149)\\{\tiny$\sim$56 paths/disease}};
+
+        % === DRUG NODES (left) - 6 nodes representing 525 drugs ===
+        \node[drugnode] (d1) at (0, 1) {$d_1$};
+        \node[drugnode] (d2) at (0, 0) {$d_2$};
+        \node[drugnode] (d3) at (0, -1) {$d_3$};
+        \node[drugnode] (d4) at (0, -2) {$d_4$};
+        \node[drugnode] (d5) at (0, -3) {$d_5$};
+        \node[drugnode] (d6) at (0, -4) {$d_6$};
+
+        % === PATHWAY NODES (middle) - 7 nodes representing 1491 pathways (most numerous) ===
+        \node[pathnode] (p1) at (4.5, 1) {$p_1$};
+        \node[pathnode] (p2) at (4.5, 0.15) {$p_2$};
+        \node[pathnode] (p3) at (4.5, -0.7) {$p_3$};
+        \node[pathnode] (p4) at (4.5, -1.55) {$p_4$};
+        \node[pathnode] (p5) at (4.5, -2.4) {$p_5$};
+        \node[pathnode] (p6) at (4.5, -3.25) {$p_6$};
+        \node[pathnode] (p7) at (4.5, -4.1) {$p_7$};
+
+        % === DISEASE NODES (right) - 3 nodes representing 149 diseases (fewest) ===
+        \node[diseasenode] (dis1) at (9, 0.2) {$y_1$};
+        \node[diseasenode] (dis2) at (9, -1.5) {$y_2$};
+        \node[diseasenode] (dis3) at (9, -3.2) {$y_3$};
+
+        % === DRUG-PATHWAY EDGES (sparse: ~9 pathways per drug median) ===
+        % Most drugs connect to 1-2 pathways in this simplified view
+        \draw[edge] (d1) -- (p1);
+        \draw[edge] (d2) -- (p2);
+        \draw[edge] (d3) -- (p3);
+        \draw[edge] (d3) -- (p4);
+        \draw[edge] (d4) -- (p4);
+        \draw[edge] (d5) -- (p5);
+        \draw[edge] (d5) -- (p6);
+        \draw[edge] (d6) -- (p7);
+        % Some drugs target shared pathways
+        \draw[edge] (d1) -- (p2);
+        \draw[edge] (d4) -- (p3);
+
+        % === PATHWAY-DISEASE EDGES (dense: ~56 pathways per disease median) ===
+        % Each disease connects to many pathways
+        % Disease 1 (connects to ~4 pathways)
+        \draw[edge] (p1) -- (dis1);
+        \draw[edge] (p2) -- (dis1);
+        \draw[edge] (p3) -- (dis1);
+        \draw[edge] (p4) -- (dis1);
+        % Disease 2 (connects to ~5 pathways)
+        \draw[edge] (p2) -- (dis2);
+        \draw[edge] (p3) -- (dis2);
+        \draw[edge] (p4) -- (dis2);
+        \draw[edge] (p5) -- (dis2);
+        \draw[edge] (p6) -- (dis2);
+        % Disease 3 (connects to ~4 pathways)
+        \draw[edge] (p4) -- (dis3);
+        \draw[edge] (p5) -- (dis3);
+        \draw[edge] (p6) -- (dis3);
+        \draw[edge] (p7) -- (dis3);
+
+        % === ANNOTATIONS ===
+        \node[font=\scriptsize, text=gray, align=center] at (2.25, -5.4) {Drugs target\\pathways};
+        \node[font=\scriptsize, text=gray, align=center] at (6.75, -5.4) {Pathways are\\implicated in diseases};
+
+        % === ARROWS for annotation ===
+        \draw[-{Stealth[length=2mm]}, gray!50, thick] (1.2, -5.0) -- (2.2, -4.5);
+        \draw[-{Stealth[length=2mm]}, gray!50, thick] (7.8, -5.0) -- (6.8, -4.5);
+
+        \end{tikzpicture}
+        \caption{Tripartite graph representing the biological relationship between drugs, pathways, and diseases. Edges connecting drugs and diseases indicating clinical success are not represented.}
+        \label{fig:tripartite}
+\end{figure}
+
+% END OF GRAPH FIGURE ===
+
+
 \begin{figure}[H]
     \centering
    \includegraphics[width=0.9\textwidth]{figures/03-label-has_results_in_time.png}
@@ -146,20 +240,6 @@
 
 \begin{figure}[H]
     \centering
-   \includegraphics[width=0.9\textwidth]{figures/03-lda_projection.png}
-    \caption{Linear Discriminant Analysis (LDA) projection highlighting class separation.}
-    \label{fig:03-lda_projection}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-   \includegraphics[width=0.9\textwidth]{figures/03-plsda.png}
-    \caption{Partial Least Squares Discriminant Analysis (PLS-DA) projection of samples highlighting class separation.}
-    \label{fig:03-plsda}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
    \includegraphics[width=0.9\textwidth]{figures/04-time_split-xgb-roc.png}
     \caption{ROC curve for XGBoost on the test dataset.}
     \label{fig:04-time_split-xgb-roc}
@@ -182,20 +262,6 @@
 
 \begin{figure}[H]
     \centering
-   \includegraphics[width=0.9\textwidth]{figures/04-time_split-xgb-corr_matrix-confusion.png}
-    \caption{Correlation heatmap of XGBoost test classification results with predictors.}
-    \label{fig:04-time_split-xgb-corr_matrix-confusion}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-   \includegraphics[width=0.9\textwidth]{figures/04-time_split-xgb-feature_distribution_by_correct.png}
-    \caption{Feature distributions for samples correctly vs. incorrectly classified by XGBoost.}
-    \label{fig:04-time_split-xgb-feature_distribution_by_correct}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
    \includegraphics[width=0.9\textwidth]{figures/04-time_split-gnn-corr_matrix-confusion.png}
     \caption{Correlation heatmap of Heterogenous GNN test classification results with predictors.}
     \label{fig:04-time_split-gnn-corr_matrix-confusion}
@@ -210,5 +276,58 @@
 
 
 
+\subsection{Supplementary Algorithms and Listings}
 
+\begin{algorithm}[H]
+\caption{Drug--Disease Success Labeling}\label{alg:labeling}
+\begin{algorithmic}% [1] for line numbers
+\REQUIRE Clinical trial data for a drug--disease indication
+\ENSURE Success, fail or unknown label
+
+\IF{phase 4 is passed}
+    \STATE label $\gets$ \texttt{success}
+\ELSIF{any clinical trial exists and has results}
+    \STATE Compute median p-value of trials
+    \IF{median p-value $< 0.05$}
+        \STATE trial label $\gets$ \texttt{success}
+    \ELSIF{median p-value $> 0.2$}
+        \STATE trial label $\gets$ \texttt{fail}
+    \ELSE
+        \STATE trial label $\gets$ \texttt{unknown}
+    \ENDIF
+
+    \STATE Let $P_{\max}$ be the highest phase tried
+    \STATE Let $S$ and $F$ be the number of successes and fails in phase $P_{\max}$
+    \IF{$P_{\max} \ge 3$ \textbf{and} $S \ge 2 \times F$}
+        \STATE label $\gets$ \texttt{success}
+    \ELSIF{$F \ge 2 \times S$}
+        \STATE label $\gets$ \texttt{fail}
+    \ELSE
+        \STATE label $\gets$ \texttt{unknown}
+    \ENDIF
+\ENDIF
+\IF{label is still unknown}
+    \STATE Let $D_{\text{latest}}$ be the latest trial date
+    \IF{$D_{\text{latest}} < 2020$}
+        \STATE label $\gets$ \texttt{fail}
+    \ELSE
+        \STATE label $\gets$ \texttt{unknown}
+    \ENDIF
+\ENDIF
+\RETURN label
+\end{algorithmic}
+\end{algorithm}
+
+\begin{lstlisting}[caption={HeteroData graph structure}, label={lst:heterodata}]
+HeteroData(
+  drug={ x=[525, 127] },
+  disease={ x=[149, 25] },
+  pathway={ x=[1487, 1] },
+  (drug, interacts, pathway)={ edge_index=[2, 17338] },
+  (disease, associated_with, pathway)={ edge_index=[2, 12064] },
+  (drug, tried_against, disease)={
+    edge_index=[2, 890],
+    edge_label=[890],
+})
+\end{lstlisting}
 

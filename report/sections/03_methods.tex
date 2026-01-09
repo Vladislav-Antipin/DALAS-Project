@@ -2,7 +2,7 @@
 
 \subsection{Model Overview}
 
-Since the prediction target is a binary success/failure for given drug-disease indication, we
+Since the prediction target is a binary success/failure for given drug--disease indication, we
  evaluated several supervised models for binary classification, 
 including Logistic Regression, 
 k-Nearest Neighbors (kNN), 
@@ -11,46 +11,53 @@ Random Forest,
 Gradient Boosting, 
 and XGBoost.
 
+\subsubsection{Linear Models}
+
 Logistic regression estimates probability of success using sigmoid-transformed
- linear combinations of the input features. Its biggest advantage is high interoperability
- since feature waits indicate their importance, however it is limited to linearly
+ linear combinations of the input features. Its biggest advantage is high interpretability 
+feature weights indicate their importance, however it is limited to linearly
  separable problems.
 
-k-Nearest Neighbors is instance based model, making predictions by looking at labels
-of the closest points in the feature space. Therefore, there is no actual training phase and the assumption behind this model is that similar observations
-tend to have the same label. Nevertheless it is very sensitive to noise and the curse of dimensionality, 
-as well as poorly interpretable (only by samples that voted).
+k-Nearest Neighbors is an instance-based model, making predictions by based labels
+of the closest points in the feature space. Therefore, there is no actual training phase and the assumption behind
+ this model is that similar observations tend to have the same label. Nevertheless, it is very sensitive to noise 
+ and the curse of dimensionality, as well as poorly interpretable (only by samples that voted).
 
-Support Vector Machines are fitting a decision boundary, maximizing the margin between classes.
-Although it may be similar to regularized linear regression, the usage of kernel functions
-allows fitting of non-linear decision boundaries.
+Support Vector Machines fit a decision boundary that maximizes the margin between classes.
+Although it may be similar to regularized linear regression, the use of kernel functions
+allows to fit non-linear decision boundaries.
 
-Tree-based ensemble learning models leverage hierarchical decision rules
- and combine prediction of multiple models. A random forest aggregates 
- multiple decision trees based on random subsets of variables and observations, 
- this decreases the overfitting so characteristic of decision trees. Gradient boosting and
- XGBoost instead build trees sequentially, where each new tree learns errors of the previous ones.
- XGboost is an optimized version of Gradient Boosting, but has more parameters to tune.
+\subsubsection{Tree-Based Ensembles}
 
-As for graph-based approach, we chose to use a Heterogenous Graph Neural Network (GNN) link classifier from PyTorch Geometric module.
-Instead of learning patterns based on tabular features only, it learns representations by propagating information
-across connected nodes and edges, enabling the model to capture more complex relationships.
-This approach avoids manual feature engineering, but requires a large number of samples and 
-rich informative connections in a graph, and, as other Artificial Neural Networks, prone to overfitting.
+Tree-based ensemble models leverage hierarchical decision rules
+ and combine the predictions of multiple models. Random Forest aggregates 
+ multiple decision trees trained on random subsets of variables and observations, 
+ which reduces the overfitting characteristic of individual decision trees. Gradient boosting and
+ XGBoost, in contrast, build trees sequentially, with each new tree learning errors of the previous ones.
+ XGboost is an optimized version of Gradient Boosting, offering additional parameters for fine-tuning.
+
+ \subsubsection{Graph-Based Model}
+
+For graph-based approach, we used a Heterogenous Graph Neural Network (GNN) 
+link classifier from PyTorch Geometric module.
+Unlike models that learn patterns based on tabular features only, this GNN learns representations 
+by propagating information across connected nodes and edges, allowing it to capture more complex relationships.
+While this approach avoids manual feature engineering, it requires a large number of samples and 
+rich, informative graph connections, and, like other neural networks, is prone to overfitting.
 
 \subsection{Implementation Details}
 
-All numeric features are centered and scaled. No imputation was needed since 
-observations with missing values corresponding to biopolymer drugs were excluded.
+All numeric features were centered and scaled, all categorical variable were one-hot encoded. 
+No imputation was necessary, as observations with missing values corresponding to biopolymer drugs were excluded.
 
-Most of the mentioned models are imported from \verb|sklearn| module, except for XGBoost
-imported from \verb|xgboost| and GNN from \verb|torch_geometric| modules. In order to perform
-hyperparameter tuning, we used a grid-search cross validation \verb|GridSearchCV| with search spaces indicated 
+Most of the mentioned models are imported from scikit-learn module, except for XGBoost
+imported from \verb|xgboost| and GNN from \verb|torch_geometric| modules. Hyperparameter tuning was performed
+using a grid-search cross-validation \verb|GridSearchCV| with search the spaces shown 
 in Table~\ref{tab:hyperparameters}.
 
-Since most of the clinical trials and thus corresponding indications usually fail,
-the classes are imbalanced with failures being several times more abundant (around 3 times for our data).
-So we used options for class balancing where it was possible (all models except for kNN and Gradient Boosting).
+Since most of the clinical trials, and therefore corresponding indications, tend to fail,
+the classes are imbalanced, with failures approximately three times more frequent than successes in our data.
+Class balancing options were applied where available (all models except for kNN and Gradient Boosting).
 
 \begin{table}[H]
     \centering
@@ -76,20 +83,18 @@ So we used options for class balancing where it was possible (all models except 
 
 
 \subsection{Evaluation Strategy}
+Prediction of drug--disease indication success requires avoiding temporal data leakage.
+To simulate a realistic scenario, we used older research results
+to predict success of new indications. Accordingly, the train-test split was based on the start date of the first clinical trial for each indication, with 15\% of the data allocated
+to the test set, corresponding to a temporal cutoff in August 2014.
 
-Drug-disease indication success prediction requires avoiding temporal data leak - 
-in order to simulate fairly the real application, we need to use older research results
-to predict success of new indications. Thus, we performed a train-test split based on
-on start date of the first clinical trial for each indication. Taking 15\% for test set 
-results in temporal splitting by August 2014.
+The training set was further used for hyperparameter tuning via 
+grid search with 5-fold cross-validation, and model selection was based 
+on cross-validation performance. 
 
-The training set is further used for hyperparameter tuning using 
-grid search with 5-fold cross-validation and model selection based 
-on cross-validation performances. 
-
-Since we deal with imbalanced classes, we must not use accuracy as evaluation metric since
-it will underemphasize incorrect prediction of minority (success) class. We thus used F1 score
-(harmonic mean of precision and recall) for model hyperparameter tuning, selection and evaluation, 
-as well as precision-recall curves instead of ROC curves for analyzing how clarification result varies 
-based on decision threshold (it works only for models yielding class probabilities).
+Because classes are imbalanced, accuracy is not an appropriate evaluation metric, as it would
+ underemphasize errors on the minority (success) class. Therefore, we used F1 score
+(the harmonic mean of precision and recall) for model hyperparameter tuning, model selection and evaluation. 
+Additionally, precision-recall curves were employed instead of ROC curves to analyze how classification
+performance varies with different decision thresholds (applicable only to models that output class probabilities).
 

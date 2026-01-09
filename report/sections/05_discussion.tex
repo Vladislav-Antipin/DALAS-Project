@@ -1,47 +1,45 @@
 \section{Discussion}
 
-We observe best tuned model, XGBoost has moderate performance on the test data, with having slightly better
-precision (0.658) than recall (0.595). It means for this test dataset when the model has more false negatives 
-than false positives. Since the ultimate aim of the model application is to prioritize new drug-disease indications,
-better precision yields makes results that are predicted as positive more reliable, but 
-worse recall means that some combination may be (potentially systematically and unfairly) ignored.
-Other models performed slightly worse, especially kNN, this suggests that those
-models didn't capture well non-linear patterns in noisy multidimensional data or failed to 
-handle class imbalance. 
+The best-tuned model, XGBoost, showed moderate performance on the test data, with slightly higher
+precision (0.658) than recall (0.595). This indicates that the model produces more false negatives
+ than false positives on this dataset. Since the primary goal is to prioritize new drug--disease indications,
+higher precision  ensures that predictions labeled as positive are more reliable, while lower recall 
+implies that some potentially promising combinations may be (systematically and unfairly) overlooked. 
+Other models performed slightly worse, particularly kNN, suggesting that they struggled to capture
+ non-linear patterns in noisy high-dimensional data or to handle class imbalance. 
 
-Heterogenous GNN was trained and tested separately and yielded a large number
-of false positives resulting in low precision of 0.429. This poor performance can be explained by
-poor handling of class imbalance on our side, since we used binary cross entropy loss with positive weights 
-equal to number of times success labels are less prevalent and it might have been to stringent to the model.
-We should further analyze the correct ways to handle class imbalance in GNN including proper hyperparameter and classification
-threshold tuning. But considering other potential explanations for a poor performance, 
-we could argue that the size of training data was not enough to properly train such a complex
-model. We also need to discover ways to handle potential overfitting issues with GNN.
+Heterogenous GNN was trained and tested separately and produced a large number
+of false positives, resulting in low precision of 0.429. This poor performance may be partially due to
+poor handling of class imbalance on our side, as we used a binary cross-entropy loss with positive weights 
+proportional to the relative rarity of success labels, which may have been too stringent for the model. 
+Further investigation is needed to identify proper strategies for handling class imbalance, 
+as well as for hyperparameter and classification threshold tuning in GNNs. Other potential explanations for a poor model's performance include
+the limited size of the training dataset, which may be insufficient for training such a complex model,
+ as well as the need for strategies to prevent overfitting.
 
-
-Two most important features identified by permutation method are pathway similarity and number of indications for a disease,
-and both these variables need to be high for assignment of large success probability. It is expected to see pathway similarity
-being predictive since this metric captures shared molecular mechanisms behind action of a drug and pathogenesis of a disease.
-It is also unfortunately expected to see number of indications being predictive of success since this feature reflects
-how intensively researched is the disease, this constitutes a bias towards well-studied diseases and potentially neglecting 
-rare or poorly studied ones. However, analysis of feature distributions for correctly classified and misclassified cases didn't reveal any prominent bias.
-So probably the importance of number of indications reflects a bias in clinical research itself rather than a bias in the model.
+The two most important features identified by permutation importance are pathway similarity and number of indications for a disease,
+with higher values of both increasing the predicted probability of success. Pathway similarity is rather expected to
+be predictive, as it captures shared molecular mechanisms underlying drug action and disease pathogenesis.
+It is also unfortunately expected to see the number of indications being predictive of success since this feature reflects
+how intensively researched the disease is, this constitutes a bias towards well-studied diseases and potentially neglecting 
+rare or poorly studied ones. However, analysis of feature distributions for correctly and incorrectly classified cases didn't reveal 
+any pronounced bias. This suggests that importance of number of indications likely reflects a bias in clinical research itself rather than a bias in the model.
 It can be also a reflection of data availability bias - rare diseases tend to be less annotated.
 
-Another important source of bias is label assignment, since not only it is challenging
-to assess the success of clinical trials with poorly published results, most of the
-combinations were never actually tried. Some of them were not tried because of evident
- mechanistic incompatibility, some because of lack of fund for some research directions.
- And even if a drug--disease indication has been shown inefficient in a clinical trial,
- it was nevertheless preselected from thousands of potential alternatives as promising one,
- otherwise it would not get funded. Furthermore, there is a publication bias reflected in
- better publication quality and documentation of successful trials, also some failed 
- trials may be preliminary terminated without proper justification (e.g. indicate funding issues only,
+Another important source of bias is label assignment. Assessing the success of clinical trials is challenging due to poorly published 
+results, and many drug--disease combinations have never been tested. 
+Some combinations were not pursued because of clear
+ mechanistic incompatibility, while others were limited by funding constraints.
+ Even when a drug--disease indication is shown to be ineffective in a trial, it was typically preselected 
+ from thousands of potential alternatives as promising, otherwise, it would not have received funding.
+  Furthermore, there is a publication bias reflected in
+ better publication quality and documentation of successful trials, whereas some failed 
+ trials may be prematurely terminated without clear justification (e.g. citing funding issues while
  concealing drug inefficiency).
- One of possible solutions may be to include "obvious negatives"
- combinations in the dataset or use semisupervised approaches such as Positive Unlabeled (PU) learning models, 
- that rely on positive class and considers other data as unlabeled (mixture of positive and negative class),
-  allowing to indirectly reconstruct the negative class.
+ One potential solution is to include "obvious negatives" combinations in the dataset or to
+  employ semisupervised approaches, such as Positive-Unlabeled (PU) learning models, 
+ which rely on the positive class and treat the remaining data data as unlabeled (mixture of positive and negative cases),
+  allowing for indirect reconstruction of the negative class.
 
 
 
