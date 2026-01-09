@@ -4,50 +4,50 @@
 \todo[inline]{Compare models quantitatively (accuracy, RMSE, AUC, etc.) and qualitatively (strengths/weaknesses).}
 
 
-Best estimators after hyperparameter tuning are presented in Table~\ref{tab:04-time_split-model_comparison}.
+Best estimators after hyperparameter tuning are presented in Table~\ref{tab:04-time_split-model_comparison}
+ and the corresponding hyperparameters in Table~\ref{tab:04-time_split-best_parameters}.
 Based on mean cross-validation scores, we can say that all models perform relatively similarly
 having mean F1 score between 0.6 and 0.65. The best one is XGBoost and the worst one is kNN, what
 is expected given high dimensionality of the problem.
 
 \begin{table}[H]
 \centering
-\caption{Model comparison summary.}
+\caption{Model performance after hyperparameter tuning (5-fold cross validation).}
 \label{tab:04-time_split-model_comparison}
 \rowcolors{2}{gray!15}{white} 
 \input{tables/04-time_split-model_comparison.tex}
 \end{table}
 
-% \begin{table}[H]
-% \centering
-% \footnotesize
-% \caption{Best parameters.}
-% \label{tab:04-time_split-best_parameters}
-% \rowcolors{2}{gray!15}{white} 
-% \input{tables/04-time_split-best_parameters.tex}
-% \end{table}
-
 We will use then XGBoost for final evaluation on test set and 
-we obtain precision 0.658, recall 0.595 and F1 score 0.625 (see Figure). 
+we obtain precision 0.658, recall 0.595 and F1 score 0.625 (Figure~\ref{fig:04-time_split-xgb-confusion_matrix}). 
 
-Precision-recall curve presents rather smooth descent from 1 to chance level (success prevalence of 0.313).
+Precision-recall curve (Figure~\ref{fig:04-time_split-xgb-pr}) presents rather smooth descent from 1 to chance level (success prevalence of 0.313).
 It means that there are no abrupt drops in precision as model becomes less strict (higher recall) and
-that model performance is rather stable.
+that model performance is rather stable. Area under the ROC curve is 0.824 (Figure~\ref{fig:04-time_split-xgb-roc}), 
+but it is a less reliable metric in case of class imbalance.
+
+We performed as well training of Heterogenous GNN separately and obtained accuracy 0.612, precision 0.429
+and recall 0.714 (Figure~\ref{fig:04-time_split-gnn-confusion_matrix}). BUT: COMPETE
+
+
 
 \subsection{Feature Analysis}
 \todo[inline]{Analyze the impact of key features on model performance (e.g., feature importance, correlation).}
 
 Since XGBoost model is not interpretable by design, we need to use post-hoc explanation
 strategy. We chose to use a permutation feature importance estimation (still using F1 score) and partial dependence analysis
-from \verb|sklearn| module. Permutation of pathway similarity feature results in 15\%
-decrease in F1 score, around 5\% for number of indications for a disease (proxy of disease "popularity") and 
+from \verb|sklearn| module (Figure~\ref{fig:04-time_split-xgb-perm_importance}). Permutation of pathway similarity feature results in 15\%
+decrease in F1 score, around 3.5\% for number of indications for a disease (proxy of disease "popularity") and 
 6-th component in disease pathway embedding space. Other features, including various disease and drug pathway embeddings a
-nd molecular fingerprints present less than 5\% decrease in F1 score.
+nd molecular fingerprints present less than 3.5\% decrease in F1 score.
 
-Partial dependence plot shows that the steepest increase in success prediction happens
- at around 0.3 for pathway similarity  and 90 for number of indications for a disease.
-Two dimensional partial dependence plot for pathway similarity and number of indications
+Partial dependence plot (Figure~\ref{fig:04-time_split-xgb-1d_partial_dependence}) shows that the steepest increase in success prediction happens
+ at around 0.25 for pathway similarity  and 90 for number of indications for a disease.
+Two-dimensional partial dependence plot for pathway similarity and number of indications (Figure~\ref{fig:04-time_split-xgb-2d_partial_dependence})
 shows that the model needs simultaneously high pathway similarity and large number of 
 indications to be sure in success prediction.
+
+
 
 \subsection{Failure and Success Cases}
 \todo[inline]{Highlight scenarios where the models perform well or poorly. Include illustrative figures or tables.}
@@ -57,8 +57,8 @@ true negative (TN), false positive (FP) or false negative (FN) and just correct 
 
 We can analyze Pearson correlations of those confusion estimates with predictor features 
 (being cautious with interpretation since these introduced variables are binary labels, 
-so it must be interpreted as point-biserial correlation) as well as distributions of predictors
-in correctly classified and misclassified cases. We can see that there is no major difference 
-between those cases. The distributions for some variables (among which there are number of indications,
-some categories of diseases, QED drug likeness) present a slight bias towards higher feature values 
-for correctly predicted cases, but their interpretation will be speculative.
+so it must be interpreted as point-biserial correlation) (Figures~\ref{fig:04-time_split-xgb-corr_matrix-confusion}~and~\ref{fig:04-time_split-gnn-corr_matrix-confusion}) 
+as well as distributions of predictors
+in correctly classified and misclassified cases (Figures~\ref{fig:04-time_split-xgb-feature_distribution_by_correct}~and~\ref{fig:04-time_split-gnn-feature_distribution_by_correct}). We can see that there is no major difference 
+between those cases. The distributions for some variables present a slight bias, but their interpretation will be speculative.
+

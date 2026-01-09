@@ -1,2 +1,25 @@
 \section{Discussion}
 \todo[inline]{Interpret the results. Relate findings to your original objectives. Discuss limitations and possible improvements.}
+
+We observe best tuned model, XGBoost has moderate performance on the test data, with having slightly better
+precision (0.658) than recall (0.595). It means for this test dataset when the model has more false negatives 
+than false positives. Since the ultimate aim of the model application is to prioritize new drug-disease indications,
+better precision yields makes results that are predicted as positive more reliable, but 
+worse recall means that some combination may be (potentially systematically and unfairly) ignored.
+
+Two most important features identified by permutation method are pathway similarity and number of indications for a disease,
+and both these variables need to be high for assignment of large success probability. It is expected to see pathway similarity
+being predictive since this metric captures shared molecular mechanisms behind action of a drug and pathogenesis of a disease.
+It is also unfortunately expected to see number of indications being predictive of success since this feature reflects
+how intensively researched is the disease, this constitutes a bias towards well-studied diseases and potentially neglecting 
+rare or poorly studied ones. However, analysis of feature distributions for correctly classified and misclassified cases didn't reveal any prominent bias.
+So probably the importance of number of indications reflects a bias in clinical research itself rather than a bias in the model.
+
+However, we can identify
+... biases: publication, data availability, rare diseases, a lot of unknowns, obvious negatives are not tried ...
+
+... discuss why GNN failed ...
+
+... improvements: PU, explore more Graph models, more targets, consider directionality,
+more diseases, better labels, consider biopolymers, smartly include obvious negatives....
+

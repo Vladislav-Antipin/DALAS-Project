@@ -1,0 +1,285 @@
+\appendix
+\renewcommand{\thefigure}{A\arabic{figure}}
+\setcounter{figure}{0}
+\renewcommand{\thetable}{A\arabic{table}}
+\setcounter{table}{0}
+\section{Appendix}
+\subsection{Supplementary Tables}
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \caption{Description of features retained for analysis.}
+    \label{tab:feature_description}
+    \rowcolors{2}{gray!15}{white} % alternate row colors
+    \begin{tabular}{p{4cm}p{2cm}p{9cm}}
+       \toprule
+        \textbf{Feature} & \textbf{Type}& \textbf{Description} \\
+        \midrule
+        \rowcolor{white}
+        \multicolumn{2}{l}{\textbf{Drug}} \\
+        \midrule
+        \texttt{drug\_id}& str & Unique ChEMBL identifier\\
+        \texttt{chemical\_probe} & bool & Well-characterized and selective, typically used in biological research\\
+        \texttt{dosed\_ingredient} & bool & Active ingredient that has been dosed in humans \\
+        \texttt{inorganic\_flag} & bool & Inorganic molecule \\
+        \texttt{natural\_product} & bool & Derived from a natural source (not fully synthetic)\\
+        \texttt{oral} & bool & Known to be administered orally\\
+        \texttt{orphan} & bool & Intended for use against a rare condition\\
+        \texttt{parenteral} & bool & Known to be administered parenterally\\
+        \texttt{prodrug} & bool & Prodrug, activated after administration\\
+        \texttt{therapeutic\_flag} & bool & Has a therapeutic application, opposed to e.g. imaging\\
+        \texttt{topical} & bool & Known to be administered topically\\
+        \texttt{veterinary} & bool & Has veterinary application as well\\
+        \texttt{chirality} & cat & achiral,single enantiomer, mixture,nan \\
+        \texttt{alogp} & float & Octanol-water partition coefficient, lipophilicity indicator\\
+        \texttt{aromatic\_rings} & int & Number of aromatic rings\\
+        \texttt{full\_mwt} & float & Molecular weight of the full compound including any salts\\
+        \texttt{hba} & float & Number of hydrogen bond acceptors\\
+        \texttt{hbd} & float & 	Number of hydrogen bond donors\\
+        \texttt{heavy\_atoms} & int & Number of heavy (non-hydrogen) atoms\\
+        \texttt{mw\_freebase} & float & Molecular weight of parent compound\\
+        \texttt{np\_likeness\_score} & float & Natural product likeness score~\cite{ertl2008}\\
+        \texttt{num\_ro5\_violations} & int & Violations of Lipinski's rule-of-five, using HBA and HBD definitions\\
+        \texttt{psa} & float & Polar surface area\\
+        \texttt{qed\_weighted} & float & Weighted quantitative estimate of drug likeness~\cite{bickerton2012}\\
+        \texttt{ro3\_pass} & int & Passes the rule-of-three (mw < 300, logP < 3 etc)\\
+        \texttt{rtb} & int & Number of rotatable bonds\\
+        \texttt{FP\_\#} & float& First PCs in Morgan molecular fingerprint space \\
+        \texttt{drug\_path\_\#} & float & First PCs in TF-IDF space derived from pathway lists\\
+        \midrule
+        \rowcolor{white}
+        \multicolumn{2}{l}{\textbf{Disease}} \\
+        \midrule
+        \texttt{disease\_id} & str & Unique EFO identifier\\
+        \texttt{ontology\_depth} & int & Depth in disease classification tree\\
+        \texttt{nb\_descendants} & int & Number of descendants in disease classifications tree\\
+        \texttt{nb\_indications} & int & Number of drug indications\\
+        \texttt{cat\_\#} & bool & Ontological category other than immune system disorders\\
+        \texttt{disease\_path\_\#} & float& First PCs in TF-IDF space derived from pathway lists\\
+        \midrule
+        \rowcolor{white}
+        \multicolumn{2}{l}{\textbf{Drug--Disease}} \\
+        \midrule
+        \texttt{success} & bool & Consensus success or failure\\
+        \texttt{path\_similarity} & float & Jaccard similarity of pathway lists \\
+        \texttt{name\_similarity} & float & Cosine similarity of name embeddings in PubMedBERT (later excluded due to data leak) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\caption{Best estimator parameters after hyperparameter tuning.}
+\label{tab:04-time_split-best_parameters}
+\rowcolors{2}{gray!15}{white} 
+\input{tables/04-time_split-best_parameters.tex}
+\end{table}
+
+\subsection{Supplementary Figures}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/03-label-has_results_in_time.png}
+    \caption{Counts and proportions of clinical trials with published results over time.}
+    \label{fig:03-label-has_results_in_time}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/03-label-stability_in_time.png}
+    \caption{Counts and proportions of drug-disease indications by success label over time.}
+    \label{fig:03-label-stability_in_time}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/03-label-distribution_missing_date.png}
+    \caption{Distribution of success labels for drug–disease indications with missing start dates.}
+    \label{fig:03-label-distribution_missing_date}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/03-na-drugs_with_bioth.png}
+    \caption{Missing values heatmap in the drugs dataset.}
+    \label{fig:03-na-drugs_with_bioth}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/03-corr_matrix-na.png}
+    \caption{Missingness analysis of drug descriptors with correlation heatmap.}
+    \label{fig:03-corr_matrix-na}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/03-feature_dist_by_success.png}
+    \caption{Feature distributions by success label.}
+    \label{fig:03-feature_dist_by_success}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/03-corr_matrix-all_features.png}
+    \caption{Correlation heatmap of all features.}
+    \label{fig:03-corr_matrix-all_features}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/03-corr_matrix-short.png}
+    \caption{Focused view of the correlation heatmap on interpretable features.}
+    \label{fig:03-corr_matrix-short}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/03-pca-scatter_plot.png}
+    \caption{PCA projection of samples onto the first two principal components.}
+    \label{fig:03-pca-scatter_plot}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/03-pca-scree_plot.png}
+    \caption{Scree plot of explained variance for PCA components.}
+    \label{fig:03-pca-scree_plot}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/03-pca-corr_circle.png}
+    \caption{PCA correlation circle showing feature contributions to the first two principal components.}
+    \label{fig:03-pca-corr_circle}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/03-rdkit_structure-drug_outliers.png}
+    \caption{Structures of drugs corresponding to outlier indications.}
+    \label{fig:03-rdkit_structure-drug_outliers}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/03-isomap.png}
+    \caption{Isomap projection of samples in the feature space using 10 nearest neighbors.}
+    \label{fig:03-isomap}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/03-umap.png}
+    \caption{UMAP projection of samples in the feature space using 7 nearest neighbors and a minimal distance of 1.}
+    \label{fig:03-umap}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/03-tsne.png}
+    \caption{t-SNE projection of samples in the feature space using a perplexity of 40.}
+    \label{fig:03-tsne}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/03-lda_projection.png}
+    \caption{Linear Discriminant Analysis (LDA) projection highlighting class separation.}
+    \label{fig:03-lda_projection}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/03-plsda.png}
+    \caption{Partial Least Squares Discriminant Analysis (PLS-DA) projection of samples highlighting class separation.}
+    \label{fig:03-plsda}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.6\textwidth]{figures/04-time_split-xgb-confusion_matrix.png}
+    \caption{Confusion matrix for XGBoost on the test dataset.}
+    \label{fig:04-time_split-xgb-confusion_matrix}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/04-time_split-xgb-pr.png}
+    \caption{Precision-recall curve for XGBoost on the test dataset.}
+    \label{fig:04-time_split-xgb-pr}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/04-time_split-xgb-roc.png}
+    \caption{ROC curve for XGBoost on the test dataset.}
+    \label{fig:04-time_split-xgb-roc}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.6\textwidth]{figures/04-time_split-gnn-confusion_matrix.png}
+    \caption{Confusion matrix for Heterogenous GNN on the test dataset.}
+    \label{fig:04-time_split-gnn-confusion_matrix}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/04-time_split-xgb-perm_importance.png}
+    \caption{Permutation feature importance for trained XGBoost.}
+    \label{fig:04-time_split-xgb-perm_importance}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/04-time_split-xgb-1d_partial_dependence.png}
+    \caption{Partial dependence of the two most important features.}
+    \label{fig:04-time_split-xgb-1d_partial_dependence}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/04-time_split-xgb-2d_partial_dependence.png}
+    \caption{Two-dimensional partial dependence of the two most important features.}
+    \label{fig:04-time_split-xgb-2d_partial_dependence}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/04-time_split-xgb-corr_matrix-confusion.png}
+    \caption{Correlation heatmap of XGBoost test classification results with predictors.}
+    \label{fig:04-time_split-xgb-corr_matrix-confusion}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/04-time_split-xgb-feature_distribution_by_correct.png}
+    \caption{Feature distributions for samples correctly vs. incorrectly classified by XGBoost.}
+    \label{fig:04-time_split-xgb-feature_distribution_by_correct}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/04-time_split-gnn-corr_matrix-confusion.png}
+    \caption{Correlation heatmap of Heterogenous GNN test classification results with predictors.}
+    \label{fig:04-time_split-gnn-corr_matrix-confusion}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/04-time_split-gnn-feature_distribution_by_correct.png}
+    \caption{Feature distributions for samples correctly vs. incorrectly classified by Heterogenous GNN.}
+    \label{fig:04-time_split-gnn-feature_distribution_by_correct}
+\end{figure}
+
+
+
+
+
