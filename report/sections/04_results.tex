@@ -1,7 +1,6 @@
 \section{Results}
 
 \subsection{Model Comparison}
-\todo[inline]{Compare models quantitatively (accuracy, RMSE, AUC, etc.) and qualitatively (strengths/weaknesses).}
 
 
 Best estimators after hyperparameter tuning are presented in Table~\ref{tab:04-time_split-model_comparison}
@@ -26,6 +25,23 @@ It means that there are no abrupt drops in precision as model becomes less stric
 that model performance is rather stable. Area under the ROC curve is 0.824 (Figure~\ref{fig:04-time_split-xgb-roc}), 
 but it is a less reliable metric in case of class imbalance.
 
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/04-time_split-xgb-confusion_matrix.png}
+        \caption{Confusion matrix for XGBoost on the test dataset.}
+        \label{fig:04-time_split-xgb-confusion_matrix}
+    \end{minipage}\hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/04-time_split-xgb-pr.png}
+        \caption{Precision-recall curve for XGBoost on the test dataset.}
+        \label{fig:04-time_split-xgb-pr}
+    \end{minipage}
+\end{figure}
+
 We performed as well training of Heterogenous GNN and obtained accuracy 0.612, precision 0.429, 
 recall 0.714 and F1 score 0.535 (Figure~\ref{fig:04-time_split-gnn-confusion_matrix}). Unlike the other machine learning
 models, the GNN was evaluated independently for two reasons. First, GNN implementation is rather
@@ -37,7 +53,6 @@ and preliminary.
 
 
 \subsection{Feature Analysis}
-\todo[inline]{Analyze the impact of key features on model performance (e.g., feature importance, correlation).}
 
 Since XGBoost model is not interpretable by design, we need to use post-hoc explanation
 strategy. We chose to use a permutation feature importance estimation (still using F1 score) and partial dependence analysis
@@ -52,10 +67,25 @@ Two-dimensional partial dependence plot for pathway similarity and number of ind
 shows that the model needs simultaneously high pathway similarity and large number of 
 indications to be sure in success prediction.
 
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/04-time_split-xgb-perm_importance.png}
+        \caption{Permutation feature importance for trained XGBoost.}
+        \label{fig:04-time_split-xgb-perm_importance}
+    \end{minipage}\hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/04-time_split-xgb-2d_partial_dependence.png}
+        \caption{Two-dimensional partial dependence of the two most important features.}
+        \label{fig:04-time_split-xgb-2d_partial_dependence}
+    \end{minipage}
+\end{figure}
+
 
 
 \subsection{Failure and Success Cases}
-\todo[inline]{Highlight scenarios where the models perform well or poorly. Include illustrative figures or tables.}
 
 We added to the test set features indicating whether each observation is true positive (TP),
 true negative (TN), false positive (FP) or false negative (FN) and just correct (TP or TN).

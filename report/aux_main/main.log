@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.18)  9 JAN 2026 15:18
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.8.18)  9 JAN 2026 15:46
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -732,61 +732,118 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 {/usr/local/texlive/2025basic/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/local/texlive/2025basic/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}]
 
 [2] (./sections/01_introduction.tex
-Package hyperref Info: bookmark level for unknown todo defaults to 0 on input line 4.
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 23.
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 21.
  (/usr/local/texlive/2025basic/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 
 [3{/usr/local/texlive/2025basic/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 123.
+(Font)              <5> on input line 121.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 130.
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 199.
+(Font)              <10.95> on input line 128.
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 197.
  (/usr/local/texlive/2025basic/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
+)) (./sections/02_data.tex
 
-[4{/usr/local/texlive/2025basic/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/local/texlive/2025basic/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/local/texlive/2025basic/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}]) (./sections/02_data.tex
-Overfull \hbox (3.81151pt too wide) in paragraph at lines 29--29
+[4{/usr/local/texlive/2025basic/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/local/texlive/2025basic/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/local/texlive/2025basic/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}]
+Overfull \hbox (3.81151pt too wide) in paragraph at lines 28--28
 []|\T1/lmr/m/n/12 ClinicalTrials.gov| 
  []
 
+<figures/03-label-stability_in_time.png, id=181, 714.7503pt x 354.6048pt>
+File: figures/03-label-stability_in_time.png Graphic file (type png)
+<use figures/03-label-stability_in_time.png>
+Package pdftex.def Info: figures/03-label-stability_in_time.png  used on input line 65.
+(pdftex.def)             Requested size: 407.66833pt x 202.26208pt.
 
 
 [5]
 
-LaTeX Warning: Reference `03-label-distribution_missing_date' on page 6 undefined on input line 68.
+LaTeX Warning: Reference `03-label-distribution_missing_date' on page 6 undefined on input line 73.
 
 
 
-[6] (./tables/03-dataset_summary.tex)
+[6 <./figures/03-label-stability_in_time.png>]
+<figures/03-na-drugs_with_bioth.png, id=202, 492.6405pt x 436.5108pt>
+File: figures/03-na-drugs_with_bioth.png Graphic file (type png)
+<use figures/03-na-drugs_with_bioth.png>
+Package pdftex.def Info: figures/03-na-drugs_with_bioth.png  used on input line 127.
+(pdftex.def)             Requested size: 217.42265pt x 192.65147pt.
+<figures/03-corr_matrix-na.png, id=203, 674.52pt x 590.9277pt>
+File: figures/03-corr_matrix-na.png Graphic file (type png)
+<use figures/03-corr_matrix-na.png>
+Package pdftex.def Info: figures/03-corr_matrix-na.png  used on input line 134.
+(pdftex.def)             Requested size: 217.42265pt x 190.47128pt.
+ (./tables/03-dataset_summary.tex)
 
-[7]
-
-LaTeX Warning: Reference `03-pca-corr_circle' on page 8 undefined on input line 171.
-
+[7 <./figures/03-na-drugs_with_bioth.png> <./figures/03-corr_matrix-na.png>]
+<figures/03-corr_matrix-short.png, id=217, 653.0799pt x 467.5869pt>
+File: figures/03-corr_matrix-short.png Graphic file (type png)
+<use figures/03-corr_matrix-short.png>
+Package pdftex.def Info: figures/03-corr_matrix-short.png  used on input line 185.
+(pdftex.def)             Requested size: 271.7835pt x 194.58719pt.
 
 
 [8]
-Overfull \hbox (38.70432pt too wide) in paragraph at lines 194--197
-\T1/lmr/m/n/12 By per-form-ing su-per-vised di-men-sion re-duc-tion mod-els - LDA and PLS-DA (Fig-ures []A16[] and []A17[])
+
+LaTeX Warning: Reference `03-pca-corr_circle' on page 9 undefined on input line 198.
+
+<figures/03-pca-scatter_plot.png, id=227, 494.8086pt x 376.7676pt>
+File: figures/03-pca-scatter_plot.png Graphic file (type png)
+<use figures/03-pca-scatter_plot.png>
+Package pdftex.def Info: figures/03-pca-scatter_plot.png  used on input line 206.
+(pdftex.def)             Requested size: 217.42265pt x 165.55403pt.
+<figures/03-pca-corr_circle.png, id=228, 393.6306pt x 376.7676pt>
+File: figures/03-pca-corr_circle.png Graphic file (type png)
+<use figures/03-pca-corr_circle.png>
+Package pdftex.def Info: figures/03-pca-corr_circle.png  used on input line 213.
+(pdftex.def)             Requested size: 217.42265pt x 208.10815pt.
+
+
+[9 <./figures/03-corr_matrix-short.png>]
+Overfull \hbox (38.70432pt too wide) in paragraph at lines 239--242
+\T1/lmr/m/n/12 By per-form-ing su-per-vised di-men-sion re-duc-tion mod-els - LDA and PLS-DA (Fig-ures []A10[] and []A11[])
  []
 
 
 
-[9]) (./sections/03_methods.tex
+[10 <./figures/03-pca-scatter_plot.png> <./figures/03-pca-corr_circle.png>]) (./sections/03_methods.tex
 
-[10]
+[11]
 
-[11]) (./sections/04_results.tex (./tables/04-time_split-model_comparison.tex)
+[12]) (./sections/04_results.tex (./tables/04-time_split-model_comparison.tex)
+<figures/04-time_split-xgb-confusion_matrix.png, id=274, 457.71pt x 376.7676pt>
+File: figures/04-time_split-xgb-confusion_matrix.png Graphic file (type png)
+<use figures/04-time_split-xgb-confusion_matrix.png>
+Package pdftex.def Info: figures/04-time_split-xgb-confusion_matrix.png  used on input line 33.
+(pdftex.def)             Requested size: 217.42265pt x 178.9722pt.
+<figures/04-time_split-xgb-pr.png, id=275, 495.7722pt x 376.7676pt>
+File: figures/04-time_split-xgb-pr.png Graphic file (type png)
+<use figures/04-time_split-xgb-pr.png>
+Package pdftex.def Info: figures/04-time_split-xgb-pr.png  used on input line 39.
+(pdftex.def)             Requested size: 217.42265pt x 165.23209pt.
 
-[12]) (./sections/05_discussion.tex
 
-[13]) (./sections/06_conclusion.tex
+[13]
+<figures/04-time_split-xgb-perm_importance.png, id=289, 570.933pt x 426.6339pt>
+File: figures/04-time_split-xgb-perm_importance.png Graphic file (type png)
+<use figures/04-time_split-xgb-perm_importance.png>
+Package pdftex.def Info: figures/04-time_split-xgb-perm_importance.png  used on input line 74.
+(pdftex.def)             Requested size: 217.42265pt x 162.46758pt.
+<figures/04-time_split-xgb-2d_partial_dependence.png, id=290, 570.4512pt x 426.6339pt>
+File: figures/04-time_split-xgb-2d_partial_dependence.png Graphic file (type png)
+<use figures/04-time_split-xgb-2d_partial_dependence.png>
+Package pdftex.def Info: figures/04-time_split-xgb-2d_partial_dependence.png  used on input line 80.
+(pdftex.def)             Requested size: 217.42265pt x 162.6108pt.
 
-[14]) (aux_main/main.bbl) (./sections/07_appendix.tex
+
+[14 <./figures/04-time_split-xgb-confusion_matrix.png> <./figures/04-time_split-xgb-pr.png>]) (./sections/05_discussion.tex
+
+[15 <./figures/04-time_split-xgb-perm_importance.png> <./figures/04-time_split-xgb-2d_partial_dependence.png>]) (./sections/06_conclusion.tex) (aux_main/main.bbl
+
+[16]) (./sections/07_appendix.tex
 Underfull \hbox (badness 10000) in paragraph at lines 44--45
 []|\T1/lmr/m/n/10 Weighted quan-ti-ta-tive es-ti-mate of drug like-
  []
@@ -798,234 +855,72 @@ Overfull \hbox (9.82343pt too wide) in paragraph at lines 14--68
 
 
 
-[15] (./tables/04-time_split-best_parameters.tex
+[17] (./tables/04-time_split-best_parameters.tex
 Underfull \hbox (badness 10000) in paragraph at lines 5--6
 []|\T1/lmr/m/n/10 colsample_bytree = 0.8,gamma = 0,learn-ing_rate =
  []
 
 )
 
-[16]
-<figures/03-label-has_results_in_time.png, id=320, 714.7503pt x 354.6048pt>
+[18]
+<figures/03-label-has_results_in_time.png, id=333, 714.7503pt x 354.6048pt>
 File: figures/03-label-has_results_in_time.png Graphic file (type png)
 <use figures/03-label-has_results_in_time.png>
 Package pdftex.def Info: figures/03-label-has_results_in_time.png  used on input line 83.
 (pdftex.def)             Requested size: 407.66833pt x 202.26208pt.
-<figures/03-label-stability_in_time.png, id=322, 714.7503pt x 354.6048pt>
-File: figures/03-label-stability_in_time.png Graphic file (type png)
-<use figures/03-label-stability_in_time.png>
-Package pdftex.def Info: figures/03-label-stability_in_time.png  used on input line 90.
-(pdftex.def)             Requested size: 407.66833pt x 202.26208pt.
-<figures/03-label-distribution_missing_date.png, id=323, 498.4221pt x 376.7676pt>
+<figures/03-label-distribution_missing_date.png, id=334, 498.4221pt x 376.7676pt>
 File: figures/03-label-distribution_missing_date.png Graphic file (type png)
 <use figures/03-label-distribution_missing_date.png>
-Package pdftex.def Info: figures/03-label-distribution_missing_date.png  used on input line 98.
+Package pdftex.def Info: figures/03-label-distribution_missing_date.png  used on input line 91.
 (pdftex.def)             Requested size: 407.66833pt x 308.16956pt.
 
 
-[17 <./figures/03-label-has_results_in_time.png> <./figures/03-label-stability_in_time.png>]
-<figures/03-na-drugs_with_bioth.png, id=330, 492.6405pt x 436.5108pt>
-File: figures/03-na-drugs_with_bioth.png Graphic file (type png)
-<use figures/03-na-drugs_with_bioth.png>
-Package pdftex.def Info: figures/03-na-drugs_with_bioth.png  used on input line 105.
-(pdftex.def)             Requested size: 407.66833pt x 361.22484pt.
-
-
-[18 <./figures/03-label-distribution_missing_date.png>]
-<figures/03-corr_matrix-na.png, id=337, 674.52pt x 590.9277pt>
-File: figures/03-corr_matrix-na.png Graphic file (type png)
-<use figures/03-corr_matrix-na.png>
-Package pdftex.def Info: figures/03-corr_matrix-na.png  used on input line 112.
-(pdftex.def)             Requested size: 407.66833pt x 357.15619pt.
-
-
-[19 <./figures/03-na-drugs_with_bioth.png>]
-<figures/03-feature_dist_by_success.png, id=344, 884.3439pt x 994.1943pt>
+[19 <./figures/03-label-has_results_in_time.png>]
+<figures/03-feature_dist_by_success.png, id=341, 884.3439pt x 994.1943pt>
 File: figures/03-feature_dist_by_success.png Graphic file (type png)
 <use figures/03-feature_dist_by_success.png>
-Package pdftex.def Info: figures/03-feature_dist_by_success.png  used on input line 120.
+Package pdftex.def Info: figures/03-feature_dist_by_success.png  used on input line 99.
 (pdftex.def)             Requested size: 407.66833pt x 458.321pt.
 
 
-[20 <./figures/03-corr_matrix-na.png>]
-<figures/03-corr_matrix-all_features.png, id=350, 679.8198pt x 467.5869pt>
+[20 <./figures/03-label-distribution_missing_date.png>]
+<figures/03-corr_matrix-all_features.png, id=348, 679.8198pt x 467.5869pt>
 File: figures/03-corr_matrix-all_features.png Graphic file (type png)
 <use figures/03-corr_matrix-all_features.png>
-Package pdftex.def Info: figures/03-corr_matrix-all_features.png  used on input line 127.
+Package pdftex.def Info: figures/03-corr_matrix-all_features.png  used on input line 106.
 (pdftex.def)             Requested size: 407.66833pt x 280.39734pt.
 
 
 [21 <./figures/03-feature_dist_by_success.png>]
-<figures/03-corr_matrix-short.png, id=356, 653.0799pt x 467.5869pt>
-File: figures/03-corr_matrix-short.png Graphic file (type png)
-<use figures/03-corr_matrix-short.png>
-Package pdftex.def Info: figures/03-corr_matrix-short.png  used on input line 134.
-(pdftex.def)             Requested size: 407.66833pt x 291.88435pt.
-<figures/03-pca-scatter_plot.png, id=357, 494.8086pt x 376.7676pt>
-File: figures/03-pca-scatter_plot.png Graphic file (type png)
-<use figures/03-pca-scatter_plot.png>
-Package pdftex.def Info: figures/03-pca-scatter_plot.png  used on input line 141.
-(pdftex.def)             Requested size: 407.66833pt x 310.42891pt.
-
-
-[22 <./figures/03-corr_matrix-all_features.png> <./figures/03-corr_matrix-short.png>]
-<figures/03-pca-scree_plot.png, id=364, 488.3043pt x 376.7676pt>
+<figures/03-pca-scree_plot.png, id=354, 488.3043pt x 376.7676pt>
 File: figures/03-pca-scree_plot.png Graphic file (type png)
 <use figures/03-pca-scree_plot.png>
-Package pdftex.def Info: figures/03-pca-scree_plot.png  used on input line 148.
+Package pdftex.def Info: figures/03-pca-scree_plot.png  used on input line 113.
 (pdftex.def)             Requested size: 407.66833pt x 314.56244pt.
-<figures/03-pca-corr_circle.png, id=365, 393.6306pt x 376.7676pt>
-File: figures/03-pca-corr_circle.png Graphic file (type png)
-<use figures/03-pca-corr_circle.png>
-Package pdftex.def Info: figures/03-pca-corr_circle.png  used on input line 155.
-(pdftex.def)             Requested size: 407.66833pt x 390.20782pt.
-
-
-[23 <./figures/03-pca-scatter_plot.png> <./figures/03-pca-scree_plot.png>]
-<figures/03-rdkit_structure-drug_outliers.png, id=372, 1505.625pt x 501.875pt>
+<figures/03-rdkit_structure-drug_outliers.png, id=355, 1505.625pt x 501.875pt>
 File: figures/03-rdkit_structure-drug_outliers.png Graphic file (type png)
 <use figures/03-rdkit_structure-drug_outliers.png>
-Package pdftex.def Info: figures/03-rdkit_structure-drug_outliers.png  used on input line 162.
+Package pdftex.def Info: figures/03-rdkit_structure-drug_outliers.png  used on input line 120.
 (pdftex.def)             Requested size: 407.66833pt x 135.89095pt.
-<figures/03-isomap.png, id=373, 500.1084pt x 376.7676pt>
+
+
+[22 <./figures/03-corr_matrix-all_features.png> <./figures/03-pca-scree_plot.png>]
+<figures/03-isomap.png, id=362, 500.1084pt x 376.7676pt>
 File: figures/03-isomap.png Graphic file (type png)
 <use figures/03-isomap.png>
-Package pdftex.def Info: figures/03-isomap.png  used on input line 169.
+Package pdftex.def Info: figures/03-isomap.png  used on input line 127.
 (pdftex.def)             Requested size: 407.66833pt x 307.12898pt.
-
-
-[24 <./figures/03-pca-corr_circle.png> <./figures/03-rdkit_structure-drug_outliers.png (PNG copy)>]
-<figures/03-umap.png, id=380, 500.1084pt x 376.7676pt>
+<figures/03-umap.png, id=363, 500.1084pt x 376.7676pt>
 File: figures/03-umap.png Graphic file (type png)
 <use figures/03-umap.png>
-Package pdftex.def Info: figures/03-umap.png  used on input line 177.
+Package pdftex.def Info: figures/03-umap.png  used on input line 135.
 (pdftex.def)             Requested size: 407.66833pt x 307.12898pt.
-<figures/03-tsne.png, id=381, 500.1084pt x 376.7676pt>
+
+
+[23 <./figures/03-rdkit_structure-drug_outliers.png (PNG copy)> <./figures/03-isomap.png>]
+<figures/03-tsne.png, id=369, 500.1084pt x 376.7676pt>
 File: figures/03-tsne.png Graphic file (type png)
 <use figures/03-tsne.png>
-Package pdftex.def Info: figures/03-tsne.png  used on input line 184.
+Package pdftex.def Info: figures/03-tsne.png  used on input line 142.
 (pdftex.def)             Requested size: 407.66833pt x 307.12898pt.
-
-
-[25 <./figures/03-isomap.png> <./figures/03-umap.png>]
-<figures/03-lda_projection.png, id=389, 494.8086pt x 351.714pt>
-File: figures/03-lda_projection.png Graphic file (type png)
-<use figures/03-lda_projection.png>
-Package pdftex.def Info: figures/03-lda_projection.png  used on input line 191.
-(pdftex.def)             Requested size: 407.66833pt x 289.78659pt.
-<figures/03-plsda.png, id=390, 494.8086pt x 376.7676pt>
-File: figures/03-plsda.png Graphic file (type png)
-<use figures/03-plsda.png>
-Package pdftex.def Info: figures/03-plsda.png  used on input line 198.
-(pdftex.def)             Requested size: 407.66833pt x 310.42891pt.
-
-
-[26 <./figures/03-tsne.png> <./figures/03-lda_projection.png>]
-<figures/04-time_split-xgb-confusion_matrix.png, id=397, 457.71pt x 376.7676pt>
-File: figures/04-time_split-xgb-confusion_matrix.png Graphic file (type png)
-<use figures/04-time_split-xgb-confusion_matrix.png>
-Package pdftex.def Info: figures/04-time_split-xgb-confusion_matrix.png  used on input line 206.
-(pdftex.def)             Requested size: 407.66833pt x 335.58655pt.
-
-
-[27 <./figures/03-plsda.png>]
-<figures/04-time_split-xgb-pr.png, id=403, 495.7722pt x 376.7676pt>
-File: figures/04-time_split-xgb-pr.png Graphic file (type png)
-<use figures/04-time_split-xgb-pr.png>
-Package pdftex.def Info: figures/04-time_split-xgb-pr.png  used on input line 213.
-(pdftex.def)             Requested size: 407.66833pt x 309.81952pt.
-
-
-[28 <./figures/04-time_split-xgb-confusion_matrix.png>]
-<figures/04-time_split-xgb-roc.png, id=409, 495.7722pt x 376.7676pt>
-File: figures/04-time_split-xgb-roc.png Graphic file (type png)
-<use figures/04-time_split-xgb-roc.png>
-Package pdftex.def Info: figures/04-time_split-xgb-roc.png  used on input line 220.
-(pdftex.def)             Requested size: 407.66833pt x 309.81952pt.
-<figures/04-time_split-gnn-confusion_matrix.png, id=410, 457.71pt x 376.7676pt>
-File: figures/04-time_split-gnn-confusion_matrix.png Graphic file (type png)
-<use figures/04-time_split-gnn-confusion_matrix.png>
-Package pdftex.def Info: figures/04-time_split-gnn-confusion_matrix.png  used on input line 227.
-(pdftex.def)             Requested size: 407.66833pt x 335.58655pt.
-
-
-[29 <./figures/04-time_split-xgb-pr.png> <./figures/04-time_split-xgb-roc.png>]
-<figures/04-time_split-xgb-perm_importance.png, id=417, 570.933pt x 426.6339pt>
-File: figures/04-time_split-xgb-perm_importance.png Graphic file (type png)
-<use figures/04-time_split-xgb-perm_importance.png>
-Package pdftex.def Info: figures/04-time_split-xgb-perm_importance.png  used on input line 234.
-(pdftex.def)             Requested size: 407.66833pt x 304.64381pt.
-
-
-[30 <./figures/04-time_split-gnn-confusion_matrix.png>]
-<figures/04-time_split-xgb-1d_partial_dependence.png, id=423, 570.2103pt x 426.6339pt>
-File: figures/04-time_split-xgb-1d_partial_dependence.png Graphic file (type png)
-<use figures/04-time_split-xgb-1d_partial_dependence.png>
-Package pdftex.def Info: figures/04-time_split-xgb-1d_partial_dependence.png  used on input line 241.
-(pdftex.def)             Requested size: 407.66833pt x 305.0279pt.
-<figures/04-time_split-xgb-2d_partial_dependence.png, id=424, 570.4512pt x 426.6339pt>
-File: figures/04-time_split-xgb-2d_partial_dependence.png Graphic file (type png)
-<use figures/04-time_split-xgb-2d_partial_dependence.png>
-Package pdftex.def Info: figures/04-time_split-xgb-2d_partial_dependence.png  used on input line 248.
-(pdftex.def)             Requested size: 407.66833pt x 304.89119pt.
-
-
-[31 <./figures/04-time_split-xgb-perm_importance.png> <./figures/04-time_split-xgb-1d_partial_dependence.png>]
-<figures/04-time_split-xgb-corr_matrix-confusion.png, id=432, 625.3764pt x 477.7047pt>
-File: figures/04-time_split-xgb-corr_matrix-confusion.png Graphic file (type png)
-<use figures/04-time_split-xgb-corr_matrix-confusion.png>
-Package pdftex.def Info: figures/04-time_split-xgb-corr_matrix-confusion.png  used on input line 256.
-(pdftex.def)             Requested size: 407.66833pt x 311.41551pt.
-<figures/04-time_split-xgb-feature_distribution_by_correct.png, id=433, 881.694pt x 984.7992pt>
-File: figures/04-time_split-xgb-feature_distribution_by_correct.png Graphic file (type png)
-<use figures/04-time_split-xgb-feature_distribution_by_correct.png>
-Package pdftex.def Info: figures/04-time_split-xgb-feature_distribution_by_correct.png  used on input line 263.
-(pdftex.def)             Requested size: 407.66833pt x 455.34229pt.
-
-
-[32 <./figures/04-time_split-xgb-2d_partial_dependence.png> <./figures/04-time_split-xgb-corr_matrix-confusion.png>]
-<figures/04-time_split-gnn-corr_matrix-confusion.png, id=440, 625.3764pt x 477.7047pt>
-File: figures/04-time_split-gnn-corr_matrix-confusion.png Graphic file (type png)
-<use figures/04-time_split-gnn-corr_matrix-confusion.png>
-Package pdftex.def Info: figures/04-time_split-gnn-corr_matrix-confusion.png  used on input line 270.
-(pdftex.def)             Requested size: 407.66833pt x 311.41551pt.
-
-
-[33 <./figures/04-time_split-xgb-feature_distribution_by_correct.png>]
-<figures/04-time_split-gnn-feature_distribution_by_correct.png, id=447, 886.2711pt x 984.5583pt>
-File: figures/04-time_split-gnn-feature_distribution_by_correct.png Graphic file (type png)
-<use figures/04-time_split-gnn-feature_distribution_by_correct.png>
-Package pdftex.def Info: figures/04-time_split-gnn-feature_distribution_by_correct.png  used on input line 277.
-(pdftex.def)             Requested size: 407.66833pt x 452.8873pt.
-
-
-[34 <./figures/04-time_split-gnn-corr_matrix-confusion.png>])
-
-[35 <./figures/04-time_split-gnn-feature_distribution_by_correct.png>] (aux_main/main.aux)
- ***********
-LaTeX2e <2024-11-01> patch level 2
-L3 programming layer <2025-01-18>
- ***********
-
-
-LaTeX Warning: There were undefined references.
-
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 60C8904850D270F4763471EB94DF659E;4326.
- ) 
-Here is how much of TeX's memory you used:
- 25027 strings out of 474662
- 473597 string characters out of 5751109
- 855320 words of memory out of 5000000
- 47466 multiletter control sequences out of 15000+600000
- 642439 words of font info for 98 fonts, out of 8000000 for 9000
- 319 hyphenation exceptions out of 8191
- 104i,15n,104p,501b,928s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmr17.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmr6.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmr8.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmri12.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmsy6.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></usr/local/texlive/2025basic/texmf-dist/fonts/type1/public/lm/lmtt12.pfb>
-Output written on aux_main/main.pdf (35 pages, 10126570 bytes).
-PDF statistics:
- 552 PDF objects out of 1000 (max. 8388607)
- 426 compressed objects within 5 object streams
- 119 named destinations out of 1000 (max. 500000)
- 369 words of extra memory for PDF output out of 10000 (max. 10000000)
-
+<figures/03-lda_projection.pn

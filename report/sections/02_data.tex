@@ -1,7 +1,6 @@
 \section{Data}
 
 \subsection{Data Sources}
-\todo[inline]{Describe where the data comes from, collection methods, and aggregation process.}
 
 Among the vast amount of medical, pharmacological and chemical publicly available data,
  we focused our attention on some being able to provide us information on basic classification of diseases (MeSH),
@@ -32,7 +31,6 @@ molecular pathway identifiers from Reactome database.
 \end{table}
 
 \subsection{Target variable definition}
-\todo[inline]{Start with explaining how you got the labels.}
 
 The prediction target is a binary success / fail variable indicating whether there was
 shown an effect or the absence thereof of a drug against a disease. So we needed to obtain 
@@ -62,8 +60,15 @@ trials failed due to drug inefficiency and to other reasons. So we decided to au
    We label such indication as fail.
 \end{itemize}
 
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.9\textwidth]{figures/03-label-stability_in_time.png}
+    \caption{Counts and proportions of drug-disease indications by success label over time.}
+    \label{fig:03-label-stability_in_time}
+\end{figure}
+
 It is interesting to note that most of undecided indications and clinical trials
-without published results happen to be approximately before 2000 and after 2010, as shown in Figures~\ref{fig:03-label-has_results_in_time}~and~\ref{fig:03-label-stability_in_time}. One can speculate
+without published results happen to be approximately before 2000 and after 2010, as shown in Figures~\ref{fig:03-label-stability_in_time}~and~\ref{fig:03-label-has_results_in_time}. One can speculate
 that it is linked to the fact that ClinicalTrials.gouv was launched in 2000 and it 
 became mandatory to publish there all studies (but not full results) since 2007. As can be seen in Figure~\ref{03-label-distribution_missing_date}, 
 among indictions with no first trial start date available, most are labeled successful which actually correpsonds 
@@ -75,7 +80,6 @@ this probably constitutes the most important weakness of this project.
 
 
 \subsection{Feature Engineering and Description}
-\todo[inline]{Provide a table or list explaining each feature and its meaning. Optionally, include relationships between features.}
 
 Detailed description of extracted features can be found in Table~\ref{tab:feature_description}. Categorical features were all one-hot encoded. 
 Most drug features describe chemical and structural properties of those drugs, a well as some andimistration information. 
@@ -105,7 +109,6 @@ We further performed TF-IDF vectorizations on pathway lists separately for drugs
 
 
 \subsection{Exploratory Data Analysis}
-\todo[inline]{Discuss missing values, outliers, normalization, feature encoding, or transformations.}
 
 \subsubsection{Missing Values}
 
@@ -115,7 +118,26 @@ To find out what it is linked to, we created an indicator variable for missingne
  this group of chemical descriptors (such as number of aromatic rings or lipophylicity) tend to be absent together
  and they are associated with biotherapeutics marker. Biotherapeutics are drugs derived from living 
  organisms rather than being chemically synthesized. Most of them are antibodies or other proteins - 
- large biopolymers for which this group of chemical descriptors is not relevant. Indeed, manual
+ large biopolymers for which this group of chemical descriptors is not relevant. 
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/03-na-drugs_with_bioth.png}
+        \caption{Missing values heatmap in the drugs dataset.}
+        \label{fig:03-na-drugs_with_bioth}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/03-corr_matrix-na.png}
+        \caption{Missingness analysis of drug descriptors with correlation heatmap.}
+        \label{fig:03-corr_matrix-na}
+    \end{minipage}
+\end{figure}
+
+ Indeed, manual
  inspection of drugs with missing values confirms this (e.g. with insulin among such drugs). So we decided 
  to consider only small molecule drugs since chemical description of biopolymers requires another approaches, 
  imputing those missing chemical descriptors would be a mistake. After the removal of those cases, data is ready for merging, 
@@ -131,7 +153,7 @@ To find out what it is linked to, we created an indicator variable for missingne
 \end{table}
 
 
-\subsubsection{Univariate and bivariate analysis}
+\subsubsection{Univariate and Bivariate Analysis}
 
 Inspection of feature distributions across label values of variables not related to molecular pathways or fingerprints 
 (Figure~\ref{fig:03-feature_dist_by_success}) shows approximately bell-shaped but sometimes multimodal or slightly skewed distributions. Nevertheless, we don't find 
@@ -158,7 +180,12 @@ As for disease ontology, we can for example see that immune diseases labelled as
 to be neoplastic as well, it makes sense since most of oncological conditions concerning the immune system are
  indeed various types of leukemias and lymphomas. Another example is positive association between urogenital diseases and infections.
 
-
+\begin{figure}[H]
+    \centering
+   \includegraphics[width=0.6\textwidth]{figures/03-corr_matrix-short.png}
+    \caption{Focused view of the correlation heatmap on interpretable features.}
+    \label{fig:03-corr_matrix-short}
+\end{figure}
 
 \subsubsection{Dimension Reduction and Outlier Analysis}
 
@@ -170,6 +197,24 @@ Furthermore, a lot of features were explicitly designed to be uncorrelated (prin
 We can however cautiously take a look at the data projection on first two principal components and notice that the major variation is associated with
 disease heterogeneity, since the most prominent arrows on correlation plot (Figure~\ref{03-pca-corr_circle}) associated with first principal 
 components are disease category indicators and disease pathway embeddings, for example neoplastic blood disorders as opposed to respiratory tract diseases. 
+
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/03-pca-scatter_plot.png}
+        \caption{PCA projection of samples onto the first two principal components.}
+        \label{fig:03-pca-scatter_plot}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/03-pca-corr_circle.png}
+        \caption{PCA correlation circle showing feature contributions to the first two principal components. Only arrows with length above 0.5 are shown.}
+        \label{fig:03-pca-corr_circle}
+    \end{minipage}
+\end{figure}
 
 The second principal component is rather associated with drug related variability, in particular we 
 can notice a group of potential outliers for high values of firs and second principal component.
