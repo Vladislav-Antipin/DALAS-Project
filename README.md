@@ -1,141 +1,123 @@
 # DALAS Drug Repurposing Project
 
-Predicting drug repurposing opportunities for immune system diseases using machine learning.
+Predicting drug repurposing opportunities for autoimmune diseases using machine learning and graph neural networks.
 
-[Project Report (PDF)](report/aux_main/main.pdf)
+📄 **[Project Report (PDF)](report/aux_main/main.pdf)** · 📋 **[Problem Statement](Docs/problem_statement.md)**
 
-# UV package manager
+---
 
-### 1. Install uv (if you don't have it)
+## Quick Start
+
+### Prerequisites
+
+Install [uv](https://docs.astral.sh/uv/) (Python package manager):
 
 ```bash
 # macOS/Linux
 curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Verify it works
-uv --version
 ```
 
-### 2. Set up the project
+### Installation
 
 ```bash
-# Clone and navigate to the project
-cd DALAS-Project
-
-# Create virtual environment
-uv venv
-
-# Activate it
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-
-# Install all dependencies
-uv pip install -e .
-```
-
-### 3. Configure API credentials
-
-```bash
-# Copy the example file
-cp .env.example .env
-
-# Edit with your credentials
-nano .env  # or use any editor
-```
-
-### 4. Start working!
-
-```bash
-# Option A: Start Jupyter for analysis
-jupyter lab
-
-# Option B: Run Python scripts
-python -m src.your_script
-
-# Option C: Use Python interactively
-python
->>> from src.config import DATA_DIR
->>> print(DATA_DIR)
-```
-
-## 📊 What We're Building
-
-See [problem_statement.md](problem_statement.md) for the full project plan.
-
-**Quick summary:**
-- Collect drug data from ChEMBL, DrugBank, OpenFDA
-- Extract chemical features (RDKit fingerprints, descriptors)
-- Build ML models (logistic regression, random forest, gradient boosting)
-- Optional: Graph neural networks for drug-disease prediction
-- Create dashboard to explore results
-
-## 🤝 For Collaborators
-
-When someone new joins:
-
-```bash
-# 1. Install uv
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# 2. Clone and setup
 git clone <repo-url>
 cd DALAS-Project
-uv venv
-source .venv/bin/activate
-uv pip install -e .
-
-# 3. Add your API credentials
-cp .env.example .env
-nano .env
+uv sync
 ```
 
-**When pulling new changes:**
+That's it. `uv sync` creates the virtual environment and installs all dependencies from `pyproject.toml`.
+
+### Running the Project
+
+```bash
+# Start Jupyter Lab
+uv run jupyter lab
+
+# Run a script
+uv run python scripts/run_gnn_section.py
+```
+
+> **Note:** Using `uv run` automatically uses the project's virtual environment—no manual activation needed.
+
+---
+
+## Project Overview
+
+**Goal:** Predict whether approved drugs can be repurposed for autoimmune diseases (psoriasis, IBD, rheumatoid arthritis, etc.)
+
+**Approach:**
+- Collect drug and disease data from ChEMBL, DrugBank, OpenFDA
+- Extract molecular features using RDKit (fingerprints, descriptors)
+- Train ML models (logistic regression, random forest, gradient boosting)
+- Build graph neural networks for drug-disease link prediction
+
+---
+
+## For Collaborators
+
+### First-time Setup
+
+```bash
+# 1. Install uv (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# 2. Clone and install
+git clone <repo-url>
+cd DALAS-Project
+uv sync
+```
+
+### After Pulling Changes
+
 ```bash
 git pull
-uv pip install -e .  # Updates dependencies if pyproject.toml changed
+uv sync  # Updates dependencies if pyproject.toml changed
 ```
 
-## 💡 Tips
-
-- **Keep notebooks organized**: Name them with numbers (e.g., `01_data_collection.ipynb`)
-- **Put reusable code in `src/`**: Import it in notebooks with `from src.config import ...`
-- **Don't commit large files**: Data and models stay local (already in `.gitignore`)
-- **Share your work**: Push code and notebooks, but data stays on your machine
-
-## 🆘 Common Issues
-
-**RDKit won't install?**
-```bash
-# Use conda instead
-conda install -c conda-forge rdkit
-uv pip install -e .
-```
-
-**Import errors?**
-```bash
-# Make sure virtual environment is activated
-source .venv/bin/activate
-
-# Check you're using the right Python
-which python  # Should show .venv/bin/python
-```
-
-## 📚 Useful Commands
+### Adding Dependencies
 
 ```bash
-# Start Jupyter
-jupyter lab
-
-# Check what's installed
-uv pip list
-
-# Add a new package
-uv pip install package-name
-# Then add it to pyproject.toml manually
-
-# Deactivate virtual environment
-deactivate
+uv add <package-name>  # Adds to pyproject.toml and installs
 ```
 
 ---
 
-**Questions?** Check the [problem statement](problem_statement.md) or ask your colleague!
+## Project Structure
+
+```text
+├── notebooks/          # Jupyter notebooks for analysis
+├── src/                # Reusable Python modules
+├── data/               # Local data (not committed)
+├── report/             # LaTeX report
+└── Docs/               # Project documentation
+```
+
+---
+
+## Troubleshooting
+
+**RDKit installation issues?**
+
+```bash
+# Alternative: use conda for RDKit, then sync other deps
+conda install -c conda-forge rdkit
+uv sync
+```
+
+**Import errors?**
+
+```bash
+# Ensure you're using the project environment
+uv run python -c "from src.config import DATA_DIR; print(DATA_DIR)"
+```
+
+---
+
+## Useful Commands
+
+```bash
+uv sync              # Install/update all dependencies
+uv add <package>     # Add a new dependency
+uv run jupyter lab   # Start Jupyter
+uv run python <script>  # Run any Python script
+```
