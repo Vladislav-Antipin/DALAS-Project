@@ -1,22 +1,68 @@
 # DALAS Data Pipeline
 
-This directory contains modular Python scripts for fetching and processing autoimmune disease drug data from various sources.
+Modular Python package for fetching and processing autoimmune disease drug data.
 
 ## Structure
 
-```
+```text
 src/
+├── __init__.py            # Package exports
 ├── config.py              # Configuration, paths, and constants
 ├── data_fetchers.py       # Functions to fetch raw data from APIs
 ├── data_processors.py     # Functions to clean and process raw data
+├── data_loader.py         # Convenience functions to load cached data
 ├── embeddings.py          # Functions to generate embeddings
-├── pipeline.py            # Main orchestration script
-└── retrieve_data.py       # Legacy script (kept for compatibility)
+└── pipeline.py            # Main orchestration script
+```
+
+## Usage
+
+### Run the Full Pipeline
+
+```bash
+# Run everything (uses cache when available)
+uv run python -m src.pipeline
+
+# Force re-fetch all raw data
+uv run python -m src.pipeline --force-fetch
+
+# Force re-process all data
+uv run python -m src.pipeline --force-process
+
+# Force everything
+uv run python -m src.pipeline --force-fetch --force-process
+```
+
+### Run Individual Steps
+
+```bash
+# Only fetch raw data
+uv run python -m src.pipeline --step fetch
+
+# Only process data (requires raw data to exist)
+uv run python -m src.pipeline --step process
+
+# Only generate embeddings (requires processed data to exist)
+uv run python -m src.pipeline --step embeddings
+```
+
+### Load Data in Python
+
+```python
+from src import load_drugs, load_diseases, load_indications, load_embeddings
+
+# Load individual dataframes
+drugs_df = load_drugs()
+diseases_df = load_diseases()
+
+# Or load everything at once
+from src import load_all_processed
+data = load_all_processed()
 ```
 
 ## Data Flow
 
-```
+```text
 1. RAW DATA FETCHING (data_fetchers.py)
    ├─ MeSH IDs          → data/raw/mesh_ids.pkl
    ├─ Drug Indications  → data/raw/indications_df.pkl
@@ -36,103 +82,57 @@ src/
    └─ Drug-Disease Similarities → data/processed/embeddings_df.pkl
 ```
 
-## Usage
-
-### Run the Full Pipeline
-
-```bash
-# Run everything (uses cache when available)
-python -m src.pipeline
-
-# Force re-fetch all raw data
-python -m src.pipeline --force-fetch
-
-# Force re-process all data
-python -m src.pipeline --force-process
-
-# Force everything
-python -m src.pipeline --force-fetch --force-process
-```
-
-### Run Individual Steps
-
-```bash
-# Only fetch raw data
-python -m src.pipeline --step fetch
-
-# Only process data (requires raw data to exist)
-python -m src.pipeline --step process
-
-# Only generate embeddings (requires processed data to exist)
-python -m src.pipeline --step embeddings
-```
-
 ## Modules
 
 ### config.py
-- Project paths and directories
-- API endpoints and URLs
-- Model configurations
-- Global parameters
+
+Project configuration:
+- `PROJECT_ROOT`, `DATA_DIR`, `RAW_DATA_DIR`, `PROCESSED_DATA_DIR`, `RESULTS_DIR`
+- API endpoints: `CHEMBL_API`, `OPENFDA_API`, `PUBMED_API`, `OT_URL`, `NCT_URL`, `MESH_URL`
+- Model settings: `ST_MODEL` (PubMedBERT)
+- Parameters: `NB_TOP_TARGETS`, `NB_EVIDENCES`
 
 ### data_fetchers.py
+
 Functions for retrieving raw data:
-- `fetch_mesh_ids()` - Scrape MeSH IDs for autoimmune diseases
-- `fetch_drug_indications()` - Get drug-disease pairs from ChEMBL
-- `fetch_drugs()` - Get drug information from ChEMBL
-- `fetch_mechanisms_and_targets()` - Get drug mechanisms and protein targets
-- `fetch_disease_info()` - Get disease data from Open Targets
-- `fetch_clinical_trials()` - Get trial data from ClinicalTrials.gov
+- `fetch_mesh_ids()` — Scrape MeSH IDs for autoimmune diseases from NCBI
+- `fetch_drug_indications()` — Get drug-disease pairs from ChEMBL
+- `fetch_drugs()` — Get drug information from ChEMBL
+- `fetch_mechanisms_and_targets()` — Get drug mechanisms and protein targets (with UniProt mapping)
+- `fetch_disease_info()` — Get disease data and associated targets from Open Targets
+- `fetch_clinical_trials()` — Get trial data from ClinicalTrials.gov
 
 ### data_processors.py
+
 Functions for cleaning and transforming data:
-- `process_drugs_data()` - Clean drugs, extract properties, add target dictionaries
-- `process_diseases_data()` - Process disease information
-- `process_trials_data()` - Extract trial metadata and classify success
-- `process_indications_data()` - Combine drug-disease pairs with trial evidence
+- `process_drugs_data()` — Filter available drugs, extract properties, add target dictionaries
+- `process_diseases_data()` — Process disease information
+- `process_trials_data()` — Extract trial metadata and classify success based on p-values
+- `process_indications_data()` — Combine drug-disease pairs with clinical trial evidence
+
+### data_loader.py
+
+Convenience functions for loading cached data:
+- `load_all_processed()` — Load all processed dataframes as a dictionary
+- `load_all_raw()` — Load all raw dataframes as a dictionary
+- `load_drugs()`, `load_diseases()`, `load_trials()`, `load_indications()`, `load_embeddings()`
 
 ### embeddings.py
+
 Functions for semantic analysis:
-- `compute_drug_disease_similarities()` - Generate name similarity scores
-- `generate_text_embeddings()` - Create embeddings for arbitrary text
+- `compute_drug_disease_similarities()` — Compute cosine similarity between drug and disease names using PubMedBERT
+- `generate_text_embeddings()` — Generate embeddings for arbitrary text
 
 ### pipeline.py
+
 Main orchestration:
-- `run_data_fetching()` - Execute all fetching steps
-- `run_data_processing()` - Execute all processing steps
-- `run_embeddings()` - Generate embeddings
-- `run_full_pipeline()` - Execute complete pipeline
-
-## Data Outputs
-
-### Raw Data (data/raw/)
-Directly fetched from APIs, minimal processing
-
-### Processed Data (data/processed/)
-Cleaned and structured for analysis:
-
-- **final_drugs_df.pkl**: Drug information with properties and target mappings
-- **final_diseases_df.pkl**: Disease information with associated targets
-- **final_trials_df.pkl**: Clinical trials with success classification
-- **final_indications_df.pkl**: Drug-disease pairs with clinical evidence
-- **embeddings_df.pkl**: Semantic similarity scores between drugs and diseases
-
-## Dependencies
-
-Required packages:
-- pandas
-- numpy
-- requests
-- beautifulsoup4
-- chembl_webresource_client
-- bioservices
-- sentence_transformers
-- python-dotenv
+- `run_data_fetching()` — Execute all fetching steps
+- `run_data_processing()` — Execute all processing steps
+- `run_embeddings()` — Generate embeddings
+- `run_full_pipeline()` — Execute complete pipeline
 
 ## Notes
 
-- All functions support caching - data is only re-fetched when `force=True`
-- Raw data is saved to `data/raw/`
-- Processed data is saved to `data/processed/`
-- The pipeline respects API rate limits (e.g., ClinicalTrials.gov: 10 req/sec)
+- All functions support caching — data is only re-fetched when `force=True`
+- The pipeline respects API rate limits (ClinicalTrials.gov: 10 req/sec)
 - UniProt ID mapping can be slow for large datasets

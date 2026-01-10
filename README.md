@@ -20,7 +20,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 ### Installation
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/Vladislav-Antipin/DALAS-Project.git
 cd DALAS-Project
 uv sync
 ```
@@ -33,8 +33,8 @@ That's it. `uv sync` creates the virtual environment and installs all dependenci
 # Start Jupyter Lab
 uv run jupyter lab
 
-# Run a script
-uv run python scripts/run_gnn_section.py
+# Run the data pipeline
+uv run python -m src.pipeline
 ```
 
 > **Note:** Using `uv run` automatically uses the project's virtual environment—no manual activation needed.
@@ -46,6 +46,7 @@ uv run python scripts/run_gnn_section.py
 **Goal:** Predict whether approved drugs can be repurposed for autoimmune diseases (psoriasis, IBD, rheumatoid arthritis, etc.)
 
 **Approach:**
+
 - Collect drug and disease data from ChEMBL, DrugBank, OpenFDA
 - Extract molecular features using RDKit (fingerprints, descriptors)
 - Train ML models (logistic regression, random forest, gradient boosting)
@@ -62,7 +63,7 @@ uv run python scripts/run_gnn_section.py
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # 2. Clone and install
-git clone <repo-url>
+git clone https://github.com/Vladislav-Antipin/DALAS-Project.git
 cd DALAS-Project
 uv sync
 ```
