@@ -794,6 +794,7 @@ dependencies = [
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "pandas" },
+    { name = "pulearn" },
     { name = "python-dotenv" },
     { name = "rdkit" },
     { name = "requests" },
@@ -818,6 +819,7 @@ requires-dist = [
     { name = "missingno", specifier = ">=0.5.2" },
     { name = "numpy", specifier = ">=1.24.0" },
     { name = "pandas", specifier = ">=2.0.0" },
+    { name = "pulearn", specifier = ">=0.0.9" },
     { name = "python-dotenv", specifier = ">=1.0.0" },
     { name = "rdkit", specifier = ">=2023.9.1" },
     { name = "requests", specifier = ">=2.31.0" },
@@ -3146,6 +3148,21 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/20/e5/16ff212c1e452235a90aeb09066144d0c5a6a8c0834397e03f5224495c4e/ptyprocess-0.7.0.tar.gz", hash = "sha256:5c5d0a3b48ceee0b48485e0c26037c0acd7d29765ca3fbb5cb3831d347423220", size = 70762, upload-time = "2020-12-28T15:15:30.155Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/22/a6/858897256d0deac81a172289110f31629fc4cee19b6f01283303e18c8db3/ptyprocess-0.7.0-py2.py3-none-any.whl", hash = "sha256:4b41f3967fce3af57cc7e94b888626c18bf37a083e3651ca8feeb66d492fef35", size = 13993, upload-time = "2020-12-28T15:15:28.35Z" },
+]
+
+[[package]]
+name = "pulearn"
+version = "0.0.9"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+    { name = "scikit-learn" },
+    { name = "six" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f4/03/15420ca48178ba2a2ae57c397c667460a1c268a6206b920ad841891908fc/pulearn-0.0.9.tar.gz", hash = "sha256:a678c22fda6da6e4185c91bc46a54a093a4cc1f654b197f1f401cbd2ccd9f44e", size = 728477, upload-time = "2024-04-15T09:48:04.206Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2c/cf/c9a2a61af04b3b38c3c3d6a7d18851ad14ee6c4d1ce8dae7e4e07664104e/pulearn-0.0.9-py3-none-any.whl", hash = "sha256:2e262d934a6ea9995c1b53d295bf7627985146a06d838513ab05ee0c5fb559c3", size = 17654, upload-time = "2024-04-15T09:48:00.947Z" },
 ]
 
 [[package]]
